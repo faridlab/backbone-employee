@@ -1,0 +1,61 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeIdentity
+# Description: Government identity documents (KTP / passport). Multiple per employee.
+# =============================================================================
+
+models:
+  - name: EmployeeIdentity
+    collection: employee_identities
+    description: "Government identity documents (KTP / passport). Multiple per employee."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Company.id"
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+        description: "# FK employees.id"
+
+      identity_type:
+        type: IdentityType
+        attributes: ["@required"]
+        description: "id (KTP) / passport"
+
+      identity_number:
+        type: string
+        attributes: ["@required", "@length(max=64)"]
+        description: "Document number"
+
+      identity_expiry_date:
+        type: date?
+        description: "Expiry (null if permanent)"
+
+      is_permanent:
+        type: boolean
+        attributes: ["@default(false)"]
+        description: "No expiry"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]
+
+enums:
+  - name: IdentityType
+    description: "Government identity document type"
+    variants:
+      - name: id
+        description: "KTP national ID"
+        default: true
+      - name: passport

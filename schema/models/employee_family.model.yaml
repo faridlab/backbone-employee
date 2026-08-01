@@ -1,0 +1,56 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeFamily
+# Description: Family members / dependents. relationship drives PTKP tax-tier
+#              derivation (married + dependent children count).
+# =============================================================================
+
+models:
+  - name: EmployeeFamily
+    collection: employee_families
+    description: "Family members / dependents. relationship drives PTKP tax-tier derivation."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      name:
+        type: string
+        attributes: ["@required", "@length(max=120)"]
+
+      relationship:
+        type: FamilyRelationship
+        attributes: ["@required"]
+        description: "spouse/child/parent/sibling/other — spouse+child count drive PTKP"
+
+      birth_date:
+        type: date?
+        description: "DOB"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]
+
+enums:
+  - name: FamilyRelationship
+    description: "Family relationship type"
+    variants:
+      - name: spouse
+        default: true
+      - name: child
+      - name: parent
+      - name: sibling
+      - name: other

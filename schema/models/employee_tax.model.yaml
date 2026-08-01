@@ -1,0 +1,106 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeTax
+# Description: Indonesia tax identity. PTKP tier is DERIVED from employee_families
+#              (see PTKP rule); ptkp_override allows manual override.
+#              TODO(custom-logic): implement PTKP derivation in a custom service:
+#                married    = EXISTS EmployeeFamily(employee, relationship = spouse)
+#                dependents = COUNT EmployeeFamily(employee, relationship = child)  // cap 3
+#                ptkp       = (married ? "K" : "TK") + min(dependents, 3)
+# =============================================================================
+
+models:
+  - name: EmployeeTax
+    collection: employee_taxes
+    description: "Indonesia tax identity. PTKP tier is DERIVED from employee_families; ptkp_override allows manual override."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      npwp_number:
+        type: string?
+        attributes: ["@length(max=30)"]
+        description: "Tax number (missing NPWP -> surcharged by payroll)"
+
+      ptkp_override:
+        type: PtkpTier?
+        description: "Manual override of derived PTKP; null = derive from dependents"
+
+      tax_method:
+        type: TaxMethod
+        attributes: ["@required", "@default(gross)"]
+        description: "gross / gross_up / netto"
+
+      tax_salary:
+        type: TaxSalary
+        attributes: ["@required", "@default(taxable)"]
+        description: "taxable / non_taxable"
+
+      taxable_date:
+        type: date?
+        description: "Date tax status takes effect"
+
+      beginning_netto:
+        type: decimal?
+        attributes: ["@precision(18,2)", "@non_negative"]
+        description: "Cumulative netto carryforward"
+
+      pph21_paid:
+        type: decimal?
+        attributes: ["@precision(18,2)", "@non_negative"]
+        description: "YTD PPh 21 paid"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]
+
+enums:
+  - name: PtkpTier
+    description: "PTKP — Penghasilan Tidak Kena Pajak. DERIVED (not stored on tax by default)."
+    variants:
+      - name: tk0
+        description: "TK/0 — single, no dependents"
+        default: true
+      - name: tk1
+        description: "TK/1"
+      - name: tk2
+        description: "TK/2"
+      - name: tk3
+        description: "TK/3"
+      - name: k0
+        description: "K/0 — married, no dependents"
+      - name: k1
+        description: "K/1"
+      - name: k2
+        description: "K/2"
+      - name: k3
+        description: "K/3"
+
+  - name: TaxMethod
+    description: "Tax computation method"
+    variants:
+      - name: gross
+        default: true
+      - name: gross_up
+      - name: netto
+
+  - name: TaxSalary
+    description: "Tax salary classification"
+    variants:
+      - name: taxable
+        default: true
+      - name: non_taxable

@@ -1,0 +1,77 @@
+-- Down: remove the company RLS fence for employee module
+
+-- Reverse the company RLS fence for employee.data_consents
+DROP POLICY IF EXISTS data_consents_company_isolation ON employee.data_consents;
+ALTER TABLE employee.data_consents NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.data_consents DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.data_subject_requests
+DROP POLICY IF EXISTS data_subject_requests_company_isolation ON employee.data_subject_requests;
+ALTER TABLE employee.data_subject_requests NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.data_subject_requests DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employees
+DROP POLICY IF EXISTS employees_company_isolation ON employee.employees;
+ALTER TABLE employee.employees NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employees DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_bank_accounts
+DROP POLICY IF EXISTS employee_bank_accounts_company_isolation ON employee.employee_bank_accounts;
+ALTER TABLE employee.employee_bank_accounts NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_bank_accounts DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_bpjs
+DROP POLICY IF EXISTS employee_bpjs_company_isolation ON employee.employee_bpjs;
+ALTER TABLE employee.employee_bpjs NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_bpjs DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_certifications
+DROP POLICY IF EXISTS employee_certifications_company_isolation ON employee.employee_certifications;
+ALTER TABLE employee.employee_certifications NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_certifications DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_contacts
+DROP POLICY IF EXISTS employee_contacts_company_isolation ON employee.employee_contacts;
+ALTER TABLE employee.employee_contacts NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_contacts DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_educations
+DROP POLICY IF EXISTS employee_educations_company_isolation ON employee.employee_educations;
+ALTER TABLE employee.employee_educations NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_educations DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_families
+DROP POLICY IF EXISTS employee_families_company_isolation ON employee.employee_families;
+ALTER TABLE employee.employee_families NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_families DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_identities
+DROP POLICY IF EXISTS employee_identities_company_isolation ON employee.employee_identities;
+ALTER TABLE employee.employee_identities NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_identities DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_taxes
+DROP POLICY IF EXISTS employee_taxes_company_isolation ON employee.employee_taxes;
+ALTER TABLE employee.employee_taxes NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_taxes DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employee_work_experiences
+DROP POLICY IF EXISTS employee_work_experiences_company_isolation ON employee.employee_work_experiences;
+ALTER TABLE employee.employee_work_experiences NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employee_work_experiences DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employments
+DROP POLICY IF EXISTS employments_company_isolation ON employee.employments;
+ALTER TABLE employee.employments NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employments DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.employment_histories
+DROP POLICY IF EXISTS employment_histories_company_isolation ON employee.employment_histories;
+ALTER TABLE employee.employment_histories NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.employment_histories DISABLE ROW LEVEL SECURITY;
+
+-- Reverse the company RLS fence for employee.pii_access_logs
+DROP POLICY IF EXISTS pii_access_logs_company_isolation ON employee.pii_access_logs;
+ALTER TABLE employee.pii_access_logs NO FORCE ROW LEVEL SECURITY;
+ALTER TABLE employee.pii_access_logs DISABLE ROW LEVEL SECURITY;
+

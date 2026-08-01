@@ -1,0 +1,57 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeEducation
+# Description: Education history.
+# =============================================================================
+
+models:
+  - name: EmployeeEducation
+    collection: employee_educations
+    description: "Education history."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      institution_name:
+        type: string
+        attributes: ["@required", "@length(max=180)"]
+        description: "(typo instituion fixed)"
+
+      major:
+        type: string?
+        attributes: ["@length(max=120)"]
+
+      field:
+        type: string?
+        attributes: ["@length(max=120)"]
+
+      score:
+        type: decimal?
+        attributes: ["@precision(5,2)"]
+        description: "GPA"
+
+      start_year:
+        type: integer?
+        description: "Year"
+
+      end_year:
+        type: integer?
+        description: "Year"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]

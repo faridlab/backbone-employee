@@ -1,0 +1,29 @@
+# =============================================================================
+# Domain: employee
+# Entity: Religion
+# Description: Religion reference master (GLOBAL — no company_id; universal
+#              reference data; scopes calendar holidays). Unique on name.
+# =============================================================================
+
+models:
+  - name: Religion
+    collection: religions
+    description: "Religion reference master (global; scopes calendar holidays)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      name:
+        type: string
+        attributes: ["@required", "@length(max=60)"]
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: unique
+        fields: [name]
+        where: "deleted_at IS NULL"

@@ -1,0 +1,82 @@
+# =============================================================================
+# employee Module - Schema Index
+# =============================================================================
+# Version: 2.0
+# Description: Module schema index. `module:` and `schema:` are stamped from the
+# module name by `metaphor module create`. `schema:` gives this module its OWN
+# Postgres schema (migrations emit `CREATE SCHEMA employee` and qualify tables
+# as `employee.<table>`) — the convention every backbone module follows
+# (see backbone-sapiens, backbone-bucket). Do not remove it.
+# =============================================================================
+
+module: employee
+version: 2
+schema: employee
+description: "employee domain module"
+
+config:
+  database: postgresql
+  soft_delete: true
+  audit: true
+  default_timestamps: true
+  generators:
+    disabled:
+      - graphql
+      - grpc
+      - proto
+
+# Reuse sapiens for user identity (actors) — logical refs, no DB constraint.
+external_imports:
+  - module: sapiens
+    types: [User]
+
+# Shared value-object types available to all models in this module.
+shared_types:
+  Timestamps:
+    created_at:
+      type: datetime
+      attributes: ["@default(now)"]
+      description: "Record creation timestamp"
+    updated_at:
+      type: datetime
+      attributes: ["@updated_at"]
+      description: "Last update timestamp"
+    deleted_at:
+      type: datetime?
+      description: "Soft delete timestamp"
+
+  Actors:
+    created_by:
+      type: uuid?
+      attributes: ["@foreign_key(sapiens.User.id)"]
+      description: "User who created this record"
+    updated_by:
+      type: uuid?
+      attributes: ["@foreign_key(sapiens.User.id)"]
+      description: "User who last updated this record"
+    deleted_by:
+      type: uuid?
+      attributes: ["@foreign_key(sapiens.User.id)"]
+      description: "User who deleted this record"
+
+  Metadata: [Timestamps, Actors]
+
+# Import each entity model. The 17 real entities (Example skeleton removed).
+imports:
+  - employee.model.yaml
+  - employee_identity.model.yaml
+  - employment.model.yaml
+  - employment_history.model.yaml
+  - employee_family.model.yaml
+  - employee_contact.model.yaml
+  - employee_education.model.yaml
+  - employee_certification.model.yaml
+  - employee_work_experience.model.yaml
+  - employee_bank_account.model.yaml
+  - employee_tax.model.yaml
+  - employee_bpjs.model.yaml
+  - religion.model.yaml
+  - bank.model.yaml
+  - data_consent.model.yaml
+  - data_subject_request.model.yaml
+  - pii_access_log.model.yaml

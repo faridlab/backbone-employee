@@ -1,0 +1,88 @@
+# =============================================================================
+# Domain: employee
+# Entity: DataConsent
+# Description: UU PDP (UU 13/2022) — lawful basis, consent, and retention for a
+#              category of an employee's PII (Art 16/20). Defines the shared
+#              DataCategory + LawfulBasis enums reused by pii_access_log.
+# =============================================================================
+
+models:
+  - name: DataConsent
+    collection: data_consents
+    description: "Lawful basis, consent, and retention for a category of an employee's PII (UU PDP Art 16/20)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      data_category:
+        type: DataCategory
+        attributes: ["@required"]
+        description: "identity/financial/family/contact/employment/health/biometric"
+
+      lawful_basis:
+        type: LawfulBasis
+        attributes: ["@required"]
+        description: "consent/contract/legal_obligation/employment/vital_interest"
+
+      consent_given_at:
+        type: datetime?
+
+      consent_method:
+        type: string?
+        attributes: ["@length(max=40)"]
+        description: "signed/digital/verbal"
+
+      privacy_notice_version:
+        type: string?
+        attributes: ["@length(max=40)"]
+        description: "The privacy notice version consented to"
+
+      retention_until:
+        type: date?
+        description: "When the data must be purged (Art 20)"
+
+      withdrawn_at:
+        type: datetime?
+        description: "Consent withdrawn -> triggers purge workflow"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id, data_category]
+
+enums:
+  - name: DataCategory
+    description: "Category of personal data (UU PDP). Shared across PII entities."
+    variants:
+      - name: identity
+        default: true
+      - name: financial
+      - name: family
+      - name: contact
+      - name: employment
+      - name: health
+      - name: biometric
+
+  - name: LawfulBasis
+    description: "Lawful basis for processing (UU PDP Art 20 / GDPR Art 6 analogue)."
+    variants:
+      - name: consent
+        default: true
+      - name: contract
+      - name: legal_obligation
+      - name: employment
+      - name: vital_interest
+      - name: legitimate_interest

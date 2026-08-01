@@ -1,0 +1,93 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmploymentHistory
+# Description: Append-only log of role/level/department changes over a career.
+#              Employment holds the *current* placement; this is the history.
+# =============================================================================
+
+models:
+  - name: EmploymentHistory
+    collection: employment_histories
+    description: "Append-only log of role/level/department changes over a career."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Company.id"
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+        description: "# FK employees.id"
+
+      effective_date:
+        type: date
+        attributes: ["@required"]
+
+      action:
+        type: EmploymentAction
+        attributes: ["@required"]
+        description: "hire/transfer/promotion/demotion/role_change/reinstatement"
+
+      position_id_from:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Position.id"
+
+      position_id_to:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Position.id"
+
+      level_id_from:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Level.id"
+
+      level_id_to:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Level.id"
+
+      department_id_from:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Department.id"
+
+      department_id_to:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Department.id"
+
+      reference_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# the triggering workflow (e.g. lifecycle.Promotion id)"
+
+      note:
+        type: string?
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id, effective_date]
+
+enums:
+  - name: EmploymentAction
+    description: "Employment history action type"
+    variants:
+      - name: hire
+        default: true
+      - name: transfer
+      - name: promotion
+      - name: demotion
+      - name: role_change
+      - name: reinstatement

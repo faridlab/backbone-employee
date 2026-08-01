@@ -1,0 +1,50 @@
+# =============================================================================
+# Domain: employee
+# Entity: PiiAccessLog
+# Description: Who accessed whose PII, when, why. APPEND-ONLY audit trail — no
+#              soft-delete (insert-only). References the DataCategory enum
+#              defined in data_consent.model.yaml (not redeclared here).
+# =============================================================================
+
+models:
+  - name: PiiAccessLog
+    collection: pii_access_logs
+    description: "Who accessed whose PII, when, why. APPEND-ONLY — the audit trail (no soft-delete)."
+    soft_delete: false
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+        description: "Whose PII was accessed"
+
+      accessed_by:
+        type: uuid
+        attributes: ["@required", "@foreign_key(sapiens.User.id)"]
+        description: "The user who accessed it"
+
+      data_category:
+        type: DataCategory
+        attributes: ["@required"]
+
+      purpose:
+        type: string?
+        attributes: ["@length(max=120)"]
+
+      accessed_at:
+        type: datetime
+        attributes: ["@required", "@default(now)"]
+
+    indexes:
+      - type: index
+        fields: [employee_id, accessed_at]
+      - type: index
+        fields: [accessed_by]

@@ -1,0 +1,125 @@
+# =============================================================================
+# Domain: employee
+# Entity: Employee
+# Description: The canonical people master. Owns employee_id (the logical FK
+#              every other module references). Reads its user identity from
+#              backbone-sapiens and org placement from backbone-organization.
+# =============================================================================
+
+models:
+  - name: Employee
+    collection: employees
+    description: "The canonical people master. Owns employee_id (logical FK every module references)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+        description: "Unique employee id"
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+        description: "Org owner # logical FK organization.Company.id"
+
+      employee_number:
+        type: string
+        attributes: ["@required", "@length(max=40)"]
+        description: "Human code (unique per company)"
+
+      user_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "Login identity # logical FK sapiens.User.id"
+
+      first_name:
+        type: string
+        attributes: ["@required", "@length(max=120)"]
+        description: "Given name"
+
+      last_name:
+        type: string?
+        attributes: ["@length(max=120)"]
+        description: "Family name"
+
+      email:
+        type: string?
+        attributes: ["@length(max=255)"]
+        description: "Email"
+
+      mobile_phone:
+        type: string?
+        attributes: ["@length(max=40)"]
+        description: "Mobile"
+
+      phone:
+        type: string?
+        attributes: ["@length(max=40)"]
+        description: "Landline"
+
+      birth_place:
+        type: string?
+        attributes: ["@length(max=120)"]
+        description: "Birthplace"
+
+      birth_date:
+        type: date?
+        description: "Date of birth"
+
+      gender:
+        type: Gender?
+        description: "Gender"
+
+      marital_status:
+        type: MaritalStatus?
+        description: "Marital status"
+
+      blood_type:
+        type: BloodType?
+        description: "Blood type"
+
+      religion_id:
+        type: uuid?
+        attributes: ["@foreign_key(Religion.id)"]
+        description: "Religion # FK religion.religions.id (in-module)"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+        description: "Audit metadata"
+
+    indexes:
+      - type: index
+        fields: [company_id]
+      - type: index
+        fields: [user_id]
+      # Race-proof per-company employee_number uniqueness (ADR-001).
+      - type: unique
+        fields: [company_id, employee_number]
+        where: "deleted_at IS NULL"
+
+enums:
+  - name: Gender
+    description: "Gender"
+    variants:
+      - name: male
+        default: true
+      - name: female
+
+  - name: MaritalStatus
+    description: "Marital status"
+    variants:
+      - name: single
+        default: true
+      - name: married
+      - name: widow
+      - name: widower
+
+  - name: BloodType
+    description: "Blood type"
+    variants:
+      - name: a
+        default: true
+      - name: b
+      - name: ab
+      - name: o

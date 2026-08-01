@@ -1,0 +1,34 @@
+# =============================================================================
+# Domain: employee
+# Entity: Bank
+# Description: Bank reference master (GLOBAL — no company_id; universal
+#              reference data). Unique on name.
+# =============================================================================
+
+models:
+  - name: Bank
+    collection: banks
+    description: "Bank reference master (global)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      name:
+        type: string
+        attributes: ["@required", "@length(max=120)"]
+
+      code:
+        type: string?
+        attributes: ["@length(max=20)"]
+        description: "Bank code (e.g. SWIFT/BCA code)"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: unique
+        fields: [name]
+        where: "deleted_at IS NULL"

@@ -1,0 +1,43 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeContact
+# Description: Emergency / alternate contacts.
+# =============================================================================
+
+models:
+  - name: EmployeeContact
+    collection: employee_contacts
+    description: "Emergency / alternate contacts."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      name:
+        type: string
+        attributes: ["@required", "@length(max=120)"]
+
+      phone:
+        type: string?
+        attributes: ["@length(max=40)"]
+
+      email:
+        type: string?
+        attributes: ["@length(max=255)"]
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]

@@ -1,0 +1,44 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeBankAccount
+# Description: Disbursement accounts for net pay (read by payroll).
+# =============================================================================
+
+models:
+  - name: EmployeeBankAccount
+    collection: employee_bank_accounts
+    description: "Disbursement accounts for net pay (read by payroll)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      bank_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Bank.id)"]
+        description: "# FK banks.id (in-module)"
+
+      account_number:
+        type: string
+        attributes: ["@required", "@length(max=40)"]
+
+      account_name:
+        type: string?
+        attributes: ["@length(max=120)"]
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]

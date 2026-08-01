@@ -1,0 +1,49 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeCertification
+# Description: Certifications (track + expiry feeds compliance).
+# =============================================================================
+
+models:
+  - name: EmployeeCertification
+    collection: employee_certifications
+    description: "Certifications (track + expiry feeds compliance)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      name:
+        type: string
+        attributes: ["@required", "@length(max=180)"]
+
+      issuing_organization:
+        type: string?
+        attributes: ["@length(max=180)"]
+
+      start_date:
+        type: date?
+
+      end_date:
+        type: date?
+        description: "Expiry"
+
+      description:
+        type: string?
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]

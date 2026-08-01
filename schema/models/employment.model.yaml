@@ -1,0 +1,94 @@
+# =============================================================================
+# Domain: employee
+# Entity: Employment
+# Description: Employment lifecycle + organization placement (dept/level/position/manager).
+# =============================================================================
+
+models:
+  - name: Employment
+    collection: employments
+    description: "Employment lifecycle + organization placement (dept/level/position/manager)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Company.id"
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+        description: "# FK employees.id"
+
+      employment_status:
+        type: EmploymentStatus
+        attributes: ["@required", "@default(permanent)"]
+        description: "permanent/contract/probation/associate"
+
+      join_date:
+        type: date
+        attributes: ["@required"]
+        description: "Start date"
+
+      end_join_date:
+        type: date?
+        description: "Contract/probation end"
+
+      department_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Department.id"
+
+      level_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Level.id"
+
+      position_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK organization.Position.id"
+
+      direct_manager_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "# logical FK employee.Employee.id (self-ref)"
+
+      status:
+        type: EmploymentState
+        attributes: ["@required", "@default(active)"]
+        description: "active / inactive"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [company_id, status]
+      - type: index
+        fields: [employee_id]
+      - type: index
+        fields: [department_id]
+
+enums:
+  - name: EmploymentStatus
+    description: "Employment relationship"
+    variants:
+      - name: permanent
+        default: true
+      - name: contract
+      - name: probation
+      - name: associate
+        description: "(typo assosiate fixed)"
+
+  - name: EmploymentState
+    description: "Employment lifecycle state"
+    variants:
+      - name: active
+        default: true
+      - name: inactive

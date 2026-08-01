@@ -1,0 +1,60 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeBpjs
+# Description: BPJS Ketenagakerjaan + Kesehatan identity (read by payroll).
+# =============================================================================
+
+models:
+  - name: EmployeeBpjs
+    collection: employee_bpjs
+    description: "BPJS Ketenagakerjaan + Kesehatan identity (read by payroll)."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      bpjs_ketenagakerjaan_number:
+        type: string?
+        attributes: ["@length(max=30)"]
+
+      npp_bpjs_ketenagakerjaan:
+        type: string?
+        attributes: ["@length(max=30)"]
+        description: "Employer NPP"
+
+      bpjs_ketenagakerjaan_date:
+        type: date?
+        description: "Registration date"
+
+      bpjs_kesehatan_number:
+        type: string?
+        attributes: ["@length(max=30)"]
+
+      bpjs_kesehatan_family:
+        type: integer?
+        attributes: ["@default(0)"]
+        description: "Family members covered (0-10)"
+
+      bpjs_kesehatan_date:
+        type: date?
+
+      jaminan_pensiun_date:
+        type: date?
+        description: "Jaminan Pensiun start"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]

@@ -1,0 +1,77 @@
+# =============================================================================
+# Domain: employee
+# Entity: DataSubjectRequest
+# Description: UU PDP — an employee's data-subject right exercise (Art 5/16):
+#              access / rectify / erase / export / object / restrict.
+# =============================================================================
+
+models:
+  - name: DataSubjectRequest
+    collection: data_subject_requests
+    description: "An employee's UU PDP right exercise: access / rectify / erase / export / object."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      request_type:
+        type: DataSubjectRight
+        attributes: ["@required"]
+
+      status:
+        type: DsarStatus
+        attributes: ["@required", "@default(pending)"]
+
+      requested_at:
+        type: datetime
+        attributes: ["@required", "@default(now)"]
+
+      fulfilled_at:
+        type: datetime?
+
+      response:
+        type: json?
+        description: "Fulfillment payload / export reference"
+
+      note:
+        type: string?
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [company_id, status]
+      - type: index
+        fields: [employee_id]
+
+enums:
+  - name: DataSubjectRight
+    description: "UU PDP data-subject right (Art 5/16)."
+    variants:
+      - name: access
+        default: true
+      - name: rectify
+      - name: erase
+      - name: export
+      - name: object
+      - name: restrict
+
+  - name: DsarStatus
+    description: "Data-subject-access-request lifecycle."
+    variants:
+      - name: pending
+        default: true
+      - name: in_progress
+      - name: fulfilled
+      - name: rejected

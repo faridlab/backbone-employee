@@ -1,0 +1,46 @@
+# Codegen policy for employee.
+#
+# `user_owned` globs are hand-written files that live inside generator-owned trees but are
+# NOT schema-derived. `metaphor schema generate [--force]` skips them wholesale (never reads,
+# merges, or deletes them). Everything else in src/ is regenerated from schema/models.
+#
+# Re-exports/declarations that must sit alongside generated code live inside
+# `// <<< CUSTOM ... // END CUSTOM` markers (service/mod.rs, presentation/http/mod.rs, lib.rs)
+# and are preserved by the marker mechanism, not listed here.
+#
+# Add your hand-authored services, handlers, tests, and docs below as you write them.
+
+user_owned:
+  # Own the hand-written read-port SQL the query service delegates to. Declared here so the
+  # generator skips these wholesale — the custom `impl` blocks (family_counts / ptkp_override_for)
+  # survive regen instead of living behind a CUSTOM marker outside the generated struct.
+  - "src/infrastructure/persistence/employee_family_repository.rs"
+  - "src/infrastructure/persistence/employee_tax_repository.rs"
+  # The public query-service trait gains a hand-written port method (`employee_ptkp`); owning the
+  # file keeps that method across regen instead of living behind a CUSTOM marker outside the trait.
+  - "src/exports/services.rs"
+  # Hand-written `EmployeeQueryService` impl (user-owned file). Standard lookups delegate to the
+  # GenericCrudService aliases; the `employee_ptkp` read-port delegates to the repos' SQL.
+  - "src/application/service/employee_query_service.rs"
+  # ADR-005 consumers: lifecycle event handlers (idempotent inbox consumers).
+  - "src/application/service/recruitment_hired_handler.rs"
+  - "src/application/service/promotion_effective_handler.rs"
+  - "src/application/service/onboarding_completed_handler.rs"
+  - "src/application/service/offboarding_closed_handler.rs"
+  # UU PDP consent enforcement (coherence council #2).
+  - "src/application/service/consent_guard.rs"
+  - "src/application/service/pii_write_service.rs"
+  - "src/presentation/middleware/mod.rs"
+  - "src/presentation/middleware/consent_guard.rs"
+
+  # Hand-authored behavior (services + their HTTP surface). Examples:
+  # - "src/application/service/onboarding_service.rs"
+  # - "src/presentation/http/guarded_routes.rs"
+
+  # Behavior tests (the golden cases / oracle) + BDD features.
+  - "tests/features/**"
+  # - "tests/*_golden_cases.rs"
+  # - "tests/integrity_probes.rs"
+
+  # Hand-authored module documentation.
+  - "docs/**"

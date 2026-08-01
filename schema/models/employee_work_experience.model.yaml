@@ -1,0 +1,45 @@
+# =============================================================================
+# Domain: employee
+# Entity: EmployeeWorkExperience
+# Description: Pre-joining work history.
+# =============================================================================
+
+models:
+  - name: EmployeeWorkExperience
+    collection: employee_work_experiences
+    description: "Pre-joining work history."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      company_id:
+        type: uuid
+        attributes: ["@required", "@exclude_from_foreign_key_check"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+
+      company_name:
+        type: string
+        attributes: ["@required", "@length(max=180)"]
+
+      job_position:
+        type: string?
+        attributes: ["@length(max=120)"]
+
+      start_date:
+        type: date?
+
+      end_date:
+        type: date?
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+
+    indexes:
+      - type: index
+        fields: [employee_id]
