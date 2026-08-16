@@ -12,6 +12,13 @@
 module: employee
 version: 2
 schema: employee
+
+# ADR-0014 company fence (Wave 1 P0 sweep, 2026-08-16): every company-scoped entity
+# here is fenced strict — employees never cross companies (pillar-hrms H-1).
+# `banks` and `religions` are global reference masters with no company_id; they are
+# intentionally unfenced under any declaration.
+company_fence: strict
+
 description: "employee domain module"
 
 config:
