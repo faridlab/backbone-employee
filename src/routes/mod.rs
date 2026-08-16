@@ -175,16 +175,13 @@ pub fn get_routes_with_state(module: &crate::EmployeeModule) -> Router<AppState>
 // ============================================================
 
 // <<< CUSTOM HANDLERS START >>>
-// Add custom route handlers here
-// Example:
-//
-// use axum::extract::State;
-// use axum::response::IntoResponse;
-//
-// pub async fn custom_handler(
-//     State(state): State<AppState>,
-// ) -> impl IntoResponse {
-//     // Use state.user_service, etc.
-//     "Custom response"
-// }
+// The hr.employee.public port (Wave 1 P1, H-1): the read-only peer directory, mounted
+// beside the generated read surface. `create_readonly_employee_routes` stays generated —
+// this wrapper is the guarded-composition convenience that composes both.
+pub fn create_readonly_employee_routes_with_public(module: &crate::EmployeeModule) -> Router<()> {
+    create_readonly_employee_routes(module)
+        .merge(crate::presentation::http::create_employee_public_read_routes(
+            module.db_pool.clone(),
+        ))
+}
 // <<< CUSTOM HANDLERS END >>>

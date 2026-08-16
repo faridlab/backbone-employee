@@ -24,6 +24,7 @@ pub mod pii_access_log_handler;
 pub mod religion_handler;
 
 // <<< CUSTOM
+pub mod employee_public_handler;
 // END CUSTOM
 
 // Re-exports
@@ -45,4 +46,5 @@ pub use employment_history_handler::{create_employment_history_routes, create_em
 pub use pii_access_log_handler::{create_pii_access_log_routes, create_pii_access_log_read_routes, create_pii_access_log_write_routes};
 pub use religion_handler::{create_religion_routes, create_religion_read_routes, create_religion_write_routes};
 // <<< CUSTOM
+pub use employee_public_handler::create_employee_public_read_routes;
 // END CUSTOM

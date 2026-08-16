@@ -32,6 +32,11 @@ user_owned:
   - "src/application/service/pii_write_service.rs"
   - "src/presentation/middleware/mod.rs"
   - "src/presentation/middleware/consent_guard.rs"
+  # hr.employee.public port (Wave 1 P1, H-1): the peer directory read surface — SQL view
+  # (hand-authored migration) + repo + GET-only handler. Not schema-derived (a view, not an
+  # entity), so the whole read path is hand-written and user-owned.
+  - "src/infrastructure/persistence/employee_public_repository.rs"
+  - "src/presentation/http/employee_public_handler.rs"
 
   # Hand-authored behavior (services + their HTTP surface). Examples:
   # - "src/application/service/onboarding_service.rs"
@@ -39,6 +44,8 @@ user_owned:
 
   # Behavior tests (the golden cases / oracle) + BDD features.
   - "tests/features/**"
+  - "tests/common/**"
+  - "tests/employees_public_test.rs"
   # - "tests/*_golden_cases.rs"
   # - "tests/integrity_probes.rs"
 

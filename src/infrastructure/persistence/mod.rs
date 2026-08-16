@@ -24,6 +24,7 @@ mod religion_repository;
 
 // Custom persistence modules
 // <<< CUSTOM
+pub mod employee_public_repository;
 // END CUSTOM
 
 // Re-exports
@@ -54,4 +55,5 @@ pub use backbone_orm::repository::{
 
 // Re-export custom persistence types
 // <<< CUSTOM
+pub use employee_public_repository::{EmployeePublicRepository, EmployeePublicRow};
 // END CUSTOM
