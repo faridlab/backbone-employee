@@ -37,6 +37,10 @@ user_owned:
   # entity), so the whole read path is hand-written and user-owned.
   - "src/infrastructure/persistence/employee_public_repository.rs"
   - "src/presentation/http/employee_public_handler.rs"
+  # Guarded composition surface: `EmployeeModule::{readonly_routes, readonly_routes_with_public}`
+  # (impl block over the module's pub(crate) services — the composing app can't reach them).
+  # Mirrors `TimeoffModule::readonly_routes`.
+  - "src/presentation/http/guarded_routes.rs"
 
   # Hand-authored behavior (services + their HTTP surface). Examples:
   # - "src/application/service/onboarding_service.rs"

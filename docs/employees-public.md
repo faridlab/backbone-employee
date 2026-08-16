@@ -8,7 +8,9 @@
 Odoo ships `hr.employee.public` as a **SQL VIEW** (`_auto = False`) every internal user can
 browse (`base.group_user` read-only) — the Directory / de-facto org chart. This module's
 equivalent is the `employee.employees_public` view + the GET-only handler around it
-(`create_employee_public_read_routes`, composed via `create_readonly_employee_routes_with_public`).
+(`create_employee_public_read_routes`, composed via
+`EmployeeModule::readonly_routes_with_public()` — see
+[`src/presentation/http/guarded_routes.rs`](../src/presentation/http/guarded_routes.rs)).
 
 ## Redaction contract (stricter than Odoo, on purpose)
 

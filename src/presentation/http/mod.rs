@@ -25,6 +25,7 @@ pub mod religion_handler;
 
 // <<< CUSTOM
 pub mod employee_public_handler;
+pub mod guarded_routes;
 // END CUSTOM
 
 // Re-exports
