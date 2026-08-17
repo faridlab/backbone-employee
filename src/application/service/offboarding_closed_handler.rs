@@ -50,6 +50,7 @@ impl IntegrationEventHandler for OffboardingClosedHandler {
             .map_err(|e| handler_err(format!("bad envelope id '{}': {e}", envelope.id)))?;
 
         let p = &envelope.payload;
+        let company_id: Uuid = json_field(p, "company_id")?;
         let employee_id: Uuid = json_field(p, "employee_id")?;
         let last_working_day: Option<chrono::NaiveDate> = p
             .get("last_working_day")
@@ -57,6 +58,13 @@ impl IntegrationEventHandler for OffboardingClosedHandler {
             .and_then(|s| chrono::NaiveDate::parse_from_str(s, "%Y-%m-%d").ok());
 
         let mut tx = self.pool.begin().await.map_err(map_db)?;
+
+        // The relay's connection crosses tenants only on the outbox tables — every domain table
+        // sits behind the strict company fence. Bind the event's company (from the payload) before
+        // any statement so the UPDATE reaches the leaver's row instead of silently matching zero.
+        backbone_orm::company_scope::bind_company_on(&mut tx, company_id)
+            .await
+            .map_err(|e| handler_err(format!("company bind: {e}")))?;
 
         // Claim the event in-tx with the effect: the inbox row + the status UPDATE commit together.
         let first_time = inbox::once(&mut *tx, "employee", CONSUMER, event_id)
@@ -68,9 +76,10 @@ impl IntegrationEventHandler for OffboardingClosedHandler {
             // last_working_day (the offboarding producer carries it from the Offboarding row).
             sqlx::query(
                 r#"UPDATE employee.employments
-                      SET status = 'inactive', date_of_exit = $2
-                    WHERE employee_id = $1"#,
+                      SET status = 'inactive', date_of_exit = $3
+                    WHERE company_id = $1 AND employee_id = $2"#,
             )
+            .bind(company_id)
             .bind(employee_id)
             .bind(last_working_day)
             .execute(&mut *tx)

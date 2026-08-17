@@ -67,6 +67,13 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
 
         let mut tx = self.pool.begin().await.map_err(map_db)?;
 
+        // The relay's connection crosses tenants only on the outbox tables — every domain table
+        // sits behind the strict company fence. Bind the event's company (from the payload) before
+        // any statement so the insert passes the fence's WITH CHECK.
+        backbone_orm::company_scope::bind_company_on(&mut tx, company_id)
+            .await
+            .map_err(|e| handler_err(format!("company bind: {e}")))?;
+
         // Claim the event in-tx with the effect: the inbox row + the history insert commit together
         // (or roll back together). A failed apply re-claims on the next delivery; a successful apply
         // never re-applies — exactly-once effect over at-least-once delivery.
