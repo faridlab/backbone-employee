@@ -11,10 +11,9 @@
 //! `(consumer, event_id)` claim and the UPDATE run in ONE transaction and commit together, so a
 //! redelivery is a pure no-op (the inbox returns `false` and the UPDATE is skipped).
 //!
-//! `date_of_exit`: neither `employee.employments` nor `employee.employees` carries a `date_of_exit`
-//! column in the current schema (the entity builder surface is ahead of the migration), so this
-//! handler deactivates the placement only. Stamping the exit date is a TODO that lands when the
-//! column is added — the `last_working_day` is carried in the payload for that future write.
+//! `date_of_exit` is stamped from the payload's `last_working_day` (the offboarding producer
+//! carries it from the Offboarding row), so the placement records both the deactivation and
+//! when it took effect.
 //!
 //! This is a user-owned custom file — it is NEVER regenerated.
 
