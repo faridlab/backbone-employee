@@ -65,7 +65,7 @@ pub struct EmployeeEducation {
 impl EmployeeEducation {
     /// Create a builder for EmployeeEducation
     pub fn builder() -> EmployeeEducationBuilder {
-        EmployeeEducationBuilder::default()
+        <EmployeeEducationBuilder as Default>::default()
     }
 
     /// Create a new EmployeeEducation with required fields

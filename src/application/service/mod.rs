@@ -38,6 +38,9 @@ pub mod recruitment_hired_handler;
 pub mod promotion_effective_handler;
 pub mod onboarding_completed_handler;
 pub mod offboarding_closed_handler;
+// ADR-005 consumer: applies `lifecycle.probation_confirmed` by appending a confirmation history
+// row and CAS-flipping employment_status probation→permanent, idempotently (inbox dedup).
+pub mod probation_confirmed_handler;
 // UU PDP consent enforcement (coherence council #2): gates PII writes on valid DataConsent.
 pub mod consent_guard;
 // UU PDP consent-gated PII writes (Identity/Tax/Bpjs/Family/BankAccount/Contact).
@@ -66,4 +69,5 @@ pub use recruitment_hired_handler::RecruitmentHiredHandler;
 pub use promotion_effective_handler::PromotionEffectiveHandler;
 pub use onboarding_completed_handler::OnboardingCompletedHandler;
 pub use offboarding_closed_handler::OffboardingClosedHandler;
+pub use probation_confirmed_handler::ProbationConfirmedHandler;
 // END CUSTOM

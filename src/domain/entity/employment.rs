@@ -69,7 +69,7 @@ pub struct Employment {
 impl Employment {
     /// Create a builder for Employment
     pub fn builder() -> EmploymentBuilder {
-        EmploymentBuilder::default()
+        <EmploymentBuilder as Default>::default()
     }
 
     /// Create a new Employment with required fields
@@ -381,14 +381,14 @@ impl EmploymentBuilder {
             id: Uuid::new_v4(),
             company_id,
             employee_id,
-            employment_status: self.employment_status.unwrap_or(EmploymentStatus::default()),
+            employment_status: self.employment_status.unwrap_or_default(),
             join_date,
             end_join_date: self.end_join_date,
             department_id: self.department_id,
             level_id: self.level_id,
             position_id: self.position_id,
             direct_manager_id: self.direct_manager_id,
-            status: self.status.unwrap_or(EmploymentState::default()),
+            status: self.status.unwrap_or_default(),
             metadata: AuditMetadata::default(),
         })
     }

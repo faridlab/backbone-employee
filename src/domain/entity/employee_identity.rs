@@ -64,7 +64,7 @@ pub struct EmployeeIdentity {
 impl EmployeeIdentity {
     /// Create a builder for EmployeeIdentity
     pub fn builder() -> EmployeeIdentityBuilder {
-        EmployeeIdentityBuilder::default()
+        <EmployeeIdentityBuilder as Default>::default()
     }
 
     /// Create a new EmployeeIdentity with required fields

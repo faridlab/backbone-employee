@@ -58,7 +58,7 @@ pub struct Bank {
 impl Bank {
     /// Create a builder for Bank
     pub fn builder() -> BankBuilder {
-        BankBuilder::default()
+        <BankBuilder as Default>::default()
     }
 
     /// Create a new Bank with required fields

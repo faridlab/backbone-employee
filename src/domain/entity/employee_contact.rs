@@ -61,7 +61,7 @@ pub struct EmployeeContact {
 impl EmployeeContact {
     /// Create a builder for EmployeeContact
     pub fn builder() -> EmployeeContactBuilder {
-        EmployeeContactBuilder::default()
+        <EmployeeContactBuilder as Default>::default()
     }
 
     /// Create a new EmployeeContact with required fields

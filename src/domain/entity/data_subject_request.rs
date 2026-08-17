@@ -67,7 +67,7 @@ pub struct DataSubjectRequest {
 impl DataSubjectRequest {
     /// Create a builder for DataSubjectRequest
     pub fn builder() -> DataSubjectRequestBuilder {
-        DataSubjectRequestBuilder::default()
+        <DataSubjectRequestBuilder as Default>::default()
     }
 
     /// Create a new DataSubjectRequest with required fields
@@ -342,7 +342,7 @@ impl DataSubjectRequestBuilder {
             company_id,
             employee_id,
             request_type,
-            status: self.status.unwrap_or(DsarStatus::default()),
+            status: self.status.unwrap_or_default(),
             requested_at: self.requested_at.unwrap_or(Utc::now()),
             fulfilled_at: self.fulfilled_at,
             response: self.response,

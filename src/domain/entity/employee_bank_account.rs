@@ -61,7 +61,7 @@ pub struct EmployeeBankAccount {
 impl EmployeeBankAccount {
     /// Create a builder for EmployeeBankAccount
     pub fn builder() -> EmployeeBankAccountBuilder {
-        EmployeeBankAccountBuilder::default()
+        <EmployeeBankAccountBuilder as Default>::default()
     }
 
     /// Create a new EmployeeBankAccount with required fields

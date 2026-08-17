@@ -60,7 +60,7 @@ pub struct PiiAccessLog {
 impl PiiAccessLog {
     /// Create a builder for PiiAccessLog
     pub fn builder() -> PiiAccessLogBuilder {
-        PiiAccessLogBuilder::default()
+        <PiiAccessLogBuilder as Default>::default()
     }
 
     /// Create a new PiiAccessLog with required fields

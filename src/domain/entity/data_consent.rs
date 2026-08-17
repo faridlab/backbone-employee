@@ -68,7 +68,7 @@ pub struct DataConsent {
 impl DataConsent {
     /// Create a builder for DataConsent
     pub fn builder() -> DataConsentBuilder {
-        DataConsentBuilder::default()
+        <DataConsentBuilder as Default>::default()
     }
 
     /// Create a new DataConsent with required fields

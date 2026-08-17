@@ -65,7 +65,7 @@ pub struct EmployeeBpjs {
 impl EmployeeBpjs {
     /// Create a builder for EmployeeBpjs
     pub fn builder() -> EmployeeBpjsBuilder {
-        EmployeeBpjsBuilder::default()
+        <EmployeeBpjsBuilder as Default>::default()
     }
 
     /// Create a new EmployeeBpjs with required fields

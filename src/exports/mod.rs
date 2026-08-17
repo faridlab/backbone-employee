@@ -8,7 +8,7 @@
 //! ## Usage from other modules
 //!
 //! ```text
-//! use employee::exports::{BankDto, EmployeeQueryService};
+//! use employee::exports::{BankDto};
 //! ```
 
 mod types;
@@ -78,9 +78,6 @@ pub use events::*;
 /// - `ReligionDto` - Data transfer object for Religion
 /// - `ReligionSummary` - Summary view of Religion
 /// - `ReligionId` - Type-safe ID wrapper
-///
-/// ## Public Services
-/// - `EmployeeQueryService` - Read-only queries
 ///
 /// ## Public Events
 /// - `BankCreatedEvent` - Published when Bank is created

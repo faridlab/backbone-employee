@@ -57,7 +57,7 @@ pub struct Religion {
 impl Religion {
     /// Create a builder for Religion
     pub fn builder() -> ReligionBuilder {
-        ReligionBuilder::default()
+        <ReligionBuilder as Default>::default()
     }
 
     /// Create a new Religion with required fields

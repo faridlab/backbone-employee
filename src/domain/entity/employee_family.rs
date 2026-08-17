@@ -63,7 +63,7 @@ pub struct EmployeeFamily {
 impl EmployeeFamily {
     /// Create a builder for EmployeeFamily
     pub fn builder() -> EmployeeFamilyBuilder {
-        EmployeeFamilyBuilder::default()
+        <EmployeeFamilyBuilder as Default>::default()
     }
 
     /// Create a new EmployeeFamily with required fields

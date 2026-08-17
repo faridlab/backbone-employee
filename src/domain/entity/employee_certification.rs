@@ -63,7 +63,7 @@ pub struct EmployeeCertification {
 impl EmployeeCertification {
     /// Create a builder for EmployeeCertification
     pub fn builder() -> EmployeeCertificationBuilder {
-        EmployeeCertificationBuilder::default()
+        <EmployeeCertificationBuilder as Default>::default()
     }
 
     /// Create a new EmployeeCertification with required fields

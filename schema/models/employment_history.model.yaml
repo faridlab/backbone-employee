@@ -32,7 +32,7 @@ models:
       action:
         type: EmploymentAction
         attributes: ["@required"]
-        description: "hire/transfer/promotion/demotion/role_change/reinstatement"
+        description: "hire/transfer/promotion/demotion/role_change/reinstatement/confirmation"
 
       position_id_from:
         type: uuid?
@@ -91,3 +91,4 @@ enums:
       - name: demotion
       - name: role_change
       - name: reinstatement
+      - name: confirmation

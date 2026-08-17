@@ -15,6 +15,7 @@ pub enum EmploymentAction {
     Demotion,
     RoleChange,
     Reinstatement,
+    Confirmation,
 }
 
 impl std::fmt::Display for EmploymentAction {
@@ -26,6 +27,7 @@ impl std::fmt::Display for EmploymentAction {
             Self::Demotion => write!(f, "demotion"),
             Self::RoleChange => write!(f, "role_change"),
             Self::Reinstatement => write!(f, "reinstatement"),
+            Self::Confirmation => write!(f, "confirmation"),
         }
     }
 }
@@ -41,6 +43,7 @@ impl FromStr for EmploymentAction {
             "demotion" => Ok(Self::Demotion),
             "role_change" => Ok(Self::RoleChange),
             "reinstatement" => Ok(Self::Reinstatement),
+            "confirmation" => Ok(Self::Confirmation),
             _ => Err(format!("Unknown EmploymentAction variant: {}", s)),
         }
     }

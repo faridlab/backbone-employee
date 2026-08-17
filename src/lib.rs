@@ -155,10 +155,59 @@ impl EmployeeModule {
     /// mount exposes unguarded writes. Compose a guarded router (read + validated
     /// writes) for production, or call `all_crud_routes()` to opt into the full
     /// unguarded surface explicitly.
-    #[deprecated(note = "mounts unvalidated generic CRUD on every entity; compose a guarded router for production, or call all_crud_routes() for the intentional full/unguarded surface")]
+    #[deprecated(note = "mounts unvalidated generic CRUD; prefer readonly_routes() + validated writes, or all_crud_routes() for the full/unguarded surface")]
     pub fn routes(&self) -> Router {
         self.all_crud_routes()
     }
+
+    /// Read-only routes for every entity (GET endpoints only) — the safe base.
+    ///
+    /// Generic mutation can't reach here, so this surface cannot bypass a
+    /// validated write service's invariants. Use this as the production base and
+    /// merge validated write routes (or a write service's HTTP layer) onto it.
+    pub fn readonly_routes(&self) -> Router {
+        use presentation::http::{
+            create_bank_read_routes,
+            create_data_consent_read_routes,
+            create_data_subject_request_read_routes,
+            create_employee_read_routes,
+            create_employee_bank_account_read_routes,
+            create_employee_bpjs_read_routes,
+            create_employee_certification_read_routes,
+            create_employee_contact_read_routes,
+            create_employee_education_read_routes,
+            create_employee_family_read_routes,
+            create_employee_identity_read_routes,
+            create_employee_tax_read_routes,
+            create_employee_work_experience_read_routes,
+            create_employment_read_routes,
+            create_employment_history_read_routes,
+            create_pii_access_log_read_routes,
+            create_religion_read_routes,
+        };
+
+        Router::new()
+            .merge(create_bank_read_routes(self.bank_service.clone()))
+            .merge(create_data_consent_read_routes(self.data_consent_service.clone()))
+            .merge(create_data_subject_request_read_routes(self.data_subject_request_service.clone()))
+            .merge(create_employee_read_routes(self.employee_service.clone()))
+            .merge(create_employee_bank_account_read_routes(self.employee_bank_account_service.clone()))
+            .merge(create_employee_bpjs_read_routes(self.employee_bpjs_service.clone()))
+            .merge(create_employee_certification_read_routes(self.employee_certification_service.clone()))
+            .merge(create_employee_contact_read_routes(self.employee_contact_service.clone()))
+            .merge(create_employee_education_read_routes(self.employee_education_service.clone()))
+            .merge(create_employee_family_read_routes(self.employee_family_service.clone()))
+            .merge(create_employee_identity_read_routes(self.employee_identity_service.clone()))
+            .merge(create_employee_tax_read_routes(self.employee_tax_service.clone()))
+            .merge(create_employee_work_experience_read_routes(self.employee_work_experience_service.clone()))
+            .merge(create_employment_read_routes(self.employment_service.clone()))
+            .merge(create_employment_history_read_routes(self.employment_history_service.clone()))
+            .merge(create_pii_access_log_read_routes(self.pii_access_log_service.clone()))
+            .merge(create_religion_read_routes(self.religion_service.clone()))
+    }
+
+    // <<< CUSTOM METHODS
+    // END CUSTOM
 }
 
 /// Builder for EmployeeModule
@@ -257,9 +306,6 @@ impl EmployeeModuleBuilder {
         let religion_service = Arc::new(ReligionService::with_repository(religion_repository.clone()));
 
         // <<< CUSTOM
-        // Retain the family + tax repos and the pool on the module so the `EmployeeQueryService`
-        // impl can delegate `employee_ptkp` (custom SQL on the repos) and supply the pool the repo
-        // methods take. These repos are the same Arcs the services above were built from.
         // END CUSTOM
 
         Ok(EmployeeModule {

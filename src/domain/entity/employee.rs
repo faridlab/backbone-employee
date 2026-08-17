@@ -74,7 +74,7 @@ pub struct Employee {
 impl Employee {
     /// Create a builder for Employee
     pub fn builder() -> EmployeeBuilder {
-        EmployeeBuilder::default()
+        <EmployeeBuilder as Default>::default()
     }
 
     /// Create a new Employee with required fields

@@ -70,7 +70,7 @@ pub struct EmploymentHistory {
 impl EmploymentHistory {
     /// Create a builder for EmploymentHistory
     pub fn builder() -> EmploymentHistoryBuilder {
-        EmploymentHistoryBuilder::default()
+        <EmploymentHistoryBuilder as Default>::default()
     }
 
     /// Create a new EmploymentHistory with required fields

@@ -62,7 +62,7 @@ pub struct EmployeeWorkExperience {
 impl EmployeeWorkExperience {
     /// Create a builder for EmployeeWorkExperience
     pub fn builder() -> EmployeeWorkExperienceBuilder {
-        EmployeeWorkExperienceBuilder::default()
+        <EmployeeWorkExperienceBuilder as Default>::default()
     }
 
     /// Create a new EmployeeWorkExperience with required fields

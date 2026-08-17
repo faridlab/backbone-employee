@@ -70,7 +70,7 @@ pub struct EmployeeTax {
 impl EmployeeTax {
     /// Create a builder for EmployeeTax
     pub fn builder() -> EmployeeTaxBuilder {
-        EmployeeTaxBuilder::default()
+        <EmployeeTaxBuilder as Default>::default()
     }
 
     /// Create a new EmployeeTax with required fields
@@ -364,8 +364,8 @@ impl EmployeeTaxBuilder {
             employee_id,
             npwp_number: self.npwp_number,
             ptkp_override: self.ptkp_override,
-            tax_method: self.tax_method.unwrap_or(TaxMethod::default()),
-            tax_salary: self.tax_salary.unwrap_or(TaxSalary::default()),
+            tax_method: self.tax_method.unwrap_or_default(),
+            tax_salary: self.tax_salary.unwrap_or_default(),
             taxable_date: self.taxable_date,
             beginning_netto: self.beginning_netto,
             pph21_paid: self.pph21_paid,
