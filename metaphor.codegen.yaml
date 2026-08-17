@@ -27,6 +27,7 @@ user_owned:
   - "src/application/service/promotion_effective_handler.rs"
   - "src/application/service/onboarding_completed_handler.rs"
   - "src/application/service/offboarding_closed_handler.rs"
+  - "src/application/service/probation_confirmed_handler.rs"
   # UU PDP consent enforcement (coherence council #2).
   - "src/application/service/consent_guard.rs"
   - "src/application/service/pii_write_service.rs"

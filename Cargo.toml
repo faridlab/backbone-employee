@@ -1,6 +1,6 @@
 [package]
 name = "backbone-employee"
-version = "0.1.4"
+version = "0.1.8"
 edition = "2021"
 description = "the people master — identity, employment lifecycle, payroll identity, dependents"
 
