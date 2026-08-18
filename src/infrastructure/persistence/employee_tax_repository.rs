@@ -14,7 +14,7 @@ use sqlx::{FromRow, PgPool};
 
 use backbone_orm::company_scope;
 
-use crate::domain::entity::{EmployeeTax, PtkpTier};
+use crate::domain::entity::{EmployeeTax, PtkpTier, TerCategory};
 
 /// Table name for EmployeeTax entities
 pub const TABLE_NAME: &str = "employee.employee_taxes";
@@ -95,6 +95,10 @@ impl EmployeeTaxRepository {
                         FROM employee.employee_taxes t
                         WHERE t.employee_id = e.id AND (t.metadata->>'deleted_at') IS NULL
                         LIMIT 1) AS npwp_number,
+                     (SELECT t.ter_category
+                        FROM employee.employee_taxes t
+                        WHERE t.employee_id = e.id AND (t.metadata->>'deleted_at') IS NULL
+                        LIMIT 1) AS ter_category,
                      (SELECT b.bpjs_kesehatan_family
                         FROM employee.employee_bpjs b
                         WHERE b.employee_id = e.id AND (b.metadata->>'deleted_at') IS NULL
@@ -120,6 +124,7 @@ impl EmployeeTaxRepository {
 #[derive(Debug, Default, Clone, FromRow)]
 pub struct StatutoryRow {
     pub npwp_number: Option<String>,
+    pub ter_category: Option<TerCategory>,
     pub bpjs_kesehatan_family: Option<i32>,
     pub join_date: Option<NaiveDate>,
 }

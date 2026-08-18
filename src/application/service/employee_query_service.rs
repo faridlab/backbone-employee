@@ -543,6 +543,7 @@ impl EmployeeQueryService for EmployeeModule {
             has_npwp,
             bpjs_kesehatan_family: row.bpjs_kesehatan_family,
             join_date: row.join_date,
+            ter_category: row.ter_category,
         })
     }
 }
@@ -716,6 +717,7 @@ fn employee_tax_to_dto(e: EmployeeTax) -> Result<EmployeeTaxDto> {
         npwp_number: e.npwp_number,
         ptkp_override: e.ptkp_override,
         tax_method: e.tax_method,
+        ter_category: e.ter_category,
         tax_salary: e.tax_salary,
         taxable_date: e.taxable_date,
         beginning_netto: e.beginning_netto,

@@ -7976,6 +7976,9 @@ components:
           type: string
         tax_method:
           type: string
+        ter_category:
+          nullable: true
+          type: string
         tax_salary:
           type: string
         taxable_date:
@@ -8027,6 +8030,9 @@ components:
           type: string
         tax_method:
           type: string
+        ter_category:
+          nullable: true
+          type: string
         tax_salary:
           type: string
         taxable_date:
@@ -8065,6 +8071,9 @@ components:
           type: string
         tax_method:
           type: string
+        ter_category:
+          nullable: true
+          type: string
         tax_salary:
           type: string
         taxable_date:
@@ -8096,6 +8105,9 @@ components:
           nullable: true
           type: string
         tax_method:
+          type: string
+        ter_category:
+          nullable: true
           type: string
         tax_salary:
           type: string

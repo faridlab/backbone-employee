@@ -22,6 +22,7 @@ use crate::domain::entity::AuditMetadata;
 use crate::domain::entity::PtkpTier;
 use crate::domain::entity::TaxMethod;
 use crate::domain::entity::TaxSalary;
+use crate::domain::entity::TerCategory;
 
 // =============================================================================
 // Create DTO
@@ -48,6 +49,8 @@ pub struct CreateEmployeeTaxDto {
     pub ptkp_override: Option<PtkpTier>,
     #[serde(alias = "tax_method")]
     pub tax_method: TaxMethod,
+    #[serde(default, skip_serializing_if = "Option::is_none", alias = "ter_category")]
+    pub ter_category: Option<TerCategory>,
     #[serde(alias = "tax_salary")]
     pub tax_salary: TaxSalary,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "taxable_date")]
@@ -83,6 +86,8 @@ pub struct UpdateEmployeeTaxDto {
     pub ptkp_override: Option<PtkpTier>,
     #[serde(alias = "tax_method")]
     pub tax_method: TaxMethod,
+    #[serde(default, skip_serializing_if = "Option::is_none", alias = "ter_category")]
+    pub ter_category: Option<TerCategory>,
     #[serde(alias = "tax_salary")]
     pub tax_salary: TaxSalary,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "taxable_date")]
@@ -118,6 +123,8 @@ pub struct PatchEmployeeTaxDto {
     pub ptkp_override: Option<PtkpTier>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "tax_method")]
     pub tax_method: Option<TaxMethod>,
+    #[serde(skip_serializing_if = "Option::is_none", alias = "ter_category")]
+    pub ter_category: Option<TerCategory>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "tax_salary")]
     pub tax_salary: Option<TaxSalary>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "taxable_date")]
@@ -131,7 +138,7 @@ pub struct PatchEmployeeTaxDto {
 impl PatchEmployeeTaxDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.tax_salary.is_some() || self.taxable_date.is_some() || self.beginning_netto.is_some() || self.pph21_paid.is_some()
+        self.company_id.is_some() || self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.ter_category.is_some() || self.tax_salary.is_some() || self.taxable_date.is_some() || self.beginning_netto.is_some() || self.pph21_paid.is_some()
     }
 }
 
@@ -156,6 +163,7 @@ pub struct EmployeeTaxResponseDto {
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
     pub tax_method: TaxMethod,
+    pub ter_category: Option<TerCategory>,
     pub tax_salary: TaxSalary,
     pub taxable_date: Option<NaiveDate>,
     pub beginning_netto: Option<Decimal>,
@@ -236,6 +244,7 @@ impl From<EmployeeTax> for EmployeeTaxResponseDto {
             npwp_number: entity.npwp_number,
             ptkp_override: entity.ptkp_override,
             tax_method: entity.tax_method,
+            ter_category: entity.ter_category,
             tax_salary: entity.tax_salary,
             taxable_date: entity.taxable_date,
             beginning_netto: entity.beginning_netto,
@@ -267,6 +276,7 @@ impl From<CreateEmployeeTaxDto> for EmployeeTax {
             npwp_number: dto.npwp_number,
             ptkp_override: dto.ptkp_override,
             tax_method: dto.tax_method,
+            ter_category: dto.ter_category,
             tax_salary: dto.tax_salary,
             taxable_date: dto.taxable_date,
             beginning_netto: dto.beginning_netto,
@@ -285,6 +295,7 @@ impl From<&EmployeeTax> for EmployeeTaxResponseDto {
             npwp_number: entity.npwp_number.clone(),
             ptkp_override: entity.ptkp_override.clone(),
             tax_method: entity.tax_method.clone(),
+            ter_category: entity.ter_category.clone(),
             tax_salary: entity.tax_salary.clone(),
             taxable_date: entity.taxable_date.clone(),
             beginning_netto: entity.beginning_netto.clone(),
@@ -307,6 +318,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeTaxDto> for EmployeeTax {
         self.npwp_number = dto.npwp_number;
         self.ptkp_override = dto.ptkp_override;
         self.tax_method = dto.tax_method;
+        self.ter_category = dto.ter_category;
         self.tax_salary = dto.tax_salary;
         self.taxable_date = dto.taxable_date;
         self.beginning_netto = dto.beginning_netto;

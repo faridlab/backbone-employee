@@ -9,7 +9,7 @@ use async_trait::async_trait;
 use anyhow::Result;
 use uuid::Uuid;
 
-use crate::domain::entity::{EmployeeTax, PtkpTier, TaxMethod, TaxSalary};
+use crate::domain::entity::{EmployeeTax, PtkpTier, TaxMethod, TaxSalary, TerCategory};
 
 /// Pagination parameters for list queries
 #[derive(Debug, Clone, Default)]
@@ -49,13 +49,14 @@ pub struct EmployeeTaxFilter {
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
     pub tax_method: Option<TaxMethod>,
+    pub ter_category: Option<TerCategory>,
     pub tax_salary: Option<TaxSalary>,
 }
 
 impl EmployeeTaxFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.tax_salary.is_some()
+        self.company_id.is_some() || self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.ter_category.is_some() || self.tax_salary.is_some()
     }
 }
 

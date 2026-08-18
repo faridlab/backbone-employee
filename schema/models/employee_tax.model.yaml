@@ -41,6 +41,10 @@ models:
         attributes: ["@required", "@default(gross)"]
         description: "gross / gross_up / netto"
 
+      ter_category:
+        type: TerCategory?
+        description: "Average-effective-rate category the payroll dispatcher uses (null = progressive-bracket path)"
+
       tax_salary:
         type: TaxSalary
         attributes: ["@required", "@default(taxable)"]
@@ -97,6 +101,17 @@ enums:
         default: true
       - name: gross_up
       - name: netto
+
+  - name: TerCategory
+    description: "PPh-21 average-effective-rate (TER) category. Independent of tax_method: tax_method says how the employer grosses up, TER category says which rate table the monthly withholding dispatches to. The field itself is nullable — null means the progressive-bracket path — so this default only seeds DTO examples, never a stored row."
+    variants:
+      - name: ter_a
+        default: true
+        description: "TER A — no dependents"
+      - name: ter_b
+        description: "TER B — married / one dependent"
+      - name: ter_c
+        description: "TER C — two or more dependents"
 
   - name: TaxSalary
     description: "Tax salary classification"

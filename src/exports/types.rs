@@ -726,6 +726,7 @@ pub struct EmployeeTaxDto {
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
     pub tax_method: TaxMethod,
+    pub ter_category: Option<TerCategory>,
     pub tax_salary: TaxSalary,
     pub taxable_date: Option<NaiveDate>,
     pub beginning_netto: Option<Decimal>,
@@ -1077,5 +1078,9 @@ pub struct StatutoryInputs {
     pub bpjs_kesehatan_family: Option<i32>,
     /// Employment join date — the anchor for THR tenure pro-rating. `None` when no employment row.
     pub join_date: Option<NaiveDate>,
+    /// PPh-21 average-effective-rate (TER) category — which TER rate table the monthly withholding
+    /// dispatches to. `None` = the progressive-bracket path. Independent of `TaxMethod` on the tax
+    /// row (that field describes gross-up treatment, not the withholding rate table).
+    pub ter_category: Option<TerCategory>,
 }
 // <<< CUSTOM TYPES END >>>

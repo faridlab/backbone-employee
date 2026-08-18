@@ -6,6 +6,7 @@ use rust_decimal::Decimal;
 
 use super::PtkpTier;
 use super::TaxMethod;
+use super::TerCategory;
 use super::TaxSalary;
 use super::AuditMetadata;
 
@@ -58,6 +59,7 @@ pub struct EmployeeTax {
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
     pub tax_method: TaxMethod,
+    pub ter_category: Option<TerCategory>,
     pub tax_salary: TaxSalary,
     pub taxable_date: Option<NaiveDate>,
     pub beginning_netto: Option<Decimal>,
@@ -82,6 +84,7 @@ impl EmployeeTax {
             npwp_number: None,
             ptkp_override: None,
             tax_method,
+            ter_category: None,
             tax_salary,
             taxable_date: None,
             beginning_netto: None,
@@ -157,6 +160,12 @@ impl EmployeeTax {
         self
     }
 
+    /// Set the ter_category field (chainable)
+    pub fn with_ter_category(mut self, value: TerCategory) -> Self {
+        self.ter_category = Some(value);
+        self
+    }
+
     /// Set the taxable_date field (chainable)
     pub fn with_taxable_date(mut self, value: NaiveDate) -> Self {
         self.taxable_date = Some(value);
@@ -197,6 +206,9 @@ impl EmployeeTax {
                 }
                 "tax_method" => {
                     if let Ok(v) = serde_json::from_value(value) { self.tax_method = v; }
+                }
+                "ter_category" => {
+                    if let Ok(v) = serde_json::from_value(value) { self.ter_category = v; }
                 }
                 "tax_salary" => {
                     if let Ok(v) = serde_json::from_value(value) { self.tax_salary = v; }
@@ -268,6 +280,7 @@ impl backbone_orm::EntityRepoMeta for EmployeeTax {
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("ptkp_override".to_string(), "ptkp_tier".to_string());
         m.insert("tax_method".to_string(), "tax_method".to_string());
+        m.insert("ter_category".to_string(), "ter_category".to_string());
         m.insert("tax_salary".to_string(), "tax_salary".to_string());
         m
     }
@@ -290,6 +303,7 @@ pub struct EmployeeTaxBuilder {
     npwp_number: Option<String>,
     ptkp_override: Option<PtkpTier>,
     tax_method: Option<TaxMethod>,
+    ter_category: Option<TerCategory>,
     tax_salary: Option<TaxSalary>,
     taxable_date: Option<NaiveDate>,
     beginning_netto: Option<Decimal>,
@@ -324,6 +338,12 @@ impl EmployeeTaxBuilder {
     /// Set the tax_method field (default: `TaxMethod::default()`)
     pub fn tax_method(mut self, value: TaxMethod) -> Self {
         self.tax_method = Some(value);
+        self
+    }
+
+    /// Set the ter_category field (optional)
+    pub fn ter_category(mut self, value: TerCategory) -> Self {
+        self.ter_category = Some(value);
         self
     }
 
@@ -365,6 +385,7 @@ impl EmployeeTaxBuilder {
             npwp_number: self.npwp_number,
             ptkp_override: self.ptkp_override,
             tax_method: self.tax_method.unwrap_or_default(),
+            ter_category: self.ter_category,
             tax_salary: self.tax_salary.unwrap_or_default(),
             taxable_date: self.taxable_date,
             beginning_netto: self.beginning_netto,
