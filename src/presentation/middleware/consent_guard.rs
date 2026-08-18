@@ -85,10 +85,10 @@ pub async fn consent_guard_middleware(
                         category, emp_id
                     )))
                     .unwrap_or_else(|_| {
-                        Response::builder()
-                            .status(StatusCode::FORBIDDEN)
-                            .body(Body::empty())
-                            .unwrap()
+                        // Static fallback: an empty body with the status set directly cannot fail.
+                        let mut fallback = Response::new(Body::empty());
+                        *fallback.status_mut() = StatusCode::FORBIDDEN;
+                        fallback
                     })
             }
         }
