@@ -222,9 +222,20 @@ async fn epp5_view_respects_company_fence() {
     seed_employee(&owner, company_a, format!("EPP5A-{company_a}").as_str(), true).await;
     seed_employee(&owner, company_b, format!("EPP5B-{company_b}").as_str(), true).await;
 
-    let app = sqlx::PgPool::connect(
-        "postgresql://employees_test_app:employees_test_app@127.0.0.1:5432/backbone_employee_test",
-    )
+    // The app-role leg must hit the SAME server as the owner leg (DATABASE_URL), not a
+    // hardcoded port — derive host:port from the env DSN and swap credentials + database.
+    let dsn = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgresql://serpa:serpa_dev_password@127.0.0.1:5432/backbone_employee_test".into()
+    });
+    let hostport = dsn
+        .split('@')
+        .nth(1)
+        .and_then(|rest| rest.split('/').next())
+        .unwrap_or("127.0.0.1:5432")
+        .to_string();
+    let app = sqlx::PgPool::connect(&format!(
+        "postgresql://employees_test_app:employees_test_app@{hostport}/backbone_employee_test"
+    ))
     .await
     .expect("connect as app role");
 
