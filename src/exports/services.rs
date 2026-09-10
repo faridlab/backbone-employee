@@ -180,13 +180,13 @@ pub trait EmployeeQueryService: Send + Sync {
     /// Indonesia PTKP (Penghasilan Tidak Kena Pajak) tier is DERIVED from `employee_families`:
     /// married = EXISTS a `spouse`; dependents = COUNT of `child` rows capped at 3; tier ∈
     /// TK0..TK3 (unmarried) / K0..K3 (married). If `EmployeeTax.ptkp_override` is set, it wins
-    /// outright. Company-scoped via RLS (ADR-0008) — the caller sets the scope.
+    /// outright. Fenced by the ambient org scope (ADR-0029) — the caller sets it.
     async fn employee_ptkp(&self, employee_id: Uuid) -> Result<PtkpTier>;
 
     /// The Indonesia statutory inputs for one employee: PTKP tier, NPWP presence, BPJS Kesehatan
     /// family count, and employment join date — the bundle payroll needs to compute PPh 21 / BPJS /
-    /// THR. One JOIN across `employee_taxes` / `employee_bpjs` / `employments` (company-scoped via
-    /// RLS, ADR-0008); the PTKP tier reuses [`Self::employee_ptkp`] (override wins, else derived).
+    /// THR. One JOIN across `employee_taxes` / `employee_bpjs` / `employments` (fenced by the
+    /// ambient org scope, ADR-0029); the PTKP tier reuses [`Self::employee_ptkp`] (override wins, else derived).
     ///
     /// `base_salary` is NOT included — the employee module stores no queryable monthly salary; the
     /// caller supplies the gross from its own salary structure. See [`StatutoryInputs`].

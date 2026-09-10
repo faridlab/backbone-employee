@@ -186,4 +186,3 @@ pub fn create_protected_employee_family_routes<A: AuthMiddleware + Send + Sync +
             }
         }))
 }
-

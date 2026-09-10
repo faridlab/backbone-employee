@@ -1,7 +1,7 @@
 //! Shared helpers for the employee module's behavior tests (user-owned).
 //!
 //! Live-pool pattern per the payroll test convention: DATABASE_URL wins, else the module's
-//! local test DB. Fresh random company ids per test so parallel runs never collide.
+//! local test DB. Fresh random ids per test so parallel runs never collide.
 
 #![allow(dead_code)]
 

@@ -44,7 +44,6 @@ pub struct EmployeeEducationPaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeEducationFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub institution_name: Option<String>,
     pub major: Option<String>,
@@ -54,7 +53,7 @@ pub struct EmployeeEducationFilter {
 impl EmployeeEducationFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.institution_name.is_some() || self.major.is_some() || self.field.is_some()
+        self.employee_id.is_some() || self.institution_name.is_some() || self.major.is_some() || self.field.is_some()
     }
 }
 

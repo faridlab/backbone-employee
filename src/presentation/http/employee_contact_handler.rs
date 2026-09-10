@@ -185,4 +185,3 @@ pub fn create_protected_employee_contact_routes<A: AuthMiddleware + Send + Sync 
             }
         }))
 }
-

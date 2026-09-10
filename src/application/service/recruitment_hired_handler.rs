@@ -14,8 +14,9 @@
 //! `inbox::once`, which returns `false`, so the inserts are skipped and the handler returns `Ok(())`.
 //!
 //! As defense-in-depth, `employee_number` is derived deterministically from the `offer_id`
-//! (`REC-{offer_id}`), so even a bug that bypassed the inbox would collide on the per-company unique
-//! index `idx_employees_company_id_employee_number` rather than silently duplicate.
+//! (`REC-{offer_id}`), so even a bug that bypassed the inbox would collide on the employee_number
+//! unique (per-unit — the composing service's tenancy decorator posture) rather than silently
+//! duplicate.
 //!
 //! This is a user-owned custom file — it is NEVER regenerated.
 
@@ -53,7 +54,6 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             .map_err(|e| handler_err(format!("bad envelope id '{}': {e}", envelope.id)))?;
 
         let p = &envelope.payload;
-        let company_id: Uuid = json_field(p, "company_id")?;
         let first_name: String = json_field(p, "first_name")?;
         let last_name: Option<String> = serde_json::from_value(p["last_name"].clone()).ok();
         let email: Option<String> = serde_json::from_value(p["email"].clone()).ok();
@@ -65,7 +65,8 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
         let join_date: NaiveDate = json_field(p, "join_date")?;
 
         // Deterministic employee_number from the offer → a replay yields the SAME number, so even
-        // without the inbox the per-company unique index would fence a duplicate (defense in depth).
+        // without the inbox the employee_number unique (per-unit — the composing service's tenancy
+        // decorator posture) would fence a duplicate (defense in depth).
         // 40-char budget: "REC-" + 36-char uuid = 40.
         let employee_number = match offer_id {
             Some(id) => format!("REC-{id}"),
@@ -78,12 +79,16 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
 
         let mut tx = self.pool.begin().await.map_err(map_db)?;
 
-        // The relay's connection crosses tenants only on the outbox tables — every domain table
-        // sits behind the strict company fence. Bind the event's company (from the payload) before
-        // any statement so the INSERTs pass the fence's WITH CHECK.
-        backbone_orm::company_scope::bind_company_on(&mut tx, company_id)
-            .await
-            .map_err(|e| handler_err(format!("company bind: {e}")))?;
+        // Tenancy posture (ADR-0029): the module owns no scoping column — the composing
+        // service's tenancy decorator does. Relay the AMBIENT org scope onto this transaction
+        // when the caller bound one, so the decorator's org-unit fill (and any policy it
+        // installed) sees this transaction's inserts. An undecorated deployment has no ambient
+        // scope and skips this entirely.
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
+                .await
+                .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
+        }
 
         // Claim the event in-tx with the effect: the inbox row + the employee/employment inserts commit
         // together (or roll back together). A failed apply thus re-claims on the next delivery and a
@@ -105,11 +110,10 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             // (in the real schema) stamps created_at/updated_at.
             let employee_id: Uuid = sqlx::query(
                 r#"INSERT INTO employee.employees
-                       (company_id, employee_number, first_name, last_name, email)
-                   VALUES ($1, $2, $3, $4, $5)
+                       (employee_number, first_name, last_name, email)
+                   VALUES ($1, $2, $3, $4)
                    RETURNING id"#,
             )
-            .bind(company_id)
             .bind(&employee_number)
             .bind(&first_name)
             .bind(last_name.as_deref())
@@ -123,10 +127,9 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             // assignment. Cast text → employment_status enum on the Postgres side.
             sqlx::query(
                 r#"INSERT INTO employee.employments
-                       (company_id, employee_id, employment_status, join_date, position_id, department_id)
-                   VALUES ($1, $2, $3::employment_status, $4, $5, $6)"#,
+                       (employee_id, employment_status, join_date, position_id, department_id)
+                   VALUES ($1, $2::employment_status, $3, $4, $5)"#,
             )
-            .bind(company_id)
             .bind(employee_id)
             .bind(employment_status)
             .bind(join_date)

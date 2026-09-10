@@ -44,7 +44,6 @@ pub struct DataConsentPaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct DataConsentFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub data_category: Option<DataCategory>,
     pub lawful_basis: Option<LawfulBasis>,
@@ -55,7 +54,7 @@ pub struct DataConsentFilter {
 impl DataConsentFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.data_category.is_some() || self.lawful_basis.is_some() || self.consent_method.is_some() || self.privacy_notice_version.is_some()
+        self.employee_id.is_some() || self.data_category.is_some() || self.lawful_basis.is_some() || self.consent_method.is_some() || self.privacy_notice_version.is_some()
     }
 }
 

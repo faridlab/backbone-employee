@@ -185,4 +185,3 @@ pub fn create_protected_employee_bank_account_routes<A: AuthMiddleware + Send + 
             }
         }))
 }
-

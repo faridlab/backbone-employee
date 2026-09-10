@@ -35,9 +35,6 @@ use crate::domain::entity::MaritalStatus;
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmployeeDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(alias = "employee_number")]
     pub employee_number: String,
@@ -81,9 +78,6 @@ pub struct CreateEmployeeDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmployeeDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(alias = "employee_number")]
     pub employee_number: String,
@@ -127,9 +121,6 @@ pub struct UpdateEmployeeDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmployeeDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_number")]
     pub employee_number: Option<String>,
@@ -163,7 +154,7 @@ pub struct PatchEmployeeDto {
 impl PatchEmployeeDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.birth_date.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
+        self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.birth_date.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
     }
 }
 
@@ -181,8 +172,6 @@ impl PatchEmployeeDto {
 pub struct EmployeeResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     pub employee_number: String,
     pub user_id: Option<Uuid>,
@@ -255,9 +244,9 @@ impl EmployeeListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmployeeSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_number: String,
     pub user_id: Option<Uuid>,
+    pub first_name: String,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -269,7 +258,6 @@ impl From<Employee> for EmployeeResponseDto {
     fn from(entity: Employee) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_number: entity.employee_number,
             user_id: entity.user_id,
             first_name: entity.first_name,
@@ -293,9 +281,9 @@ impl From<Employee> for EmployeeSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_number: entity.employee_number,
             user_id: entity.user_id,
+            first_name: entity.first_name,
             created_at,
         }
     }
@@ -305,7 +293,6 @@ impl From<CreateEmployeeDto> for Employee {
     fn from(dto: CreateEmployeeDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_number: dto.employee_number,
             user_id: dto.user_id,
             first_name: dto.first_name,
@@ -328,7 +315,6 @@ impl From<&Employee> for EmployeeResponseDto {
     fn from(entity: &Employee) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_number: entity.employee_number.clone(),
             user_id: entity.user_id.clone(),
             first_name: entity.first_name.clone(),
@@ -355,7 +341,6 @@ impl backbone_core::FromCreateDto<CreateEmployeeDto> for Employee {
 
 impl backbone_core::ApplyUpdateDto<UpdateEmployeeDto> for Employee {
     fn apply_update(mut self, dto: UpdateEmployeeDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_number = dto.employee_number;
         self.user_id = dto.user_id;
         self.first_name = dto.first_name;
@@ -381,4 +366,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeDto> for Employee {
 // Add custom DTOs specific to Employee here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

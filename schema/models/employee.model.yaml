@@ -7,6 +7,9 @@
 # =============================================================================
 
 models:
+  # Tenancy: none, by design (ADR-0029). Tenant-agnostic and reusable; a composing
+  # service's tenancy decorator owns org scoping for this table, including the
+  # per-unit unique on (employee_number) that keeps one number per unit.
   - name: Employee
     collection: employees
     description: "The canonical people master. Owns employee_id (logical FK every module references)."
@@ -17,15 +20,10 @@ models:
         attributes: ["@id", "@default(uuid)"]
         description: "Unique employee id"
 
-      company_id:
-        type: uuid
-        attributes: ["@required", "@exclude_from_foreign_key_check"]
-        description: "Org owner # logical FK organization.Company.id"
-
       employee_number:
         type: string
         attributes: ["@required", "@length(max=40)"]
-        description: "Human code (unique per company)"
+        description: "Human code (unique per unit — the composing decorator's posture)"
 
       user_id:
         type: uuid?
@@ -90,13 +88,7 @@ models:
 
     indexes:
       - type: index
-        fields: [company_id]
-      - type: index
         fields: [user_id]
-      # Race-proof per-company employee_number uniqueness (ADR-001).
-      - type: unique
-        fields: [company_id, employee_number]
-        where: "deleted_at IS NULL"
 
 enums:
   - name: Gender

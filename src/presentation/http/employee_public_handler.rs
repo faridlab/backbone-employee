@@ -7,8 +7,8 @@
 //!
 //! Route shape follows the generated read-route family (`/employees/...`) so composing
 //! apps mount it beside `create_readonly_employee_routes` under the same guard layers.
-//! Company scoping is NOT done here — the composition root's guard layers bind the
-//! request-scoped company (RLS fence), and the view is `security_invoker = on`.
+//! Tenancy scoping is NOT done here — the composition root's guard layers bind the ambient
+//! org scope (the decorator's fence, ADR-0029), and the view is `security_invoker = on`.
 
 use axum::{
     extract::{Path, State},
@@ -33,7 +33,7 @@ impl EmployeePublicState {
     }
 }
 
-/// `GET /employees/public` — page through the company directory.
+/// `GET /employees/public` — page through the peer directory.
 ///
 /// Query params: `limit` (default 50, max 200) and `offset` (default 0).
 #[derive(serde::Deserialize)]

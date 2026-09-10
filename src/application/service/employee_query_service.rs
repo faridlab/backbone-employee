@@ -11,9 +11,9 @@
 //!   (override wins) else to [`EmployeeFamilyRepository::family_counts`] (derive from dependents),
 //!   both of which hold the hand-written SQL (4-layer rule: services orchestrate, repos hold SQL).
 //!
-//! Company scoping (ADR-0008) is NOT done here — the caller (HTTP composition root via
-//! `with_request_scope`, or a job via `with_company_scope`) sets it; `find_by_id` and the repos'
-//! `company_scope::fetch_*_scoped` both honour the task-local RLS fence.
+//! Tenancy (ADR-0029) is NOT done here — the module owns no scoping column. A composing
+//! service's tenancy decorator installs org scoping, and the ambient org scope (bound by the
+//! caller) fences the repos' `org_scope::fetch_*_scoped` reads.
 
 use anyhow::Result;
 use async_trait::async_trait;
@@ -566,7 +566,6 @@ fn bank_to_dto(e: Bank) -> Result<BankDto> {
 fn data_consent_to_dto(e: DataConsent) -> Result<DataConsentDto> {
     Ok(DataConsentDto {
         id: DataConsentId(e.id),
-        company_id: e.company_id,
         employee_id: e.employee_id,
         data_category: e.data_category,
         lawful_basis: e.lawful_basis,
@@ -581,9 +580,7 @@ fn data_consent_to_dto(e: DataConsent) -> Result<DataConsentDto> {
 
 fn data_subject_request_to_dto(e: DataSubjectRequest) -> Result<DataSubjectRequestDto> {
     Ok(DataSubjectRequestDto {
-        id: DataSubjectRequestId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: DataSubjectRequestId(e.id),        employee_id: e.employee_id,
         request_type: e.request_type,
         status: e.status,
         requested_at: e.requested_at,
@@ -596,9 +593,7 @@ fn data_subject_request_to_dto(e: DataSubjectRequest) -> Result<DataSubjectReque
 
 fn employee_to_dto(e: Employee) -> Result<EmployeeDto> {
     Ok(EmployeeDto {
-        id: EmployeeId(e.id),
-        company_id: e.company_id,
-        employee_number: e.employee_number,
+        id: EmployeeId(e.id),        employee_number: e.employee_number,
         user_id: e.user_id,
         first_name: e.first_name,
         last_name: e.last_name,
@@ -617,9 +612,7 @@ fn employee_to_dto(e: Employee) -> Result<EmployeeDto> {
 
 fn employee_bank_account_to_dto(e: EmployeeBankAccount) -> Result<EmployeeBankAccountDto> {
     Ok(EmployeeBankAccountDto {
-        id: EmployeeBankAccountId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeBankAccountId(e.id),        employee_id: e.employee_id,
         bank_id: e.bank_id,
         account_number: e.account_number,
         account_name: e.account_name,
@@ -629,9 +622,7 @@ fn employee_bank_account_to_dto(e: EmployeeBankAccount) -> Result<EmployeeBankAc
 
 fn employee_bpjs_to_dto(e: EmployeeBpjs) -> Result<EmployeeBpjsDto> {
     Ok(EmployeeBpjsDto {
-        id: EmployeeBpjsId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeBpjsId(e.id),        employee_id: e.employee_id,
         bpjs_ketenagakerjaan_number: e.bpjs_ketenagakerjaan_number,
         npp_bpjs_ketenagakerjaan: e.npp_bpjs_ketenagakerjaan,
         bpjs_ketenagakerjaan_date: e.bpjs_ketenagakerjaan_date,
@@ -645,9 +636,7 @@ fn employee_bpjs_to_dto(e: EmployeeBpjs) -> Result<EmployeeBpjsDto> {
 
 fn employee_certification_to_dto(e: EmployeeCertification) -> Result<EmployeeCertificationDto> {
     Ok(EmployeeCertificationDto {
-        id: EmployeeCertificationId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeCertificationId(e.id),        employee_id: e.employee_id,
         name: e.name,
         issuing_organization: e.issuing_organization,
         start_date: e.start_date,
@@ -659,9 +648,7 @@ fn employee_certification_to_dto(e: EmployeeCertification) -> Result<EmployeeCer
 
 fn employee_contact_to_dto(e: EmployeeContact) -> Result<EmployeeContactDto> {
     Ok(EmployeeContactDto {
-        id: EmployeeContactId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeContactId(e.id),        employee_id: e.employee_id,
         name: e.name,
         phone: e.phone,
         email: e.email,
@@ -671,9 +658,7 @@ fn employee_contact_to_dto(e: EmployeeContact) -> Result<EmployeeContactDto> {
 
 fn employee_education_to_dto(e: EmployeeEducation) -> Result<EmployeeEducationDto> {
     Ok(EmployeeEducationDto {
-        id: EmployeeEducationId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeEducationId(e.id),        employee_id: e.employee_id,
         institution_name: e.institution_name,
         major: e.major,
         field: e.field,
@@ -686,9 +671,7 @@ fn employee_education_to_dto(e: EmployeeEducation) -> Result<EmployeeEducationDt
 
 fn employee_family_to_dto(e: EmployeeFamily) -> Result<EmployeeFamilyDto> {
     Ok(EmployeeFamilyDto {
-        id: EmployeeFamilyId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeFamilyId(e.id),        employee_id: e.employee_id,
         name: e.name,
         relationship: e.relationship,
         birth_date: e.birth_date,
@@ -698,9 +681,7 @@ fn employee_family_to_dto(e: EmployeeFamily) -> Result<EmployeeFamilyDto> {
 
 fn employee_identity_to_dto(e: EmployeeIdentity) -> Result<EmployeeIdentityDto> {
     Ok(EmployeeIdentityDto {
-        id: EmployeeIdentityId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeIdentityId(e.id),        employee_id: e.employee_id,
         identity_type: e.identity_type,
         identity_number: e.identity_number,
         identity_expiry_date: e.identity_expiry_date,
@@ -711,9 +692,7 @@ fn employee_identity_to_dto(e: EmployeeIdentity) -> Result<EmployeeIdentityDto> 
 
 fn employee_tax_to_dto(e: EmployeeTax) -> Result<EmployeeTaxDto> {
     Ok(EmployeeTaxDto {
-        id: EmployeeTaxId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeTaxId(e.id),        employee_id: e.employee_id,
         npwp_number: e.npwp_number,
         ptkp_override: e.ptkp_override,
         tax_method: e.tax_method,
@@ -728,9 +707,7 @@ fn employee_tax_to_dto(e: EmployeeTax) -> Result<EmployeeTaxDto> {
 
 fn employee_work_experience_to_dto(e: EmployeeWorkExperience) -> Result<EmployeeWorkExperienceDto> {
     Ok(EmployeeWorkExperienceDto {
-        id: EmployeeWorkExperienceId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmployeeWorkExperienceId(e.id),        employee_id: e.employee_id,
         company_name: e.company_name,
         job_position: e.job_position,
         start_date: e.start_date,
@@ -741,9 +718,7 @@ fn employee_work_experience_to_dto(e: EmployeeWorkExperience) -> Result<Employee
 
 fn employment_to_dto(e: Employment) -> Result<EmploymentDto> {
     Ok(EmploymentDto {
-        id: EmploymentId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmploymentId(e.id),        employee_id: e.employee_id,
         employment_status: e.employment_status,
         join_date: e.join_date,
         end_join_date: e.end_join_date,
@@ -758,9 +733,7 @@ fn employment_to_dto(e: Employment) -> Result<EmploymentDto> {
 
 fn employment_history_to_dto(e: EmploymentHistory) -> Result<EmploymentHistoryDto> {
     Ok(EmploymentHistoryDto {
-        id: EmploymentHistoryId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: EmploymentHistoryId(e.id),        employee_id: e.employee_id,
         effective_date: e.effective_date,
         action: e.action,
         position_id_from: e.position_id_from,
@@ -777,9 +750,7 @@ fn employment_history_to_dto(e: EmploymentHistory) -> Result<EmploymentHistoryDt
 
 fn pii_access_log_to_dto(e: PiiAccessLog) -> Result<PiiAccessLogDto> {
     Ok(PiiAccessLogDto {
-        id: PiiAccessLogId(e.id),
-        company_id: e.company_id,
-        employee_id: e.employee_id,
+        id: PiiAccessLogId(e.id),        employee_id: e.employee_id,
         accessed_by: e.accessed_by,
         data_category: e.data_category,
         purpose: e.purpose,

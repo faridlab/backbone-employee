@@ -33,9 +33,6 @@ use crate::domain::entity::AuditMetadata;
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmployeeBankAccountDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
@@ -61,9 +58,6 @@ pub struct CreateEmployeeBankAccountDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmployeeBankAccountDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -91,9 +85,6 @@ pub struct UpdateEmployeeBankAccountDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmployeeBankAccountDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
@@ -109,7 +100,7 @@ pub struct PatchEmployeeBankAccountDto {
 impl PatchEmployeeBankAccountDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.bank_id.is_some() || self.account_number.is_some() || self.account_name.is_some()
+        self.employee_id.is_some() || self.bank_id.is_some() || self.account_number.is_some() || self.account_name.is_some()
     }
 }
 
@@ -127,8 +118,6 @@ impl PatchEmployeeBankAccountDto {
 pub struct EmployeeBankAccountResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
@@ -193,9 +182,9 @@ impl EmployeeBankAccountListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmployeeBankAccountSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub bank_id: Uuid,
+    pub account_number: String,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -207,7 +196,6 @@ impl From<EmployeeBankAccount> for EmployeeBankAccountResponseDto {
     fn from(entity: EmployeeBankAccount) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             bank_id: entity.bank_id,
             account_number: entity.account_number,
@@ -222,9 +210,9 @@ impl From<EmployeeBankAccount> for EmployeeBankAccountSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             bank_id: entity.bank_id,
+            account_number: entity.account_number,
             created_at,
         }
     }
@@ -234,7 +222,6 @@ impl From<CreateEmployeeBankAccountDto> for EmployeeBankAccount {
     fn from(dto: CreateEmployeeBankAccountDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             bank_id: dto.bank_id,
             account_number: dto.account_number,
@@ -248,7 +235,6 @@ impl From<&EmployeeBankAccount> for EmployeeBankAccountResponseDto {
     fn from(entity: &EmployeeBankAccount) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             bank_id: entity.bank_id.clone(),
             account_number: entity.account_number.clone(),
@@ -266,7 +252,6 @@ impl backbone_core::FromCreateDto<CreateEmployeeBankAccountDto> for EmployeeBank
 
 impl backbone_core::ApplyUpdateDto<UpdateEmployeeBankAccountDto> for EmployeeBankAccount {
     fn apply_update(mut self, dto: UpdateEmployeeBankAccountDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.bank_id = dto.bank_id;
         self.account_number = dto.account_number;
@@ -283,4 +268,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeBankAccountDto> for EmployeeBan
 // Add custom DTOs specific to EmployeeBankAccount here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

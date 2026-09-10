@@ -44,7 +44,6 @@ pub struct EmployeeWorkExperiencePaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeWorkExperienceFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub company_name: Option<String>,
     pub job_position: Option<String>,
@@ -53,7 +52,7 @@ pub struct EmployeeWorkExperienceFilter {
 impl EmployeeWorkExperienceFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.company_name.is_some() || self.job_position.is_some()
+        self.employee_id.is_some() || self.company_name.is_some() || self.job_position.is_some()
     }
 }
 

@@ -50,17 +50,20 @@ impl IntegrationEventHandler for OnboardingCompletedHandler {
             .map_err(|e| handler_err(format!("bad envelope id '{}': {e}", envelope.id)))?;
 
         let p = &envelope.payload;
-        let company_id: Uuid = json_field(p, "company_id")?;
         let employee_id: Uuid = json_field(p, "employee_id")?;
 
         let mut tx = self.pool.begin().await.map_err(map_db)?;
 
-        // The relay's connection crosses tenants only on the outbox tables — every domain table
-        // sits behind the strict company fence. Bind the event's company (from the payload) before
-        // any statement so the UPDATE reaches the joiner's row instead of silently matching zero.
-        backbone_orm::company_scope::bind_company_on(&mut tx, company_id)
-            .await
-            .map_err(|e| handler_err(format!("company bind: {e}")))?;
+        // Tenancy posture (ADR-0029): the module owns no scoping column — the composing
+        // service's tenancy decorator does. Relay the AMBIENT org scope onto this transaction
+        // when the caller bound one, so the decorator's org-unit fill (and any policy it
+        // installed) sees this transaction's statements. An undecorated deployment has no
+        // ambient scope and skips this entirely.
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
+                .await
+                .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
+        }
 
         // Claim the event in-tx with the effect: the inbox row + the status UPDATE commit together
         // (or roll back together).
@@ -76,9 +79,8 @@ impl IntegrationEventHandler for OnboardingCompletedHandler {
             sqlx::query(
                 r#"UPDATE employee.employments
                       SET status = 'active'
-                    WHERE company_id = $1 AND employee_id = $2"#,
+                    WHERE employee_id = $1"#,
             )
-            .bind(company_id)
             .bind(employee_id)
             .execute(&mut *tx)
             .await

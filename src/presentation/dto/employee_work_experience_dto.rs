@@ -33,9 +33,6 @@ use crate::domain::entity::AuditMetadata;
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmployeeWorkExperienceDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
@@ -62,9 +59,6 @@ pub struct CreateEmployeeWorkExperienceDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmployeeWorkExperienceDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -93,9 +87,6 @@ pub struct UpdateEmployeeWorkExperienceDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmployeeWorkExperienceDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
@@ -112,7 +103,7 @@ pub struct PatchEmployeeWorkExperienceDto {
 impl PatchEmployeeWorkExperienceDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.company_name.is_some() || self.job_position.is_some() || self.start_date.is_some() || self.end_date.is_some()
+        self.employee_id.is_some() || self.company_name.is_some() || self.job_position.is_some() || self.start_date.is_some() || self.end_date.is_some()
     }
 }
 
@@ -130,8 +121,6 @@ impl PatchEmployeeWorkExperienceDto {
 pub struct EmployeeWorkExperienceResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
@@ -196,9 +185,9 @@ impl EmployeeWorkExperienceListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmployeeWorkExperienceSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub company_name: String,
+    pub job_position: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -210,7 +199,6 @@ impl From<EmployeeWorkExperience> for EmployeeWorkExperienceResponseDto {
     fn from(entity: EmployeeWorkExperience) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             company_name: entity.company_name,
             job_position: entity.job_position,
@@ -226,9 +214,9 @@ impl From<EmployeeWorkExperience> for EmployeeWorkExperienceSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             company_name: entity.company_name,
+            job_position: entity.job_position,
             created_at,
         }
     }
@@ -238,7 +226,6 @@ impl From<CreateEmployeeWorkExperienceDto> for EmployeeWorkExperience {
     fn from(dto: CreateEmployeeWorkExperienceDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             company_name: dto.company_name,
             job_position: dto.job_position,
@@ -253,7 +240,6 @@ impl From<&EmployeeWorkExperience> for EmployeeWorkExperienceResponseDto {
     fn from(entity: &EmployeeWorkExperience) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             company_name: entity.company_name.clone(),
             job_position: entity.job_position.clone(),
@@ -272,7 +258,6 @@ impl backbone_core::FromCreateDto<CreateEmployeeWorkExperienceDto> for EmployeeW
 
 impl backbone_core::ApplyUpdateDto<UpdateEmployeeWorkExperienceDto> for EmployeeWorkExperience {
     fn apply_update(mut self, dto: UpdateEmployeeWorkExperienceDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.company_name = dto.company_name;
         self.job_position = dto.job_position;
@@ -290,4 +275,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeWorkExperienceDto> for Employee
 // Add custom DTOs specific to EmployeeWorkExperience here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

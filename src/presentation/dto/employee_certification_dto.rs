@@ -33,9 +33,6 @@ use crate::domain::entity::AuditMetadata;
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmployeeCertificationDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
@@ -63,9 +60,6 @@ pub struct CreateEmployeeCertificationDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmployeeCertificationDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -95,9 +89,6 @@ pub struct UpdateEmployeeCertificationDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmployeeCertificationDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
@@ -116,7 +107,7 @@ pub struct PatchEmployeeCertificationDto {
 impl PatchEmployeeCertificationDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.name.is_some() || self.issuing_organization.is_some() || self.start_date.is_some() || self.end_date.is_some() || self.description.is_some()
+        self.employee_id.is_some() || self.name.is_some() || self.issuing_organization.is_some() || self.start_date.is_some() || self.end_date.is_some() || self.description.is_some()
     }
 }
 
@@ -134,8 +125,6 @@ impl PatchEmployeeCertificationDto {
 pub struct EmployeeCertificationResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
@@ -201,9 +190,9 @@ impl EmployeeCertificationListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmployeeCertificationSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub name: String,
+    pub issuing_organization: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -215,7 +204,6 @@ impl From<EmployeeCertification> for EmployeeCertificationResponseDto {
     fn from(entity: EmployeeCertification) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             name: entity.name,
             issuing_organization: entity.issuing_organization,
@@ -232,9 +220,9 @@ impl From<EmployeeCertification> for EmployeeCertificationSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             name: entity.name,
+            issuing_organization: entity.issuing_organization,
             created_at,
         }
     }
@@ -244,7 +232,6 @@ impl From<CreateEmployeeCertificationDto> for EmployeeCertification {
     fn from(dto: CreateEmployeeCertificationDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             name: dto.name,
             issuing_organization: dto.issuing_organization,
@@ -260,7 +247,6 @@ impl From<&EmployeeCertification> for EmployeeCertificationResponseDto {
     fn from(entity: &EmployeeCertification) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             name: entity.name.clone(),
             issuing_organization: entity.issuing_organization.clone(),
@@ -280,7 +266,6 @@ impl backbone_core::FromCreateDto<CreateEmployeeCertificationDto> for EmployeeCe
 
 impl backbone_core::ApplyUpdateDto<UpdateEmployeeCertificationDto> for EmployeeCertification {
     fn apply_update(mut self, dto: UpdateEmployeeCertificationDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.name = dto.name;
         self.issuing_organization = dto.issuing_organization;
@@ -299,4 +284,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeCertificationDto> for EmployeeC
 // Add custom DTOs specific to EmployeeCertification here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

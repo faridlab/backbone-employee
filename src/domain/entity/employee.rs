@@ -52,7 +52,6 @@ impl std::ops::Deref for EmployeeId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Employee {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_number: String,
     pub user_id: Option<Uuid>,
     pub first_name: String,
@@ -78,10 +77,9 @@ impl Employee {
     }
 
     /// Create a new Employee with required fields
-    pub fn new(company_id: Uuid, employee_number: String, first_name: String) -> Self {
+    pub fn new(employee_number: String, first_name: String) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_number,
             user_id: None,
             first_name,
@@ -228,9 +226,6 @@ impl Employee {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_number" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_number = v; }
                 }
@@ -324,7 +319,6 @@ impl backbone_orm::EntityRepoMeta for Employee {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("user_id".to_string(), "uuid".to_string());
         m.insert("religion_id".to_string(), "uuid".to_string());
         m.insert("gender".to_string(), "gender".to_string());
@@ -335,9 +329,6 @@ impl backbone_orm::EntityRepoMeta for Employee {
     fn search_fields() -> &'static [&'static str] {
         &["employee_number", "first_name"]
     }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
-    }
 }
 
 /// Builder for Employee entity
@@ -346,7 +337,6 @@ impl backbone_orm::EntityRepoMeta for Employee {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeBuilder {
-    company_id: Option<Uuid>,
     employee_number: Option<String>,
     user_id: Option<Uuid>,
     first_name: Option<String>,
@@ -363,12 +353,6 @@ pub struct EmployeeBuilder {
 }
 
 impl EmployeeBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_number field (required)
     pub fn employee_number(mut self, value: String) -> Self {
         self.employee_number = Some(value);
@@ -451,13 +435,11 @@ impl EmployeeBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<Employee, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_number = self.employee_number.ok_or_else(|| "employee_number is required".to_string())?;
         let first_name = self.first_name.ok_or_else(|| "first_name is required".to_string())?;
 
         Ok(Employee {
             id: Uuid::new_v4(),
-            company_id,
             employee_number,
             user_id: self.user_id,
             first_name,

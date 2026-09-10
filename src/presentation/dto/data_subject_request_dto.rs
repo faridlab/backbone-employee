@@ -35,9 +35,6 @@ use crate::domain::entity::DsarStatus;
 #[serde(rename_all = "camelCase")]
 pub struct CreateDataSubjectRequestDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[serde(alias = "request_type")]
@@ -67,9 +64,6 @@ pub struct CreateDataSubjectRequestDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateDataSubjectRequestDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -101,9 +95,6 @@ pub struct UpdateDataSubjectRequestDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchDataSubjectRequestDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "request_type")]
@@ -124,7 +115,7 @@ pub struct PatchDataSubjectRequestDto {
 impl PatchDataSubjectRequestDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.request_type.is_some() || self.status.is_some() || self.requested_at.is_some() || self.fulfilled_at.is_some() || self.response.is_some() || self.note.is_some()
+        self.employee_id.is_some() || self.request_type.is_some() || self.status.is_some() || self.requested_at.is_some() || self.fulfilled_at.is_some() || self.response.is_some() || self.note.is_some()
     }
 }
 
@@ -142,8 +133,6 @@ impl PatchDataSubjectRequestDto {
 pub struct DataSubjectRequestResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     pub request_type: DataSubjectRight,
@@ -210,9 +199,9 @@ impl DataSubjectRequestListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct DataSubjectRequestSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub request_type: DataSubjectRight,
+    pub status: DsarStatus,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -224,7 +213,6 @@ impl From<DataSubjectRequest> for DataSubjectRequestResponseDto {
     fn from(entity: DataSubjectRequest) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             request_type: entity.request_type,
             status: entity.status,
@@ -242,9 +230,9 @@ impl From<DataSubjectRequest> for DataSubjectRequestSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             request_type: entity.request_type,
+            status: entity.status,
             created_at,
         }
     }
@@ -254,7 +242,6 @@ impl From<CreateDataSubjectRequestDto> for DataSubjectRequest {
     fn from(dto: CreateDataSubjectRequestDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             request_type: dto.request_type,
             status: dto.status,
@@ -271,7 +258,6 @@ impl From<&DataSubjectRequest> for DataSubjectRequestResponseDto {
     fn from(entity: &DataSubjectRequest) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             request_type: entity.request_type.clone(),
             status: entity.status.clone(),
@@ -292,7 +278,6 @@ impl backbone_core::FromCreateDto<CreateDataSubjectRequestDto> for DataSubjectRe
 
 impl backbone_core::ApplyUpdateDto<UpdateDataSubjectRequestDto> for DataSubjectRequest {
     fn apply_update(mut self, dto: UpdateDataSubjectRequestDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.request_type = dto.request_type;
         self.status = dto.status;
@@ -312,4 +297,3 @@ impl backbone_core::ApplyUpdateDto<UpdateDataSubjectRequestDto> for DataSubjectR
 // Add custom DTOs specific to DataSubjectRequest here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

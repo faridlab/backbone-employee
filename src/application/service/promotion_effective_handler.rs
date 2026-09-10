@@ -54,7 +54,6 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
             .map_err(|e| handler_err(format!("bad envelope id '{}': {e}", envelope.id)))?;
 
         let p = &envelope.payload;
-        let company_id: Uuid = json_field(p, "company_id")?;
         let employee_id: Uuid = json_field(p, "employee_id")?;
         let promotion_id: Option<Uuid> = serde_json::from_value(p["promotion_id"].clone()).ok();
         let position_id_from: Option<Uuid> = serde_json::from_value(p["position_id_from"].clone()).ok();
@@ -67,12 +66,16 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
 
         let mut tx = self.pool.begin().await.map_err(map_db)?;
 
-        // The relay's connection crosses tenants only on the outbox tables — every domain table
-        // sits behind the strict company fence. Bind the event's company (from the payload) before
-        // any statement so the insert passes the fence's WITH CHECK.
-        backbone_orm::company_scope::bind_company_on(&mut tx, company_id)
-            .await
-            .map_err(|e| handler_err(format!("company bind: {e}")))?;
+        // Tenancy posture (ADR-0029): the module owns no scoping column — the composing
+        // service's tenancy decorator does. Relay the AMBIENT org scope onto this transaction
+        // when the caller bound one, so the decorator's org-unit fill (and any policy it
+        // installed) sees this transaction's inserts. An undecorated deployment has no ambient
+        // scope and skips this entirely.
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
+                .await
+                .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
+        }
 
         // Claim the event in-tx with the effect: the inbox row + the history insert commit together
         // (or roll back together). A failed apply re-claims on the next delivery; a successful apply
@@ -97,12 +100,11 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
 
             sqlx::query(
                 r#"INSERT INTO employee.employment_histories
-                       (company_id, employee_id, effective_date, action, position_id_from,
+                       (employee_id, effective_date, action, position_id_from,
                         position_id_to, level_id_from, level_id_to, department_id_from,
                         department_id_to, reference_id)
-                   VALUES ($1, $2, $3, $4::employment_action, $5, $6, $7, $8, $9, $10, $11)"#,
+                   VALUES ($1, $2, $3::employment_action, $4, $5, $6, $7, $8, $9, $10)"#,
             )
-            .bind(company_id)
             .bind(employee_id)
             .bind(effective_date)
             .bind(action)

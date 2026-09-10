@@ -44,7 +44,6 @@ pub struct EmployeeTaxPaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeTaxFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
@@ -56,7 +55,7 @@ pub struct EmployeeTaxFilter {
 impl EmployeeTaxFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.ter_category.is_some() || self.tax_salary.is_some()
+        self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.ter_category.is_some() || self.tax_salary.is_some()
     }
 }
 

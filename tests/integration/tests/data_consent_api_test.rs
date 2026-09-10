@@ -24,7 +24,6 @@ impl TestDataGenerator for DataConsentTestData {
         let now = Utc::now().to_rfc3339();
         json!({
             "id": Uuid::new_v4().to_string(),
-            "company_id": Uuid::new_v4().to_string(),
             "employee_id": Uuid::new_v4().to_string(),
             "data_category": "identity",
             "lawful_basis": "consent",
@@ -41,7 +40,6 @@ impl TestDataGenerator for DataConsentTestData {
         let now = Utc::now().to_rfc3339();
         json!({
             "id": id,
-            "company_id": Uuid::new_v4().to_string(),
             "employee_id": Uuid::new_v4().to_string(),
             "data_category": "identity",
             "lawful_basis": "consent",

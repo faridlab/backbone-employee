@@ -48,7 +48,6 @@ impl std::ops::Deref for EmployeeContactId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct EmployeeContact {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub name: String,
     pub phone: Option<String>,
@@ -65,10 +64,9 @@ impl EmployeeContact {
     }
 
     /// Create a new EmployeeContact with required fields
-    pub fn new(company_id: Uuid, employee_id: Uuid, name: String) -> Self {
+    pub fn new(employee_id: Uuid, name: String) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             name,
             phone: None,
@@ -152,9 +150,6 @@ impl EmployeeContact {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_id = v; }
                 }
@@ -221,15 +216,11 @@ impl backbone_orm::EntityRepoMeta for EmployeeContact {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {
         &["name"]
-    }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
     }
 }
 
@@ -239,7 +230,6 @@ impl backbone_orm::EntityRepoMeta for EmployeeContact {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeContactBuilder {
-    company_id: Option<Uuid>,
     employee_id: Option<Uuid>,
     name: Option<String>,
     phone: Option<String>,
@@ -247,12 +237,6 @@ pub struct EmployeeContactBuilder {
 }
 
 impl EmployeeContactBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_id field (required)
     pub fn employee_id(mut self, value: Uuid) -> Self {
         self.employee_id = Some(value);
@@ -281,13 +265,11 @@ impl EmployeeContactBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<EmployeeContact, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_id = self.employee_id.ok_or_else(|| "employee_id is required".to_string())?;
         let name = self.name.ok_or_else(|| "name is required".to_string())?;
 
         Ok(EmployeeContact {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             name,
             phone: self.phone,

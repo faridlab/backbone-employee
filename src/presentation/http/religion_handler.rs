@@ -185,4 +185,3 @@ pub fn create_protected_religion_routes<A: AuthMiddleware + Send + Sync + 'stati
             }
         }))
 }
-

@@ -54,7 +54,6 @@ impl std::ops::Deref for EmployeeTaxId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct EmployeeTax {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
@@ -76,10 +75,9 @@ impl EmployeeTax {
     }
 
     /// Create a new EmployeeTax with required fields
-    pub fn new(company_id: Uuid, employee_id: Uuid, tax_method: TaxMethod, tax_salary: TaxSalary) -> Self {
+    pub fn new(employee_id: Uuid, tax_method: TaxMethod, tax_salary: TaxSalary) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             npwp_number: None,
             ptkp_override: None,
@@ -192,9 +190,6 @@ impl EmployeeTax {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_id = v; }
                 }
@@ -276,7 +271,6 @@ impl backbone_orm::EntityRepoMeta for EmployeeTax {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("ptkp_override".to_string(), "ptkp_tier".to_string());
         m.insert("tax_method".to_string(), "tax_method".to_string());
@@ -287,9 +281,6 @@ impl backbone_orm::EntityRepoMeta for EmployeeTax {
     fn search_fields() -> &'static [&'static str] {
         &[]
     }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
-    }
 }
 
 /// Builder for EmployeeTax entity
@@ -298,7 +289,6 @@ impl backbone_orm::EntityRepoMeta for EmployeeTax {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeTaxBuilder {
-    company_id: Option<Uuid>,
     employee_id: Option<Uuid>,
     npwp_number: Option<String>,
     ptkp_override: Option<PtkpTier>,
@@ -311,12 +301,6 @@ pub struct EmployeeTaxBuilder {
 }
 
 impl EmployeeTaxBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_id field (required)
     pub fn employee_id(mut self, value: Uuid) -> Self {
         self.employee_id = Some(value);
@@ -375,12 +359,10 @@ impl EmployeeTaxBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<EmployeeTax, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_id = self.employee_id.ok_or_else(|| "employee_id is required".to_string())?;
 
         Ok(EmployeeTax {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             npwp_number: self.npwp_number,
             ptkp_override: self.ptkp_override,

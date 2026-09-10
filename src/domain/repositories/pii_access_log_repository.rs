@@ -44,7 +44,6 @@ pub struct PiiAccessLogPaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct PiiAccessLogFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub accessed_by: Option<Uuid>,
     pub data_category: Option<DataCategory>,
@@ -54,7 +53,7 @@ pub struct PiiAccessLogFilter {
 impl PiiAccessLogFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.accessed_by.is_some() || self.data_category.is_some() || self.purpose.is_some()
+        self.employee_id.is_some() || self.accessed_by.is_some() || self.data_category.is_some() || self.purpose.is_some()
     }
 }
 

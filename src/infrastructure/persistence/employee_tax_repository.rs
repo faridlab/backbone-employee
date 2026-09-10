@@ -10,9 +10,9 @@
 
 use chrono::NaiveDate;
 use uuid::Uuid;
-use sqlx::{FromRow, PgPool};
+use sqlx::{PgPool, Row};
 
-use backbone_orm::company_scope;
+use backbone_orm::org_scope;
 
 use crate::domain::entity::{EmployeeTax, PtkpTier, TerCategory};
 
@@ -48,17 +48,19 @@ impl EmployeeTaxRepository {
     /// "derive from dependents". Returns `Some(tier)` only when an explicit override is stored, in
     /// which case the caller MUST honour it (override wins).
     ///
-    /// Read-only, company-scoped via `fetch_optional_scalar_scoped` (RLS fence, ADR-0008). The
-    /// nullable `ptkp_tier` column is decoded as `Option<PtkpTier>`; `flatten` collapses the outer
-    /// row-presence `Option` with the inner nullability into a single "is there an override".
+    /// Tenancy (ADR-0029): the module owns no fence — this read rides the AMBIENT org scope via
+    /// `org_scope::fetch_optional_row_scoped`, so under a decorated deployment another unit's row
+    /// is simply not found (⇒ derive), and with no ambient scope it runs plainly on the pool.
+    /// The nullable `ptkp_override` column is decoded as `Option<PtkpTier>`; collapsing the outer
+    /// row-presence `Option` with the inner nullability yields a single "is there an override".
     pub async fn ptkp_override_for(
         &self,
         pool: &PgPool,
         employee_id: Uuid,
     ) -> Result<Option<PtkpTier>, sqlx::Error> {
-        let override_: Option<Option<PtkpTier>> = company_scope::fetch_optional_scalar_scoped(
+        let row = org_scope::fetch_optional_row_scoped(
             pool,
-            sqlx::query_scalar(
+            sqlx::query(
                 r#"SELECT ptkp_override FROM employee.employee_taxes
                    WHERE employee_id = $1
                      AND (metadata->>'deleted_at') IS NULL
@@ -67,7 +69,7 @@ impl EmployeeTaxRepository {
             .bind(employee_id),
         )
         .await?;
-        Ok(override_.flatten())
+        Ok(row.and_then(|r| r.get::<Option<PtkpTier>, _>("ptkp_override")))
     }
 
     /// The statutory-relevant columns across `employee_taxes` / `employee_bpjs` / `employments` for
@@ -79,17 +81,18 @@ impl EmployeeTaxRepository {
     /// rows (a data error) collapse via `LIMIT 1` per subquery rather than multiplying the join. The
     /// `join_date` subquery picks the earliest (first join) — the tenure anchor for THR.
     ///
-    /// Returns `None` only when the employee itself does not exist (or is out of the RLS scope). Read-
-    /// only, company-scoped via `fetch_optional_scoped` (RLS fence, ADR-0008); `employee_id` is a
-    /// globally unique FK so the `WHERE employee_id = $1` filter plus the task-local scope isolate it.
+    /// Returns `None` only when the employee itself does not exist (or is out of the ambient org
+    /// scope). Tenancy (ADR-0029): the module owns no fence — this read rides the AMBIENT org scope
+    /// via `org_scope::fetch_optional_row_scoped`; `employee_id` is a globally unique FK so the
+    /// `WHERE e.id = $1` filter plus the ambient scope isolate it.
     pub async fn statutory_row_for(
         &self,
         pool: &PgPool,
         employee_id: Uuid,
     ) -> Result<Option<StatutoryRow>, sqlx::Error> {
-        let row: Option<StatutoryRow> = company_scope::fetch_optional_scoped(
+        let row = org_scope::fetch_optional_row_scoped(
             pool,
-            sqlx::query_as(
+            sqlx::query(
                 r#"SELECT
                      (SELECT t.npwp_number
                         FROM employee.employee_taxes t
@@ -115,13 +118,18 @@ impl EmployeeTaxRepository {
             .bind(employee_id),
         )
         .await?;
-        Ok(row)
+        Ok(row.map(|r| StatutoryRow {
+            npwp_number: r.get("npwp_number"),
+            ter_category: r.get("ter_category"),
+            bpjs_kesehatan_family: r.get("bpjs_kesehatan_family"),
+            join_date: r.get("join_date"),
+        }))
     }
 }
 
 /// The statutory-relevant slice read by [`EmployeeTaxRepository::statutory_row_for`]. Each field is
 /// nullable because each underlying row is optional for a given employee.
-#[derive(Debug, Default, Clone, FromRow)]
+#[derive(Debug, Default, Clone)]
 pub struct StatutoryRow {
     pub npwp_number: Option<String>,
     pub ter_category: Option<TerCategory>,

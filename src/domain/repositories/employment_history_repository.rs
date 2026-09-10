@@ -44,7 +44,6 @@ pub struct EmploymentHistoryPaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct EmploymentHistoryFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub action: Option<EmploymentAction>,
     pub position_id_from: Option<Uuid>,
@@ -60,7 +59,7 @@ pub struct EmploymentHistoryFilter {
 impl EmploymentHistoryFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.action.is_some() || self.position_id_from.is_some() || self.position_id_to.is_some() || self.level_id_from.is_some() || self.level_id_to.is_some() || self.department_id_from.is_some() || self.department_id_to.is_some() || self.reference_id.is_some() || self.note.is_some()
+        self.employee_id.is_some() || self.action.is_some() || self.position_id_from.is_some() || self.position_id_to.is_some() || self.level_id_from.is_some() || self.level_id_to.is_some() || self.department_id_from.is_some() || self.department_id_to.is_some() || self.reference_id.is_some() || self.note.is_some()
     }
 }
 

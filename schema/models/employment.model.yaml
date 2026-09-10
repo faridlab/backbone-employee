@@ -14,11 +14,6 @@ models:
         type: uuid
         attributes: ["@id", "@default(uuid)"]
 
-      company_id:
-        type: uuid
-        attributes: ["@required", "@exclude_from_foreign_key_check"]
-        description: "# logical FK organization.Company.id"
-
       employee_id:
         type: uuid
         attributes: ["@required", "@foreign_key(Employee.id)"]
@@ -68,8 +63,6 @@ models:
         attributes: ["@audit_metadata"]
 
     indexes:
-      - type: index
-        fields: [company_id, status]
       - type: index
         fields: [employee_id]
       - type: index

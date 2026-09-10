@@ -49,7 +49,6 @@ impl std::ops::Deref for PiiAccessLogId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct PiiAccessLog {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub accessed_by: Uuid,
     pub data_category: DataCategory,
@@ -64,10 +63,9 @@ impl PiiAccessLog {
     }
 
     /// Create a new PiiAccessLog with required fields
-    pub fn new(company_id: Uuid, employee_id: Uuid, accessed_by: Uuid, data_category: DataCategory, accessed_at: DateTime<Utc>) -> Self {
+    pub fn new(employee_id: Uuid, accessed_by: Uuid, data_category: DataCategory, accessed_at: DateTime<Utc>) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             accessed_by,
             data_category,
@@ -105,9 +103,6 @@ impl PiiAccessLog {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_id = v; }
                 }
@@ -177,16 +172,12 @@ impl backbone_orm::EntityRepoMeta for PiiAccessLog {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("data_category".to_string(), "data_category".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {
         &[]
-    }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
     }
 }
 
@@ -196,7 +187,6 @@ impl backbone_orm::EntityRepoMeta for PiiAccessLog {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct PiiAccessLogBuilder {
-    company_id: Option<Uuid>,
     employee_id: Option<Uuid>,
     accessed_by: Option<Uuid>,
     data_category: Option<DataCategory>,
@@ -205,12 +195,6 @@ pub struct PiiAccessLogBuilder {
 }
 
 impl PiiAccessLogBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_id field (required)
     pub fn employee_id(mut self, value: Uuid) -> Self {
         self.employee_id = Some(value);
@@ -245,14 +229,12 @@ impl PiiAccessLogBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<PiiAccessLog, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_id = self.employee_id.ok_or_else(|| "employee_id is required".to_string())?;
         let accessed_by = self.accessed_by.ok_or_else(|| "accessed_by is required".to_string())?;
         let data_category = self.data_category.ok_or_else(|| "data_category is required".to_string())?;
 
         Ok(PiiAccessLog {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             accessed_by,
             data_category,

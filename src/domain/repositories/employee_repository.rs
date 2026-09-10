@@ -44,7 +44,6 @@ pub struct EmployeePaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeFilter {
-    pub company_id: Option<Uuid>,
     pub employee_number: Option<String>,
     pub user_id: Option<Uuid>,
     pub first_name: Option<String>,
@@ -62,7 +61,7 @@ pub struct EmployeeFilter {
 impl EmployeeFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
+        self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
     }
 }
 

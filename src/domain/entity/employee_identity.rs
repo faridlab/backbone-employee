@@ -50,7 +50,6 @@ impl std::ops::Deref for EmployeeIdentityId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct EmployeeIdentity {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub identity_type: IdentityType,
     pub identity_number: String,
@@ -68,10 +67,9 @@ impl EmployeeIdentity {
     }
 
     /// Create a new EmployeeIdentity with required fields
-    pub fn new(company_id: Uuid, employee_id: Uuid, identity_type: IdentityType, identity_number: String, is_permanent: bool) -> Self {
+    pub fn new(employee_id: Uuid, identity_type: IdentityType, identity_number: String, is_permanent: bool) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             identity_type,
             identity_number,
@@ -150,9 +148,6 @@ impl EmployeeIdentity {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_id = v; }
                 }
@@ -222,16 +217,12 @@ impl backbone_orm::EntityRepoMeta for EmployeeIdentity {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("identity_type".to_string(), "identity_type".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {
         &["identity_number"]
-    }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
     }
 }
 
@@ -241,7 +232,6 @@ impl backbone_orm::EntityRepoMeta for EmployeeIdentity {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeIdentityBuilder {
-    company_id: Option<Uuid>,
     employee_id: Option<Uuid>,
     identity_type: Option<IdentityType>,
     identity_number: Option<String>,
@@ -250,12 +240,6 @@ pub struct EmployeeIdentityBuilder {
 }
 
 impl EmployeeIdentityBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_id field (required)
     pub fn employee_id(mut self, value: Uuid) -> Self {
         self.employee_id = Some(value);
@@ -290,14 +274,12 @@ impl EmployeeIdentityBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<EmployeeIdentity, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_id = self.employee_id.ok_or_else(|| "employee_id is required".to_string())?;
         let identity_type = self.identity_type.ok_or_else(|| "identity_type is required".to_string())?;
         let identity_number = self.identity_number.ok_or_else(|| "identity_number is required".to_string())?;
 
         Ok(EmployeeIdentity {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             identity_type,
             identity_number,

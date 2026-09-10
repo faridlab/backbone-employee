@@ -33,9 +33,6 @@ use crate::domain::entity::DataCategory;
 #[serde(rename_all = "camelCase")]
 pub struct CreatePiiAccessLogDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
@@ -63,9 +60,6 @@ pub struct CreatePiiAccessLogDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdatePiiAccessLogDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -95,9 +89,6 @@ pub struct UpdatePiiAccessLogDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchPiiAccessLogDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
@@ -115,7 +106,7 @@ pub struct PatchPiiAccessLogDto {
 impl PatchPiiAccessLogDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.accessed_by.is_some() || self.data_category.is_some() || self.purpose.is_some() || self.accessed_at.is_some()
+        self.employee_id.is_some() || self.accessed_by.is_some() || self.data_category.is_some() || self.purpose.is_some() || self.accessed_at.is_some()
     }
 }
 
@@ -133,8 +124,6 @@ impl PatchPiiAccessLogDto {
 pub struct PiiAccessLogResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
@@ -199,9 +188,9 @@ impl PiiAccessLogListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct PiiAccessLogSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub accessed_by: Uuid,
+    pub data_category: DataCategory,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -213,7 +202,6 @@ impl From<PiiAccessLog> for PiiAccessLogResponseDto {
     fn from(entity: PiiAccessLog) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             accessed_by: entity.accessed_by,
             data_category: entity.data_category,
@@ -228,9 +216,9 @@ impl From<PiiAccessLog> for PiiAccessLogSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             accessed_by: entity.accessed_by,
+            data_category: entity.data_category,
             created_at,
         }
     }
@@ -240,7 +228,6 @@ impl From<CreatePiiAccessLogDto> for PiiAccessLog {
     fn from(dto: CreatePiiAccessLogDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             accessed_by: dto.accessed_by,
             data_category: dto.data_category,
@@ -254,7 +241,6 @@ impl From<&PiiAccessLog> for PiiAccessLogResponseDto {
     fn from(entity: &PiiAccessLog) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             accessed_by: entity.accessed_by.clone(),
             data_category: entity.data_category.clone(),
@@ -272,7 +258,6 @@ impl backbone_core::FromCreateDto<CreatePiiAccessLogDto> for PiiAccessLog {
 
 impl backbone_core::ApplyUpdateDto<UpdatePiiAccessLogDto> for PiiAccessLog {
     fn apply_update(mut self, dto: UpdatePiiAccessLogDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.accessed_by = dto.accessed_by;
         self.data_category = dto.data_category;
@@ -290,4 +275,3 @@ impl backbone_core::ApplyUpdateDto<UpdatePiiAccessLogDto> for PiiAccessLog {
 // Add custom DTOs specific to PiiAccessLog here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

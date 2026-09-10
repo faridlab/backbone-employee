@@ -35,9 +35,6 @@ use crate::domain::entity::LawfulBasis;
 #[serde(rename_all = "camelCase")]
 pub struct CreateDataConsentDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[serde(alias = "data_category")]
@@ -69,9 +66,6 @@ pub struct CreateDataConsentDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateDataConsentDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -105,9 +99,6 @@ pub struct UpdateDataConsentDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchDataConsentDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "data_category")]
@@ -129,7 +120,7 @@ pub struct PatchDataConsentDto {
 impl PatchDataConsentDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.data_category.is_some() || self.lawful_basis.is_some() || self.consent_given_at.is_some() || self.consent_method.is_some() || self.privacy_notice_version.is_some() || self.retention_until.is_some() || self.withdrawn_at.is_some()
+        self.employee_id.is_some() || self.data_category.is_some() || self.lawful_basis.is_some() || self.consent_given_at.is_some() || self.consent_method.is_some() || self.privacy_notice_version.is_some() || self.retention_until.is_some() || self.withdrawn_at.is_some()
     }
 }
 
@@ -147,8 +138,6 @@ impl PatchDataConsentDto {
 pub struct DataConsentResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     pub data_category: DataCategory,
@@ -215,9 +204,9 @@ impl DataConsentListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct DataConsentSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub data_category: DataCategory,
+    pub lawful_basis: LawfulBasis,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -229,7 +218,6 @@ impl From<DataConsent> for DataConsentResponseDto {
     fn from(entity: DataConsent) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             data_category: entity.data_category,
             lawful_basis: entity.lawful_basis,
@@ -248,9 +236,9 @@ impl From<DataConsent> for DataConsentSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             data_category: entity.data_category,
+            lawful_basis: entity.lawful_basis,
             created_at,
         }
     }
@@ -260,7 +248,6 @@ impl From<CreateDataConsentDto> for DataConsent {
     fn from(dto: CreateDataConsentDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             data_category: dto.data_category,
             lawful_basis: dto.lawful_basis,
@@ -278,7 +265,6 @@ impl From<&DataConsent> for DataConsentResponseDto {
     fn from(entity: &DataConsent) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             data_category: entity.data_category.clone(),
             lawful_basis: entity.lawful_basis.clone(),
@@ -300,7 +286,6 @@ impl backbone_core::FromCreateDto<CreateDataConsentDto> for DataConsent {
 
 impl backbone_core::ApplyUpdateDto<UpdateDataConsentDto> for DataConsent {
     fn apply_update(mut self, dto: UpdateDataConsentDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.data_category = dto.data_category;
         self.lawful_basis = dto.lawful_basis;
@@ -321,4 +306,3 @@ impl backbone_core::ApplyUpdateDto<UpdateDataConsentDto> for DataConsent {
 // Add custom DTOs specific to DataConsent here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

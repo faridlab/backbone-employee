@@ -34,9 +34,6 @@ use crate::domain::entity::EmploymentAction;
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmploymentHistoryDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
@@ -74,9 +71,6 @@ pub struct CreateEmploymentHistoryDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmploymentHistoryDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -116,9 +110,6 @@ pub struct UpdateEmploymentHistoryDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmploymentHistoryDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
@@ -147,7 +138,7 @@ pub struct PatchEmploymentHistoryDto {
 impl PatchEmploymentHistoryDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.effective_date.is_some() || self.action.is_some() || self.position_id_from.is_some() || self.position_id_to.is_some() || self.level_id_from.is_some() || self.level_id_to.is_some() || self.department_id_from.is_some() || self.department_id_to.is_some() || self.reference_id.is_some() || self.note.is_some()
+        self.employee_id.is_some() || self.effective_date.is_some() || self.action.is_some() || self.position_id_from.is_some() || self.position_id_to.is_some() || self.level_id_from.is_some() || self.level_id_to.is_some() || self.department_id_from.is_some() || self.department_id_to.is_some() || self.reference_id.is_some() || self.note.is_some()
     }
 }
 
@@ -165,8 +156,6 @@ impl PatchEmploymentHistoryDto {
 pub struct EmploymentHistoryResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
@@ -237,9 +226,9 @@ impl EmploymentHistoryListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmploymentHistorySummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub effective_date: NaiveDate,
+    pub action: EmploymentAction,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -251,7 +240,6 @@ impl From<EmploymentHistory> for EmploymentHistoryResponseDto {
     fn from(entity: EmploymentHistory) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             effective_date: entity.effective_date,
             action: entity.action,
@@ -273,9 +261,9 @@ impl From<EmploymentHistory> for EmploymentHistorySummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             effective_date: entity.effective_date,
+            action: entity.action,
             created_at,
         }
     }
@@ -285,7 +273,6 @@ impl From<CreateEmploymentHistoryDto> for EmploymentHistory {
     fn from(dto: CreateEmploymentHistoryDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             effective_date: dto.effective_date,
             action: dto.action,
@@ -306,7 +293,6 @@ impl From<&EmploymentHistory> for EmploymentHistoryResponseDto {
     fn from(entity: &EmploymentHistory) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             effective_date: entity.effective_date.clone(),
             action: entity.action.clone(),
@@ -331,7 +317,6 @@ impl backbone_core::FromCreateDto<CreateEmploymentHistoryDto> for EmploymentHist
 
 impl backbone_core::ApplyUpdateDto<UpdateEmploymentHistoryDto> for EmploymentHistory {
     fn apply_update(mut self, dto: UpdateEmploymentHistoryDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.effective_date = dto.effective_date;
         self.action = dto.action;
@@ -355,4 +340,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmploymentHistoryDto> for EmploymentHis
 // Add custom DTOs specific to EmploymentHistory here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

@@ -8,9 +8,9 @@
 //! All standard CRUD methods are available via `Deref`.
 
 use uuid::Uuid;
-use sqlx::PgPool;
+use sqlx::{PgPool, Row};
 
-use backbone_orm::company_scope;
+use backbone_orm::org_scope;
 
 use crate::domain::entity::EmployeeFamily;
 
@@ -45,23 +45,26 @@ impl EmployeeFamilyRepository {
     /// `spouse_count > 0` ⇒ married (K*); `min(child_count, 3)` ⇒ the tier suffix. A single query
     /// returns both aggregates so the derivation is one round-trip.
     ///
-    /// Read-only, company-scoped: takes the pool and runs `fetch_one_scoped` so the RLS fence
-    /// (ADR-0008) applies. `employee_id` is a globally unique FK, so the `WHERE employee_id = $1`
-    /// filter plus the task-local RLS scope fully isolate the row set — no explicit `company_id`
-    /// predicate needed. Soft-delete lives in the `metadata` JSONB (`deleted_at` key).
+    /// Tenancy (ADR-0029): the module owns no fence — this read rides the AMBIENT org scope via
+    /// `org_scope::fetch_optional_row_scoped` (the request-dedicated connection a composing service
+    /// scoped), so under a decorated deployment another unit's rows are simply not counted. With no
+    /// ambient scope the read runs plainly on the pool — the tenant-agnostic posture of an
+    /// undecorated deployment. `employee_id` is a globally unique FK, so the
+    /// `WHERE employee_id = $1` filter plus the ambient scope fully isolate the row set — no
+    /// explicit tenancy predicate needed. Soft-delete lives in the `metadata` JSONB (`deleted_at` key).
     pub async fn family_counts(
         &self,
         pool: &PgPool,
         employee_id: Uuid,
     ) -> Result<(i64, i64), sqlx::Error> {
-        // COUNT always yields exactly one row (0,0 over an empty set), so `fetch_one_scoped` never
-        // misses. `relationship = '...'::family_relationship` casts the literal to the enum type.
-        let (spouse, children): (i64, i64) = company_scope::fetch_one_scoped(
+        // COUNT always yields exactly one row (0,0 over an empty set), so the row is always
+        // present. `relationship = '...'::family_relationship` casts the literal to the enum type.
+        let row = org_scope::fetch_optional_row_scoped(
             pool,
-            sqlx::query_as(
+            sqlx::query(
                 r#"SELECT
-                     COUNT(*) FILTER (WHERE relationship = 'spouse'::family_relationship)::bigint,
-                     COUNT(*) FILTER (WHERE relationship = 'child'::family_relationship)::bigint
+                     COUNT(*) FILTER (WHERE relationship = 'spouse'::family_relationship)::bigint AS spouse_count,
+                     COUNT(*) FILTER (WHERE relationship = 'child'::family_relationship)::bigint AS child_count
                    FROM employee.employee_families
                    WHERE employee_id = $1
                      AND (metadata->>'deleted_at') IS NULL"#,
@@ -69,7 +72,8 @@ impl EmployeeFamilyRepository {
             .bind(employee_id),
         )
         .await?;
-        Ok((spouse, children))
+        row.map(|r| (r.get::<i64, _>("spouse_count"), r.get::<i64, _>("child_count")))
+            .ok_or(sqlx::Error::RowNotFound)
     }
 }
 

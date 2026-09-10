@@ -33,9 +33,6 @@ use crate::domain::entity::AuditMetadata;
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmployeeBpjsDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "bpjs_ketenagakerjaan_number")]
@@ -67,9 +64,6 @@ pub struct CreateEmployeeBpjsDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmployeeBpjsDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -103,9 +97,6 @@ pub struct UpdateEmployeeBpjsDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmployeeBpjsDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "bpjs_ketenagakerjaan_number")]
@@ -127,7 +118,7 @@ pub struct PatchEmployeeBpjsDto {
 impl PatchEmployeeBpjsDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.bpjs_ketenagakerjaan_number.is_some() || self.npp_bpjs_ketenagakerjaan.is_some() || self.bpjs_ketenagakerjaan_date.is_some() || self.bpjs_kesehatan_number.is_some() || self.bpjs_kesehatan_family.is_some() || self.bpjs_kesehatan_date.is_some() || self.jaminan_pensiun_date.is_some()
+        self.employee_id.is_some() || self.bpjs_ketenagakerjaan_number.is_some() || self.npp_bpjs_ketenagakerjaan.is_some() || self.bpjs_ketenagakerjaan_date.is_some() || self.bpjs_kesehatan_number.is_some() || self.bpjs_kesehatan_family.is_some() || self.bpjs_kesehatan_date.is_some() || self.jaminan_pensiun_date.is_some()
     }
 }
 
@@ -145,8 +136,6 @@ impl PatchEmployeeBpjsDto {
 pub struct EmployeeBpjsResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     pub bpjs_ketenagakerjaan_number: Option<String>,
@@ -213,9 +202,9 @@ impl EmployeeBpjsListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmployeeBpjsSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub bpjs_ketenagakerjaan_number: Option<String>,
+    pub npp_bpjs_ketenagakerjaan: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -227,7 +216,6 @@ impl From<EmployeeBpjs> for EmployeeBpjsResponseDto {
     fn from(entity: EmployeeBpjs) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             bpjs_ketenagakerjaan_number: entity.bpjs_ketenagakerjaan_number,
             npp_bpjs_ketenagakerjaan: entity.npp_bpjs_ketenagakerjaan,
@@ -246,9 +234,9 @@ impl From<EmployeeBpjs> for EmployeeBpjsSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             bpjs_ketenagakerjaan_number: entity.bpjs_ketenagakerjaan_number,
+            npp_bpjs_ketenagakerjaan: entity.npp_bpjs_ketenagakerjaan,
             created_at,
         }
     }
@@ -258,7 +246,6 @@ impl From<CreateEmployeeBpjsDto> for EmployeeBpjs {
     fn from(dto: CreateEmployeeBpjsDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             bpjs_ketenagakerjaan_number: dto.bpjs_ketenagakerjaan_number,
             npp_bpjs_ketenagakerjaan: dto.npp_bpjs_ketenagakerjaan,
@@ -276,7 +263,6 @@ impl From<&EmployeeBpjs> for EmployeeBpjsResponseDto {
     fn from(entity: &EmployeeBpjs) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             bpjs_ketenagakerjaan_number: entity.bpjs_ketenagakerjaan_number.clone(),
             npp_bpjs_ketenagakerjaan: entity.npp_bpjs_ketenagakerjaan.clone(),
@@ -298,7 +284,6 @@ impl backbone_core::FromCreateDto<CreateEmployeeBpjsDto> for EmployeeBpjs {
 
 impl backbone_core::ApplyUpdateDto<UpdateEmployeeBpjsDto> for EmployeeBpjs {
     fn apply_update(mut self, dto: UpdateEmployeeBpjsDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.bpjs_ketenagakerjaan_number = dto.bpjs_ketenagakerjaan_number;
         self.npp_bpjs_ketenagakerjaan = dto.npp_bpjs_ketenagakerjaan;
@@ -319,4 +304,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeBpjsDto> for EmployeeBpjs {
 // Add custom DTOs specific to EmployeeBpjs here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

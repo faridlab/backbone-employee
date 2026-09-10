@@ -105,7 +105,6 @@ impl From<DataConsentId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DataConsentDto {
     pub id: DataConsentId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub data_category: DataCategory,
     pub lawful_basis: LawfulBasis,
@@ -167,7 +166,6 @@ impl From<DataSubjectRequestId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DataSubjectRequestDto {
     pub id: DataSubjectRequestId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub request_type: DataSubjectRight,
     pub status: DsarStatus,
@@ -229,7 +227,6 @@ impl From<EmployeeId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeDto {
     pub id: EmployeeId,
-    pub company_id: Uuid,
     pub employee_number: String,
     pub user_id: Option<Uuid>,
     pub first_name: String,
@@ -299,7 +296,6 @@ impl From<EmployeeBankAccountId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeBankAccountDto {
     pub id: EmployeeBankAccountId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub bank_id: Uuid,
     pub account_number: String,
@@ -358,7 +354,6 @@ impl From<EmployeeBpjsId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeBpjsDto {
     pub id: EmployeeBpjsId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub bpjs_ketenagakerjaan_number: Option<String>,
     pub npp_bpjs_ketenagakerjaan: Option<String>,
@@ -420,7 +415,6 @@ impl From<EmployeeCertificationId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeCertificationDto {
     pub id: EmployeeCertificationId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub name: String,
     pub issuing_organization: Option<String>,
@@ -481,7 +475,6 @@ impl From<EmployeeContactId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeContactDto {
     pub id: EmployeeContactId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub name: String,
     pub phone: Option<String>,
@@ -541,7 +534,6 @@ impl From<EmployeeEducationId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeEducationDto {
     pub id: EmployeeEducationId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub institution_name: String,
     pub major: Option<String>,
@@ -603,7 +595,6 @@ impl From<EmployeeFamilyId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeFamilyDto {
     pub id: EmployeeFamilyId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub name: String,
     pub relationship: FamilyRelationship,
@@ -662,7 +653,6 @@ impl From<EmployeeIdentityId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeIdentityDto {
     pub id: EmployeeIdentityId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub identity_type: IdentityType,
     pub identity_number: String,
@@ -721,7 +711,6 @@ impl From<EmployeeTaxId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeTaxDto {
     pub id: EmployeeTaxId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub npwp_number: Option<String>,
     pub ptkp_override: Option<PtkpTier>,
@@ -784,7 +773,6 @@ impl From<EmployeeWorkExperienceId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmployeeWorkExperienceDto {
     pub id: EmployeeWorkExperienceId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub company_name: String,
     pub job_position: Option<String>,
@@ -844,7 +832,6 @@ impl From<EmploymentId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmploymentDto {
     pub id: EmploymentId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub employment_status: EmploymentStatus,
     pub join_date: NaiveDate,
@@ -908,7 +895,6 @@ impl From<EmploymentHistoryId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EmploymentHistoryDto {
     pub id: EmploymentHistoryId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub effective_date: NaiveDate,
     pub action: EmploymentAction,
@@ -973,7 +959,6 @@ impl From<PiiAccessLogId> for Uuid {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PiiAccessLogDto {
     pub id: PiiAccessLogId,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub accessed_by: Uuid,
     pub data_category: DataCategory,

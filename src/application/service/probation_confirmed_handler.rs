@@ -18,13 +18,11 @@
 //! no-op (logged), not an error. The confirmation is still recorded in the history timeline,
 //! because the event fired either way.
 //!
-//! ## Tenant context
+//! ## Tenancy
 //!
-//! Handlers run on the relay's connection, which crosses tenants ONLY on the outbox tables —
-//! every domain table sits behind the strict company fence. The tenant therefore comes from the
-//! EVENT PAYLOAD's `company_id` (stamped by the producer in-transaction with the state change),
-//! bound onto this transaction before any statement runs, and repeated in each WHERE clause as
-//! belt-and-braces. A payload without a usable `company_id` is a producer bug and fails loudly.
+//! The module owns no scoping column (ADR-0029) — a composing service's tenancy decorator
+//! installs org scoping for these tables. The handler relays the AMBIENT org scope onto its
+//! transaction when the caller bound one; an undecorated deployment has none and skips this.
 //!
 //! This is a user-owned custom file — it is NEVER regenerated.
 
@@ -60,19 +58,22 @@ impl IntegrationEventHandler for ProbationConfirmedHandler {
             .map_err(|e| handler_err(format!("bad envelope id '{}': {e}", envelope.id)))?;
 
         let p = &envelope.payload;
-        let company_id: Uuid = json_field(p, "company_id")?;
         let employee_id: Uuid = json_field(p, "employee_id")?;
         let onboarding_id: Option<Uuid> = serde_json::from_value(p["onboarding_id"].clone()).ok();
         let confirmation_date: NaiveDate = json_field(p, "confirmation_date")?;
 
         let mut tx = self.pool.begin().await.map_err(map_db)?;
 
-        // The relay's connection has no tenant of its own — bind the event's company before any
-        // statement so the strict fence lets the writes through (and cross-tenant rows stay
-        // invisible even if a WHERE clause were ever widened by mistake).
-        backbone_orm::company_scope::bind_company_on(&mut tx, company_id)
-            .await
-            .map_err(|e| handler_err(format!("company bind: {e}")))?;
+        // Tenancy posture (ADR-0029): the module owns no scoping column — the composing
+        // service's tenancy decorator does. Relay the AMBIENT org scope onto this transaction
+        // when the caller bound one, so the decorator's org-unit fill (and any policy it
+        // installed) sees this transaction's statements. An undecorated deployment has no
+        // ambient scope and skips this entirely.
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
+                .await
+                .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
+        }
 
         // Claim the event in-tx with the effect: the inbox row, the history append, and the
         // status CAS commit together (or roll back together).
@@ -86,10 +87,9 @@ impl IntegrationEventHandler for ProbationConfirmedHandler {
             //    back to the onboarding that produced the event.
             sqlx::query(
                 r#"INSERT INTO employee.employment_histories
-                       (company_id, employee_id, effective_date, action, reference_id, note)
-                   VALUES ($1, $2, $3, 'confirmation', $4, $5)"#,
+                       (employee_id, effective_date, action, reference_id, note)
+                   VALUES ($1, $2, 'confirmation', $3, $4)"#,
             )
-            .bind(company_id)
             .bind(employee_id)
             .bind(confirmation_date)
             .bind(onboarding_id)
@@ -103,9 +103,8 @@ impl IntegrationEventHandler for ProbationConfirmedHandler {
             let flipped = sqlx::query(
                 r#"UPDATE employee.employments
                       SET employment_status = 'permanent'
-                    WHERE company_id = $1 AND employee_id = $2 AND employment_status = 'probation'"#,
+                    WHERE employee_id = $1 AND employment_status = 'probation'"#,
             )
-            .bind(company_id)
             .bind(employee_id)
             .execute(&mut *tx)
             .await

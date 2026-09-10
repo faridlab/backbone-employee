@@ -2,7 +2,7 @@
 //! extracts `employee_id` from the JSON body, checks a valid DataConsent exists,
 //! and rejects (403) if not. Non-PII routes + non-POST methods pass through.
 //!
-//! Mount on the employee module's PII entity routes in the composer, like `company_auth`:
+//! Mount on the employee module's PII entity routes in the composer, like `org_auth`:
 //!   .route_layer(from_fn(consent_guard_middleware))
 
 use axum::body::{Body, to_bytes};

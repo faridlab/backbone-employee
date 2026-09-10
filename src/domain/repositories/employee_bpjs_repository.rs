@@ -44,7 +44,6 @@ pub struct EmployeeBpjsPaginatedResult {
 /// Filter parameters for list queries
 #[derive(Debug, Clone, Default)]
 pub struct EmployeeBpjsFilter {
-    pub company_id: Option<Uuid>,
     pub employee_id: Option<Uuid>,
     pub bpjs_ketenagakerjaan_number: Option<String>,
     pub npp_bpjs_ketenagakerjaan: Option<String>,
@@ -54,7 +53,7 @@ pub struct EmployeeBpjsFilter {
 impl EmployeeBpjsFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.bpjs_ketenagakerjaan_number.is_some() || self.npp_bpjs_ketenagakerjaan.is_some() || self.bpjs_kesehatan_number.is_some()
+        self.employee_id.is_some() || self.bpjs_ketenagakerjaan_number.is_some() || self.npp_bpjs_ketenagakerjaan.is_some() || self.bpjs_kesehatan_number.is_some()
     }
 }
 

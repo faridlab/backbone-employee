@@ -91,7 +91,7 @@ pub struct EmployeeModule {
     // Held so the `EmployeeQueryService` impl can delegate `employee_ptkp` to the family/tax repos'
     // hand-written SQL, and standard lookups to the CRUD services above. `db_pool` is the same pool
     // the repos were constructed with (the repo methods take it per the backbone-hr read-port
-    // convention — RLS scoping is applied inside via `company_scope::fetch_*_scoped`).
+    // convention — org scoping is applied inside via `org_scope::fetch_optional_row_scoped`).
     pub(crate) employee_family_repository: Arc<EmployeeFamilyRepository>,
     pub(crate) employee_tax_repository: Arc<EmployeeTaxRepository>,
     pub(crate) db_pool: sqlx::PgPool,

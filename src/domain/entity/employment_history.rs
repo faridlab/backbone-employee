@@ -50,7 +50,6 @@ impl std::ops::Deref for EmploymentHistoryId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct EmploymentHistory {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub effective_date: NaiveDate,
     pub action: EmploymentAction,
@@ -74,10 +73,9 @@ impl EmploymentHistory {
     }
 
     /// Create a new EmploymentHistory with required fields
-    pub fn new(company_id: Uuid, employee_id: Uuid, effective_date: NaiveDate, action: EmploymentAction) -> Self {
+    pub fn new(employee_id: Uuid, effective_date: NaiveDate, action: EmploymentAction) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             effective_date,
             action,
@@ -204,9 +202,6 @@ impl EmploymentHistory {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_id = v; }
                 }
@@ -294,7 +289,6 @@ impl backbone_orm::EntityRepoMeta for EmploymentHistory {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("reference_id".to_string(), "uuid".to_string());
         m.insert("action".to_string(), "employment_action".to_string());
@@ -302,9 +296,6 @@ impl backbone_orm::EntityRepoMeta for EmploymentHistory {
     }
     fn search_fields() -> &'static [&'static str] {
         &[]
-    }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
     }
 }
 
@@ -314,7 +305,6 @@ impl backbone_orm::EntityRepoMeta for EmploymentHistory {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct EmploymentHistoryBuilder {
-    company_id: Option<Uuid>,
     employee_id: Option<Uuid>,
     effective_date: Option<NaiveDate>,
     action: Option<EmploymentAction>,
@@ -329,12 +319,6 @@ pub struct EmploymentHistoryBuilder {
 }
 
 impl EmploymentHistoryBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_id field (required)
     pub fn employee_id(mut self, value: Uuid) -> Self {
         self.employee_id = Some(value);
@@ -405,14 +389,12 @@ impl EmploymentHistoryBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<EmploymentHistory, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_id = self.employee_id.ok_or_else(|| "employee_id is required".to_string())?;
         let effective_date = self.effective_date.ok_or_else(|| "effective_date is required".to_string())?;
         let action = self.action.ok_or_else(|| "action is required".to_string())?;
 
         Ok(EmploymentHistory {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             effective_date,
             action,

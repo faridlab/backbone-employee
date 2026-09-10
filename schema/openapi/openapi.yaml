@@ -6355,16 +6355,12 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - data_category
         - lawful_basis
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -6411,15 +6407,11 @@ components:
     CreateDataConsentRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - data_category
         - lawful_basis
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -6451,15 +6443,11 @@ components:
     UpdateDataConsentRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - data_category
         - lawful_basis
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -6491,9 +6479,6 @@ components:
     PatchDataConsentRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -6536,7 +6521,6 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - request_type
         - status
@@ -6544,9 +6528,6 @@ components:
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -6588,16 +6569,12 @@ components:
     CreateDataSubjectRequestRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - request_type
         - status
         - requested_at
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -6624,16 +6601,12 @@ components:
     UpdateDataSubjectRequestRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - request_type
         - status
         - requested_at
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -6660,9 +6633,6 @@ components:
     PatchDataSubjectRequestRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -6700,15 +6670,11 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_number
         - first_name
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_number:
@@ -6770,14 +6736,10 @@ components:
     CreateEmployeeRequest:
       type: object
       required:
-        - company_id
         - employee_number
         - first_name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_number:
           type: string
         user_id:
@@ -6824,14 +6786,10 @@ components:
     UpdateEmployeeRequest:
       type: object
       required:
-        - company_id
         - employee_number
         - first_name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_number:
           type: string
         user_id:
@@ -6878,9 +6836,6 @@ components:
     PatchEmployeeRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_number:
           type: string
         user_id:
@@ -6938,16 +6893,12 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - bank_id
         - account_number
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -6980,15 +6931,11 @@ components:
     CreateEmployeeBankAccountRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - bank_id
         - account_number
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7006,15 +6953,11 @@ components:
     UpdateEmployeeBankAccountRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - bank_id
         - account_number
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7032,9 +6975,6 @@ components:
     PatchEmployeeBankAccountRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7063,14 +7003,10 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -7120,13 +7056,9 @@ components:
     CreateEmployeeBpjsRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7161,13 +7093,9 @@ components:
     UpdateEmployeeBpjsRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7202,9 +7130,6 @@ components:
     PatchEmployeeBpjsRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7250,15 +7175,11 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - name
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -7299,14 +7220,10 @@ components:
     CreateEmployeeCertificationRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7332,14 +7249,10 @@ components:
     UpdateEmployeeCertificationRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7365,9 +7278,6 @@ components:
     PatchEmployeeCertificationRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7404,15 +7314,11 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - name
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -7445,14 +7351,10 @@ components:
     CreateEmployeeContactRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7470,14 +7372,10 @@ components:
     UpdateEmployeeContactRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7495,9 +7393,6 @@ components:
     PatchEmployeeContactRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7526,15 +7421,11 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - institution_name
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -7578,14 +7469,10 @@ components:
     CreateEmployeeEducationRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - institution_name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7614,14 +7501,10 @@ components:
     UpdateEmployeeEducationRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - institution_name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7650,9 +7533,6 @@ components:
     PatchEmployeeEducationRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7692,16 +7572,12 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - name
         - relationship
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -7734,15 +7610,11 @@ components:
     CreateEmployeeFamilyRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - name
         - relationship
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7760,15 +7632,11 @@ components:
     UpdateEmployeeFamilyRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - name
         - relationship
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7786,9 +7654,6 @@ components:
     PatchEmployeeFamilyRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7817,7 +7682,6 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - identity_type
         - identity_number
@@ -7825,9 +7689,6 @@ components:
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -7862,16 +7723,12 @@ components:
     CreateEmployeeIdentityRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - identity_type
         - identity_number
         - is_permanent
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7891,16 +7748,12 @@ components:
     UpdateEmployeeIdentityRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - identity_type
         - identity_number
         - is_permanent
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7920,9 +7773,6 @@ components:
     PatchEmployeeIdentityRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -7953,16 +7803,12 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - tax_method
         - tax_salary
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -8010,15 +7856,11 @@ components:
     CreateEmployeeTaxRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - tax_method
         - tax_salary
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8051,15 +7893,11 @@ components:
     UpdateEmployeeTaxRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - tax_method
         - tax_salary
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8092,9 +7930,6 @@ components:
     PatchEmployeeTaxRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8138,15 +7973,11 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - company_name
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -8184,14 +8015,10 @@ components:
     CreateEmployeeWorkExperienceRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - company_name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8214,14 +8041,10 @@ components:
     UpdateEmployeeWorkExperienceRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - company_name
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8244,9 +8067,6 @@ components:
     PatchEmployeeWorkExperienceRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8280,7 +8100,6 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - employment_status
         - join_date
@@ -8288,9 +8107,6 @@ components:
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -8342,16 +8158,12 @@ components:
     CreateEmploymentRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - employment_status
         - join_date
         - status
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8388,16 +8200,12 @@ components:
     UpdateEmploymentRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - employment_status
         - join_date
         - status
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8434,9 +8242,6 @@ components:
     PatchEmploymentRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8484,16 +8289,12 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - effective_date
         - action
         - metadata
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -8554,15 +8355,11 @@ components:
     CreateEmploymentHistoryRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - effective_date
         - action
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8608,15 +8405,11 @@ components:
     UpdateEmploymentHistoryRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - effective_date
         - action
         - metadata
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8662,9 +8455,6 @@ components:
     PatchEmploymentHistoryRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8721,16 +8511,12 @@ components:
       type: object
       required:
         - id
-        - company_id
         - employee_id
         - accessed_by
         - data_category
         - accessed_at
       properties:
         id:
-          type: string
-          format: uuid
-        company_id:
           type: string
           format: uuid
         employee_id:
@@ -8764,15 +8550,11 @@ components:
     CreatePiiAccessLogRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - accessed_by
         - data_category
         - accessed_at
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8791,15 +8573,11 @@ components:
     UpdatePiiAccessLogRequest:
       type: object
       required:
-        - company_id
         - employee_id
         - accessed_by
         - data_category
         - accessed_at
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid
@@ -8818,9 +8596,6 @@ components:
     PatchPiiAccessLogRequest:
       type: object
       properties:
-        company_id:
-          type: string
-          format: uuid
         employee_id:
           type: string
           format: uuid

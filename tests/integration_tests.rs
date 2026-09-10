@@ -247,4 +247,3 @@ async fn test_religion_api() {
         panic!("{} tests failed", failed.len());
     }
 }
-

@@ -186,4 +186,3 @@ pub fn create_protected_data_consent_routes<A: AuthMiddleware + Send + Sync + 's
             }
         }))
 }
-

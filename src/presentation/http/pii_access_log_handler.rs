@@ -186,4 +186,3 @@ pub fn create_protected_pii_access_log_routes<A: AuthMiddleware + Send + Sync + 
             }
         }))
 }
-

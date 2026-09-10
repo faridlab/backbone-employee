@@ -38,9 +38,6 @@ use crate::domain::entity::TerCategory;
 #[serde(rename_all = "camelCase")]
 pub struct CreateEmployeeTaxDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "npwp_number")]
@@ -74,9 +71,6 @@ pub struct CreateEmployeeTaxDto {
 #[cfg_attr(feature = "validation", derive(Validate))]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateEmployeeTaxDto {
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(alias = "company_id")]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
@@ -112,9 +106,6 @@ pub struct UpdateEmployeeTaxDto {
 #[serde(rename_all = "camelCase")]
 pub struct PatchEmployeeTaxDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    #[serde(skip_serializing_if = "Option::is_none", alias = "company_id")]
-    pub company_id: Option<Uuid>,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "npwp_number")]
@@ -138,7 +129,7 @@ pub struct PatchEmployeeTaxDto {
 impl PatchEmployeeTaxDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.company_id.is_some() || self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.ter_category.is_some() || self.tax_salary.is_some() || self.taxable_date.is_some() || self.beginning_netto.is_some() || self.pph21_paid.is_some()
+        self.employee_id.is_some() || self.npwp_number.is_some() || self.ptkp_override.is_some() || self.tax_method.is_some() || self.ter_category.is_some() || self.tax_salary.is_some() || self.taxable_date.is_some() || self.beginning_netto.is_some() || self.pph21_paid.is_some()
     }
 }
 
@@ -156,8 +147,6 @@ impl PatchEmployeeTaxDto {
 pub struct EmployeeTaxResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub id: Uuid,
-    #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
-    pub company_id: Uuid,
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     pub npwp_number: Option<String>,
@@ -225,9 +214,9 @@ impl EmployeeTaxListResponseDto {
 #[serde(rename_all = "camelCase")]
 pub struct EmployeeTaxSummaryDto {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub npwp_number: Option<String>,
+    pub ptkp_override: Option<PtkpTier>,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -239,7 +228,6 @@ impl From<EmployeeTax> for EmployeeTaxResponseDto {
     fn from(entity: EmployeeTax) -> Self {
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             npwp_number: entity.npwp_number,
             ptkp_override: entity.ptkp_override,
@@ -259,9 +247,9 @@ impl From<EmployeeTax> for EmployeeTaxSummaryDto {
         let created_at = backbone_core::PersistentEntity::created_at(&entity);
         Self {
             id: entity.id,
-            company_id: entity.company_id,
             employee_id: entity.employee_id,
             npwp_number: entity.npwp_number,
+            ptkp_override: entity.ptkp_override,
             created_at,
         }
     }
@@ -271,7 +259,6 @@ impl From<CreateEmployeeTaxDto> for EmployeeTax {
     fn from(dto: CreateEmployeeTaxDto) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id: dto.company_id,
             employee_id: dto.employee_id,
             npwp_number: dto.npwp_number,
             ptkp_override: dto.ptkp_override,
@@ -290,7 +277,6 @@ impl From<&EmployeeTax> for EmployeeTaxResponseDto {
     fn from(entity: &EmployeeTax) -> Self {
         Self {
             id: entity.id.clone(),
-            company_id: entity.company_id.clone(),
             employee_id: entity.employee_id.clone(),
             npwp_number: entity.npwp_number.clone(),
             ptkp_override: entity.ptkp_override.clone(),
@@ -313,7 +299,6 @@ impl backbone_core::FromCreateDto<CreateEmployeeTaxDto> for EmployeeTax {
 
 impl backbone_core::ApplyUpdateDto<UpdateEmployeeTaxDto> for EmployeeTax {
     fn apply_update(mut self, dto: UpdateEmployeeTaxDto) -> backbone_core::ServiceResult<Self> {
-        self.company_id = dto.company_id;
         self.employee_id = dto.employee_id;
         self.npwp_number = dto.npwp_number;
         self.ptkp_override = dto.ptkp_override;
@@ -335,4 +320,3 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeTaxDto> for EmployeeTax {
 // Add custom DTOs specific to EmployeeTax here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

@@ -51,7 +51,6 @@ impl std::ops::Deref for DataSubjectRequestId {
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct DataSubjectRequest {
     pub id: Uuid,
-    pub company_id: Uuid,
     pub employee_id: Uuid,
     pub request_type: DataSubjectRight,
     pub status: DsarStatus,
@@ -71,10 +70,9 @@ impl DataSubjectRequest {
     }
 
     /// Create a new DataSubjectRequest with required fields
-    pub fn new(company_id: Uuid, employee_id: Uuid, request_type: DataSubjectRight, status: DsarStatus, requested_at: DateTime<Utc>) -> Self {
+    pub fn new(employee_id: Uuid, request_type: DataSubjectRight, status: DsarStatus, requested_at: DateTime<Utc>) -> Self {
         Self {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             request_type,
             status,
@@ -172,9 +170,6 @@ impl DataSubjectRequest {
     pub fn apply_patch(&mut self, fields: std::collections::HashMap<String, serde_json::Value>) {
         for (key, value) in fields {
             match key.as_str() {
-                "company_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.company_id = v; }
-                }
                 "employee_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employee_id = v; }
                 }
@@ -250,7 +245,6 @@ impl backbone_orm::EntityRepoMeta for DataSubjectRequest {
     fn column_types() -> std::collections::HashMap<String, String> {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
-        m.insert("company_id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("request_type".to_string(), "data_subject_right".to_string());
         m.insert("status".to_string(), "dsar_status".to_string());
@@ -258,9 +252,6 @@ impl backbone_orm::EntityRepoMeta for DataSubjectRequest {
     }
     fn search_fields() -> &'static [&'static str] {
         &[]
-    }
-    fn company_field() -> Option<&'static str> {
-        Some("company_id")
     }
 }
 
@@ -270,7 +261,6 @@ impl backbone_orm::EntityRepoMeta for DataSubjectRequest {
 /// System fields (id, metadata, timestamps) are auto-initialized.
 #[derive(Debug, Clone, Default)]
 pub struct DataSubjectRequestBuilder {
-    company_id: Option<Uuid>,
     employee_id: Option<Uuid>,
     request_type: Option<DataSubjectRight>,
     status: Option<DsarStatus>,
@@ -281,12 +271,6 @@ pub struct DataSubjectRequestBuilder {
 }
 
 impl DataSubjectRequestBuilder {
-    /// Set the company_id field (required)
-    pub fn company_id(mut self, value: Uuid) -> Self {
-        self.company_id = Some(value);
-        self
-    }
-
     /// Set the employee_id field (required)
     pub fn employee_id(mut self, value: Uuid) -> Self {
         self.employee_id = Some(value);
@@ -333,13 +317,11 @@ impl DataSubjectRequestBuilder {
     ///
     /// Returns Err if any required field without a default is missing.
     pub fn build(self) -> Result<DataSubjectRequest, String> {
-        let company_id = self.company_id.ok_or_else(|| "company_id is required".to_string())?;
         let employee_id = self.employee_id.ok_or_else(|| "employee_id is required".to_string())?;
         let request_type = self.request_type.ok_or_else(|| "request_type is required".to_string())?;
 
         Ok(DataSubjectRequest {
             id: Uuid::new_v4(),
-            company_id,
             employee_id,
             request_type,
             status: self.status.unwrap_or_default(),
