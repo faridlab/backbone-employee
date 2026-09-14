@@ -3,23 +3,27 @@
 --
 -- This file contains initial seed data for the employee.religions table.
 -- Customize this file to add your initial data.
+--
+-- Religion is a reference master with no company fence: it is universal data,
+-- and it scopes calendar holidays. Shipping it empty left every employee form
+-- offering a picker with nothing in it, so the field could not be filled at all
+-- from the screen that asks for it.
+--
+-- The rows below are the religions recognised by Indonesian civil registration
+-- and recorded on a KTP, named as they are named there. A deployment serving
+-- another jurisdiction should replace them rather than add to them — this is a
+-- closed list in the places that use it, not a starting point.
+--
+-- `id` and `metadata` are left to the column defaults: the primary key
+-- generates a uuid, and the table's INSERT trigger stamps the audit timestamps.
+-- The conflict target repeats the partial unique index's predicate so re-running
+-- the file is harmless even outside the seeder's own empty-table guard.
 
--- INSERT INTO employee.religions (
---     id,
---     name,
---     metadata
--- ) VALUES
--- (
---     -- Add values here
--- );
-
--- Example: Insert reference data
--- Uncomment and modify the following:
-
--- INSERT INTO employee.religions (id, code, name, is_active, created_at, updated_at) VALUES
---     (gen_random_uuid(), 'SAMPLE1', 'Sample 1', true, NOW(), NOW()),
---     (gen_random_uuid(), 'SAMPLE2', 'Sample 2', true, NOW(), NOW());
-
--- <<< CUSTOM SEED DATA >>>
--- Add your custom seed data below
-
+INSERT INTO employee.religions (name) VALUES
+    ('Islam'),
+    ('Kristen'),
+    ('Katolik'),
+    ('Hindu'),
+    ('Buddha'),
+    ('Khonghucu')
+ON CONFLICT (name) WHERE (metadata->>'deleted_at') IS NULL DO NOTHING;
