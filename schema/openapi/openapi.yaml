@@ -7,7 +7,7 @@ info:
     This API provides 11 standard CRUD endpoints for each model.
 
 servers:
-  - url: http://localhost:3000
+  - url: /
     description: Development server
 
 tags:
@@ -47,7 +47,7 @@ tags:
     description: Religion management endpoints
 
 paths:
-  /api/v1/banks:
+  /api/v1/employee/banks:
     get:
       tags:
         - Banks
@@ -93,7 +93,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/banks/{id}:
+  /api/v1/employee/banks/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -165,7 +165,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/banks/bulk:
+  /api/v1/employee/banks/bulk:
     post:
       tags:
         - Banks
@@ -257,7 +257,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/banks/upsert:
+  /api/v1/employee/banks/upsert:
     post:
       tags:
         - Banks
@@ -287,7 +287,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Bank'
 
-  /api/v1/banks/trash:
+  /api/v1/employee/banks/trash:
     get:
       tags:
         - Banks
@@ -304,7 +304,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BankList'
 
-  /api/v1/banks/{id}/restore:
+  /api/v1/employee/banks/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -322,7 +322,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/banks/empty:
+  /api/v1/employee/banks/empty:
     delete:
       tags:
         - Banks
@@ -339,7 +339,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/banks/delete/bulk:
+  /api/v1/employee/banks/delete/bulk:
     post:
       tags:
         - Banks
@@ -359,7 +359,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/banks/restore/bulk:
+  /api/v1/employee/banks/restore/bulk:
     post:
       tags:
         - Banks
@@ -377,7 +377,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/banks/restore/all:
+  /api/v1/employee/banks/restore/all:
     post:
       tags:
         - Banks
@@ -393,7 +393,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/banks/trash/bulk:
+  /api/v1/employee/banks/trash/bulk:
     delete:
       tags:
         - Banks
@@ -413,7 +413,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_consents:
+  /api/v1/employee/data_consents:
     get:
       tags:
         - DataConsents
@@ -459,7 +459,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/data_consents/{id}:
+  /api/v1/employee/data_consents/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -531,7 +531,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/data_consents/bulk:
+  /api/v1/employee/data_consents/bulk:
     post:
       tags:
         - DataConsents
@@ -623,7 +623,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_consents/upsert:
+  /api/v1/employee/data_consents/upsert:
     post:
       tags:
         - DataConsents
@@ -653,7 +653,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataConsent'
 
-  /api/v1/data_consents/trash:
+  /api/v1/employee/data_consents/trash:
     get:
       tags:
         - DataConsents
@@ -670,7 +670,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataConsentList'
 
-  /api/v1/data_consents/{id}/restore:
+  /api/v1/employee/data_consents/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -688,7 +688,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/data_consents/empty:
+  /api/v1/employee/data_consents/empty:
     delete:
       tags:
         - DataConsents
@@ -705,7 +705,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/data_consents/delete/bulk:
+  /api/v1/employee/data_consents/delete/bulk:
     post:
       tags:
         - DataConsents
@@ -725,7 +725,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_consents/restore/bulk:
+  /api/v1/employee/data_consents/restore/bulk:
     post:
       tags:
         - DataConsents
@@ -743,7 +743,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_consents/restore/all:
+  /api/v1/employee/data_consents/restore/all:
     post:
       tags:
         - DataConsents
@@ -759,7 +759,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/data_consents/trash/bulk:
+  /api/v1/employee/data_consents/trash/bulk:
     delete:
       tags:
         - DataConsents
@@ -779,7 +779,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_subject_requests:
+  /api/v1/employee/data_subject_requests:
     get:
       tags:
         - DataSubjectRequests
@@ -825,7 +825,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/data_subject_requests/{id}:
+  /api/v1/employee/data_subject_requests/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -897,7 +897,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/data_subject_requests/bulk:
+  /api/v1/employee/data_subject_requests/bulk:
     post:
       tags:
         - DataSubjectRequests
@@ -989,7 +989,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_subject_requests/upsert:
+  /api/v1/employee/data_subject_requests/upsert:
     post:
       tags:
         - DataSubjectRequests
@@ -1019,7 +1019,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataSubjectRequest'
 
-  /api/v1/data_subject_requests/trash:
+  /api/v1/employee/data_subject_requests/trash:
     get:
       tags:
         - DataSubjectRequests
@@ -1036,7 +1036,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DataSubjectRequestList'
 
-  /api/v1/data_subject_requests/{id}/restore:
+  /api/v1/employee/data_subject_requests/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -1054,7 +1054,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/data_subject_requests/empty:
+  /api/v1/employee/data_subject_requests/empty:
     delete:
       tags:
         - DataSubjectRequests
@@ -1071,7 +1071,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/data_subject_requests/delete/bulk:
+  /api/v1/employee/data_subject_requests/delete/bulk:
     post:
       tags:
         - DataSubjectRequests
@@ -1091,7 +1091,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_subject_requests/restore/bulk:
+  /api/v1/employee/data_subject_requests/restore/bulk:
     post:
       tags:
         - DataSubjectRequests
@@ -1109,7 +1109,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/data_subject_requests/restore/all:
+  /api/v1/employee/data_subject_requests/restore/all:
     post:
       tags:
         - DataSubjectRequests
@@ -1125,7 +1125,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/data_subject_requests/trash/bulk:
+  /api/v1/employee/data_subject_requests/trash/bulk:
     delete:
       tags:
         - DataSubjectRequests
@@ -1145,7 +1145,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employees:
+  /api/v1/employee/employees:
     get:
       tags:
         - Employees
@@ -1191,7 +1191,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employees/{id}:
+  /api/v1/employee/employees/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -1263,7 +1263,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employees/bulk:
+  /api/v1/employee/employees/bulk:
     post:
       tags:
         - Employees
@@ -1355,7 +1355,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employees/upsert:
+  /api/v1/employee/employees/upsert:
     post:
       tags:
         - Employees
@@ -1385,7 +1385,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Employee'
 
-  /api/v1/employees/trash:
+  /api/v1/employee/employees/trash:
     get:
       tags:
         - Employees
@@ -1402,7 +1402,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeList'
 
-  /api/v1/employees/{id}/restore:
+  /api/v1/employee/employees/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -1420,7 +1420,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employees/empty:
+  /api/v1/employee/employees/empty:
     delete:
       tags:
         - Employees
@@ -1437,7 +1437,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employees/delete/bulk:
+  /api/v1/employee/employees/delete/bulk:
     post:
       tags:
         - Employees
@@ -1457,7 +1457,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employees/restore/bulk:
+  /api/v1/employee/employees/restore/bulk:
     post:
       tags:
         - Employees
@@ -1475,7 +1475,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employees/restore/all:
+  /api/v1/employee/employees/restore/all:
     post:
       tags:
         - Employees
@@ -1491,7 +1491,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employees/trash/bulk:
+  /api/v1/employee/employees/trash/bulk:
     delete:
       tags:
         - Employees
@@ -1511,7 +1511,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bank_accounts:
+  /api/v1/employee/employee_bank_accounts:
     get:
       tags:
         - EmployeeBankAccounts
@@ -1557,7 +1557,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_bank_accounts/{id}:
+  /api/v1/employee/employee_bank_accounts/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -1629,7 +1629,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_bank_accounts/bulk:
+  /api/v1/employee/employee_bank_accounts/bulk:
     post:
       tags:
         - EmployeeBankAccounts
@@ -1721,7 +1721,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bank_accounts/upsert:
+  /api/v1/employee/employee_bank_accounts/upsert:
     post:
       tags:
         - EmployeeBankAccounts
@@ -1751,7 +1751,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeBankAccount'
 
-  /api/v1/employee_bank_accounts/trash:
+  /api/v1/employee/employee_bank_accounts/trash:
     get:
       tags:
         - EmployeeBankAccounts
@@ -1768,7 +1768,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeBankAccountList'
 
-  /api/v1/employee_bank_accounts/{id}/restore:
+  /api/v1/employee/employee_bank_accounts/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -1786,7 +1786,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_bank_accounts/empty:
+  /api/v1/employee/employee_bank_accounts/empty:
     delete:
       tags:
         - EmployeeBankAccounts
@@ -1803,7 +1803,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_bank_accounts/delete/bulk:
+  /api/v1/employee/employee_bank_accounts/delete/bulk:
     post:
       tags:
         - EmployeeBankAccounts
@@ -1823,7 +1823,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bank_accounts/restore/bulk:
+  /api/v1/employee/employee_bank_accounts/restore/bulk:
     post:
       tags:
         - EmployeeBankAccounts
@@ -1841,7 +1841,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bank_accounts/restore/all:
+  /api/v1/employee/employee_bank_accounts/restore/all:
     post:
       tags:
         - EmployeeBankAccounts
@@ -1857,7 +1857,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_bank_accounts/trash/bulk:
+  /api/v1/employee/employee_bank_accounts/trash/bulk:
     delete:
       tags:
         - EmployeeBankAccounts
@@ -1877,7 +1877,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bpjses:
+  /api/v1/employee/employee_bpjses:
     get:
       tags:
         - EmployeeBpjses
@@ -1923,7 +1923,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_bpjses/{id}:
+  /api/v1/employee/employee_bpjses/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -1995,7 +1995,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_bpjses/bulk:
+  /api/v1/employee/employee_bpjses/bulk:
     post:
       tags:
         - EmployeeBpjses
@@ -2087,7 +2087,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bpjses/upsert:
+  /api/v1/employee/employee_bpjses/upsert:
     post:
       tags:
         - EmployeeBpjses
@@ -2117,7 +2117,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeBpjs'
 
-  /api/v1/employee_bpjses/trash:
+  /api/v1/employee/employee_bpjses/trash:
     get:
       tags:
         - EmployeeBpjses
@@ -2134,7 +2134,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeBpjsList'
 
-  /api/v1/employee_bpjses/{id}/restore:
+  /api/v1/employee/employee_bpjses/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -2152,7 +2152,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_bpjses/empty:
+  /api/v1/employee/employee_bpjses/empty:
     delete:
       tags:
         - EmployeeBpjses
@@ -2169,7 +2169,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_bpjses/delete/bulk:
+  /api/v1/employee/employee_bpjses/delete/bulk:
     post:
       tags:
         - EmployeeBpjses
@@ -2189,7 +2189,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bpjses/restore/bulk:
+  /api/v1/employee/employee_bpjses/restore/bulk:
     post:
       tags:
         - EmployeeBpjses
@@ -2207,7 +2207,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_bpjses/restore/all:
+  /api/v1/employee/employee_bpjses/restore/all:
     post:
       tags:
         - EmployeeBpjses
@@ -2223,7 +2223,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_bpjses/trash/bulk:
+  /api/v1/employee/employee_bpjses/trash/bulk:
     delete:
       tags:
         - EmployeeBpjses
@@ -2243,7 +2243,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_certifications:
+  /api/v1/employee/employee_certifications:
     get:
       tags:
         - EmployeeCertifications
@@ -2289,7 +2289,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_certifications/{id}:
+  /api/v1/employee/employee_certifications/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -2361,7 +2361,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_certifications/bulk:
+  /api/v1/employee/employee_certifications/bulk:
     post:
       tags:
         - EmployeeCertifications
@@ -2453,7 +2453,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_certifications/upsert:
+  /api/v1/employee/employee_certifications/upsert:
     post:
       tags:
         - EmployeeCertifications
@@ -2483,7 +2483,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeCertification'
 
-  /api/v1/employee_certifications/trash:
+  /api/v1/employee/employee_certifications/trash:
     get:
       tags:
         - EmployeeCertifications
@@ -2500,7 +2500,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeCertificationList'
 
-  /api/v1/employee_certifications/{id}/restore:
+  /api/v1/employee/employee_certifications/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -2518,7 +2518,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_certifications/empty:
+  /api/v1/employee/employee_certifications/empty:
     delete:
       tags:
         - EmployeeCertifications
@@ -2535,7 +2535,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_certifications/delete/bulk:
+  /api/v1/employee/employee_certifications/delete/bulk:
     post:
       tags:
         - EmployeeCertifications
@@ -2555,7 +2555,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_certifications/restore/bulk:
+  /api/v1/employee/employee_certifications/restore/bulk:
     post:
       tags:
         - EmployeeCertifications
@@ -2573,7 +2573,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_certifications/restore/all:
+  /api/v1/employee/employee_certifications/restore/all:
     post:
       tags:
         - EmployeeCertifications
@@ -2589,7 +2589,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_certifications/trash/bulk:
+  /api/v1/employee/employee_certifications/trash/bulk:
     delete:
       tags:
         - EmployeeCertifications
@@ -2609,7 +2609,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_contacts:
+  /api/v1/employee/employee_contacts:
     get:
       tags:
         - EmployeeContacts
@@ -2655,7 +2655,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_contacts/{id}:
+  /api/v1/employee/employee_contacts/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -2727,7 +2727,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_contacts/bulk:
+  /api/v1/employee/employee_contacts/bulk:
     post:
       tags:
         - EmployeeContacts
@@ -2819,7 +2819,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_contacts/upsert:
+  /api/v1/employee/employee_contacts/upsert:
     post:
       tags:
         - EmployeeContacts
@@ -2849,7 +2849,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeContact'
 
-  /api/v1/employee_contacts/trash:
+  /api/v1/employee/employee_contacts/trash:
     get:
       tags:
         - EmployeeContacts
@@ -2866,7 +2866,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeContactList'
 
-  /api/v1/employee_contacts/{id}/restore:
+  /api/v1/employee/employee_contacts/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -2884,7 +2884,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_contacts/empty:
+  /api/v1/employee/employee_contacts/empty:
     delete:
       tags:
         - EmployeeContacts
@@ -2901,7 +2901,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_contacts/delete/bulk:
+  /api/v1/employee/employee_contacts/delete/bulk:
     post:
       tags:
         - EmployeeContacts
@@ -2921,7 +2921,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_contacts/restore/bulk:
+  /api/v1/employee/employee_contacts/restore/bulk:
     post:
       tags:
         - EmployeeContacts
@@ -2939,7 +2939,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_contacts/restore/all:
+  /api/v1/employee/employee_contacts/restore/all:
     post:
       tags:
         - EmployeeContacts
@@ -2955,7 +2955,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_contacts/trash/bulk:
+  /api/v1/employee/employee_contacts/trash/bulk:
     delete:
       tags:
         - EmployeeContacts
@@ -2975,7 +2975,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_educations:
+  /api/v1/employee/employee_educations:
     get:
       tags:
         - EmployeeEducations
@@ -3021,7 +3021,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_educations/{id}:
+  /api/v1/employee/employee_educations/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -3093,7 +3093,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_educations/bulk:
+  /api/v1/employee/employee_educations/bulk:
     post:
       tags:
         - EmployeeEducations
@@ -3185,7 +3185,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_educations/upsert:
+  /api/v1/employee/employee_educations/upsert:
     post:
       tags:
         - EmployeeEducations
@@ -3215,7 +3215,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeEducation'
 
-  /api/v1/employee_educations/trash:
+  /api/v1/employee/employee_educations/trash:
     get:
       tags:
         - EmployeeEducations
@@ -3232,7 +3232,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeEducationList'
 
-  /api/v1/employee_educations/{id}/restore:
+  /api/v1/employee/employee_educations/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -3250,7 +3250,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_educations/empty:
+  /api/v1/employee/employee_educations/empty:
     delete:
       tags:
         - EmployeeEducations
@@ -3267,7 +3267,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_educations/delete/bulk:
+  /api/v1/employee/employee_educations/delete/bulk:
     post:
       tags:
         - EmployeeEducations
@@ -3287,7 +3287,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_educations/restore/bulk:
+  /api/v1/employee/employee_educations/restore/bulk:
     post:
       tags:
         - EmployeeEducations
@@ -3305,7 +3305,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_educations/restore/all:
+  /api/v1/employee/employee_educations/restore/all:
     post:
       tags:
         - EmployeeEducations
@@ -3321,7 +3321,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_educations/trash/bulk:
+  /api/v1/employee/employee_educations/trash/bulk:
     delete:
       tags:
         - EmployeeEducations
@@ -3341,7 +3341,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_families:
+  /api/v1/employee/employee_families:
     get:
       tags:
         - EmployeeFamilies
@@ -3387,7 +3387,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_families/{id}:
+  /api/v1/employee/employee_families/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -3459,7 +3459,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_families/bulk:
+  /api/v1/employee/employee_families/bulk:
     post:
       tags:
         - EmployeeFamilies
@@ -3551,7 +3551,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_families/upsert:
+  /api/v1/employee/employee_families/upsert:
     post:
       tags:
         - EmployeeFamilies
@@ -3581,7 +3581,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeFamily'
 
-  /api/v1/employee_families/trash:
+  /api/v1/employee/employee_families/trash:
     get:
       tags:
         - EmployeeFamilies
@@ -3598,7 +3598,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeFamilyList'
 
-  /api/v1/employee_families/{id}/restore:
+  /api/v1/employee/employee_families/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -3616,7 +3616,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_families/empty:
+  /api/v1/employee/employee_families/empty:
     delete:
       tags:
         - EmployeeFamilies
@@ -3633,7 +3633,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_families/delete/bulk:
+  /api/v1/employee/employee_families/delete/bulk:
     post:
       tags:
         - EmployeeFamilies
@@ -3653,7 +3653,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_families/restore/bulk:
+  /api/v1/employee/employee_families/restore/bulk:
     post:
       tags:
         - EmployeeFamilies
@@ -3671,7 +3671,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_families/restore/all:
+  /api/v1/employee/employee_families/restore/all:
     post:
       tags:
         - EmployeeFamilies
@@ -3687,7 +3687,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_families/trash/bulk:
+  /api/v1/employee/employee_families/trash/bulk:
     delete:
       tags:
         - EmployeeFamilies
@@ -3707,7 +3707,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_identities:
+  /api/v1/employee/employee_identities:
     get:
       tags:
         - EmployeeIdentities
@@ -3753,7 +3753,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_identities/{id}:
+  /api/v1/employee/employee_identities/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -3825,7 +3825,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_identities/bulk:
+  /api/v1/employee/employee_identities/bulk:
     post:
       tags:
         - EmployeeIdentities
@@ -3917,7 +3917,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_identities/upsert:
+  /api/v1/employee/employee_identities/upsert:
     post:
       tags:
         - EmployeeIdentities
@@ -3947,7 +3947,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeIdentity'
 
-  /api/v1/employee_identities/trash:
+  /api/v1/employee/employee_identities/trash:
     get:
       tags:
         - EmployeeIdentities
@@ -3964,7 +3964,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeIdentityList'
 
-  /api/v1/employee_identities/{id}/restore:
+  /api/v1/employee/employee_identities/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -3982,7 +3982,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_identities/empty:
+  /api/v1/employee/employee_identities/empty:
     delete:
       tags:
         - EmployeeIdentities
@@ -3999,7 +3999,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_identities/delete/bulk:
+  /api/v1/employee/employee_identities/delete/bulk:
     post:
       tags:
         - EmployeeIdentities
@@ -4019,7 +4019,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_identities/restore/bulk:
+  /api/v1/employee/employee_identities/restore/bulk:
     post:
       tags:
         - EmployeeIdentities
@@ -4037,7 +4037,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_identities/restore/all:
+  /api/v1/employee/employee_identities/restore/all:
     post:
       tags:
         - EmployeeIdentities
@@ -4053,7 +4053,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_identities/trash/bulk:
+  /api/v1/employee/employee_identities/trash/bulk:
     delete:
       tags:
         - EmployeeIdentities
@@ -4073,7 +4073,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_taxes:
+  /api/v1/employee/employee_taxes:
     get:
       tags:
         - EmployeeTaxes
@@ -4119,7 +4119,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_taxes/{id}:
+  /api/v1/employee/employee_taxes/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -4191,7 +4191,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_taxes/bulk:
+  /api/v1/employee/employee_taxes/bulk:
     post:
       tags:
         - EmployeeTaxes
@@ -4283,7 +4283,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_taxes/upsert:
+  /api/v1/employee/employee_taxes/upsert:
     post:
       tags:
         - EmployeeTaxes
@@ -4313,7 +4313,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeTax'
 
-  /api/v1/employee_taxes/trash:
+  /api/v1/employee/employee_taxes/trash:
     get:
       tags:
         - EmployeeTaxes
@@ -4330,7 +4330,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeTaxList'
 
-  /api/v1/employee_taxes/{id}/restore:
+  /api/v1/employee/employee_taxes/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -4348,7 +4348,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_taxes/empty:
+  /api/v1/employee/employee_taxes/empty:
     delete:
       tags:
         - EmployeeTaxes
@@ -4365,7 +4365,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_taxes/delete/bulk:
+  /api/v1/employee/employee_taxes/delete/bulk:
     post:
       tags:
         - EmployeeTaxes
@@ -4385,7 +4385,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_taxes/restore/bulk:
+  /api/v1/employee/employee_taxes/restore/bulk:
     post:
       tags:
         - EmployeeTaxes
@@ -4403,7 +4403,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_taxes/restore/all:
+  /api/v1/employee/employee_taxes/restore/all:
     post:
       tags:
         - EmployeeTaxes
@@ -4419,7 +4419,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_taxes/trash/bulk:
+  /api/v1/employee/employee_taxes/trash/bulk:
     delete:
       tags:
         - EmployeeTaxes
@@ -4439,7 +4439,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_work_experiences:
+  /api/v1/employee/employee_work_experiences:
     get:
       tags:
         - EmployeeWorkExperiences
@@ -4485,7 +4485,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employee_work_experiences/{id}:
+  /api/v1/employee/employee_work_experiences/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -4557,7 +4557,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_work_experiences/bulk:
+  /api/v1/employee/employee_work_experiences/bulk:
     post:
       tags:
         - EmployeeWorkExperiences
@@ -4649,7 +4649,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_work_experiences/upsert:
+  /api/v1/employee/employee_work_experiences/upsert:
     post:
       tags:
         - EmployeeWorkExperiences
@@ -4679,7 +4679,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeWorkExperience'
 
-  /api/v1/employee_work_experiences/trash:
+  /api/v1/employee/employee_work_experiences/trash:
     get:
       tags:
         - EmployeeWorkExperiences
@@ -4696,7 +4696,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmployeeWorkExperienceList'
 
-  /api/v1/employee_work_experiences/{id}/restore:
+  /api/v1/employee/employee_work_experiences/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -4714,7 +4714,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employee_work_experiences/empty:
+  /api/v1/employee/employee_work_experiences/empty:
     delete:
       tags:
         - EmployeeWorkExperiences
@@ -4731,7 +4731,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employee_work_experiences/delete/bulk:
+  /api/v1/employee/employee_work_experiences/delete/bulk:
     post:
       tags:
         - EmployeeWorkExperiences
@@ -4751,7 +4751,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_work_experiences/restore/bulk:
+  /api/v1/employee/employee_work_experiences/restore/bulk:
     post:
       tags:
         - EmployeeWorkExperiences
@@ -4769,7 +4769,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employee_work_experiences/restore/all:
+  /api/v1/employee/employee_work_experiences/restore/all:
     post:
       tags:
         - EmployeeWorkExperiences
@@ -4785,7 +4785,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employee_work_experiences/trash/bulk:
+  /api/v1/employee/employee_work_experiences/trash/bulk:
     delete:
       tags:
         - EmployeeWorkExperiences
@@ -4805,7 +4805,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employments:
+  /api/v1/employee/employments:
     get:
       tags:
         - Employments
@@ -4851,7 +4851,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employments/{id}:
+  /api/v1/employee/employments/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -4923,7 +4923,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employments/bulk:
+  /api/v1/employee/employments/bulk:
     post:
       tags:
         - Employments
@@ -5015,7 +5015,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employments/upsert:
+  /api/v1/employee/employments/upsert:
     post:
       tags:
         - Employments
@@ -5045,7 +5045,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Employment'
 
-  /api/v1/employments/trash:
+  /api/v1/employee/employments/trash:
     get:
       tags:
         - Employments
@@ -5062,7 +5062,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmploymentList'
 
-  /api/v1/employments/{id}/restore:
+  /api/v1/employee/employments/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -5080,7 +5080,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employments/empty:
+  /api/v1/employee/employments/empty:
     delete:
       tags:
         - Employments
@@ -5097,7 +5097,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employments/delete/bulk:
+  /api/v1/employee/employments/delete/bulk:
     post:
       tags:
         - Employments
@@ -5117,7 +5117,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employments/restore/bulk:
+  /api/v1/employee/employments/restore/bulk:
     post:
       tags:
         - Employments
@@ -5135,7 +5135,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employments/restore/all:
+  /api/v1/employee/employments/restore/all:
     post:
       tags:
         - Employments
@@ -5151,7 +5151,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employments/trash/bulk:
+  /api/v1/employee/employments/trash/bulk:
     delete:
       tags:
         - Employments
@@ -5171,7 +5171,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employment_histories:
+  /api/v1/employee/employment_histories:
     get:
       tags:
         - EmploymentHistories
@@ -5217,7 +5217,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/employment_histories/{id}:
+  /api/v1/employee/employment_histories/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -5289,7 +5289,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employment_histories/bulk:
+  /api/v1/employee/employment_histories/bulk:
     post:
       tags:
         - EmploymentHistories
@@ -5381,7 +5381,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employment_histories/upsert:
+  /api/v1/employee/employment_histories/upsert:
     post:
       tags:
         - EmploymentHistories
@@ -5411,7 +5411,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmploymentHistory'
 
-  /api/v1/employment_histories/trash:
+  /api/v1/employee/employment_histories/trash:
     get:
       tags:
         - EmploymentHistories
@@ -5428,7 +5428,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmploymentHistoryList'
 
-  /api/v1/employment_histories/{id}/restore:
+  /api/v1/employee/employment_histories/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -5446,7 +5446,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/employment_histories/empty:
+  /api/v1/employee/employment_histories/empty:
     delete:
       tags:
         - EmploymentHistories
@@ -5463,7 +5463,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/employment_histories/delete/bulk:
+  /api/v1/employee/employment_histories/delete/bulk:
     post:
       tags:
         - EmploymentHistories
@@ -5483,7 +5483,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employment_histories/restore/bulk:
+  /api/v1/employee/employment_histories/restore/bulk:
     post:
       tags:
         - EmploymentHistories
@@ -5501,7 +5501,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/employment_histories/restore/all:
+  /api/v1/employee/employment_histories/restore/all:
     post:
       tags:
         - EmploymentHistories
@@ -5517,7 +5517,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/employment_histories/trash/bulk:
+  /api/v1/employee/employment_histories/trash/bulk:
     delete:
       tags:
         - EmploymentHistories
@@ -5537,7 +5537,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/pii_access_logs:
+  /api/v1/employee/pii_access_logs:
     get:
       tags:
         - PiiAccessLogs
@@ -5583,7 +5583,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/pii_access_logs/{id}:
+  /api/v1/employee/pii_access_logs/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -5655,7 +5655,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/pii_access_logs/bulk:
+  /api/v1/employee/pii_access_logs/bulk:
     post:
       tags:
         - PiiAccessLogs
@@ -5747,7 +5747,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/pii_access_logs/upsert:
+  /api/v1/employee/pii_access_logs/upsert:
     post:
       tags:
         - PiiAccessLogs
@@ -5777,7 +5777,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PiiAccessLog'
 
-  /api/v1/pii_access_logs/trash:
+  /api/v1/employee/pii_access_logs/trash:
     get:
       tags:
         - PiiAccessLogs
@@ -5794,7 +5794,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PiiAccessLogList'
 
-  /api/v1/pii_access_logs/{id}/restore:
+  /api/v1/employee/pii_access_logs/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -5812,7 +5812,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/pii_access_logs/empty:
+  /api/v1/employee/pii_access_logs/empty:
     delete:
       tags:
         - PiiAccessLogs
@@ -5829,7 +5829,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/pii_access_logs/delete/bulk:
+  /api/v1/employee/pii_access_logs/delete/bulk:
     post:
       tags:
         - PiiAccessLogs
@@ -5849,7 +5849,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/pii_access_logs/restore/bulk:
+  /api/v1/employee/pii_access_logs/restore/bulk:
     post:
       tags:
         - PiiAccessLogs
@@ -5867,7 +5867,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/pii_access_logs/restore/all:
+  /api/v1/employee/pii_access_logs/restore/all:
     post:
       tags:
         - PiiAccessLogs
@@ -5883,7 +5883,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/pii_access_logs/trash/bulk:
+  /api/v1/employee/pii_access_logs/trash/bulk:
     delete:
       tags:
         - PiiAccessLogs
@@ -5903,7 +5903,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/religions:
+  /api/v1/employee/religions:
     get:
       tags:
         - Religions
@@ -5949,7 +5949,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/v1/religions/{id}:
+  /api/v1/employee/religions/{id}:
     parameters:
       - $ref: '#/components/parameters/IdParam'
 
@@ -6021,7 +6021,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/religions/bulk:
+  /api/v1/employee/religions/bulk:
     post:
       tags:
         - Religions
@@ -6113,7 +6113,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/religions/upsert:
+  /api/v1/employee/religions/upsert:
     post:
       tags:
         - Religions
@@ -6143,7 +6143,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Religion'
 
-  /api/v1/religions/trash:
+  /api/v1/employee/religions/trash:
     get:
       tags:
         - Religions
@@ -6160,7 +6160,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReligionList'
 
-  /api/v1/religions/{id}/restore:
+  /api/v1/employee/religions/{id}/restore:
     parameters:
       - $ref: '#/components/parameters/IdParam'
     post:
@@ -6178,7 +6178,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/v1/religions/empty:
+  /api/v1/employee/religions/empty:
     delete:
       tags:
         - Religions
@@ -6195,7 +6195,7 @@ paths:
                   deleted_count:
                     type: integer
 
-  /api/v1/religions/delete/bulk:
+  /api/v1/employee/religions/delete/bulk:
     post:
       tags:
         - Religions
@@ -6215,7 +6215,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/religions/restore/bulk:
+  /api/v1/employee/religions/restore/bulk:
     post:
       tags:
         - Religions
@@ -6233,7 +6233,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v1/religions/restore/all:
+  /api/v1/employee/religions/restore/all:
     post:
       tags:
         - Religions
@@ -6249,7 +6249,7 @@ paths:
                 properties:
                   restored: { type: integer }
 
-  /api/v1/religions/trash/bulk:
+  /api/v1/employee/religions/trash/bulk:
     delete:
       tags:
         - Religions

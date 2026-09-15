@@ -11,6 +11,11 @@
 # Add your hand-authored services, handlers, tests, and docs below as you write them.
 
 user_owned:
+  # Hand-written files the audit found undeclared; declared so a schema
+  # regeneration cannot delete them.
+  - "src/module.rs"
+  - "src/domain/entity/example_status.rs"
+
   # Own the hand-written read-port SQL the query service delegates to. Declared here so the
   # generator skips these wholesale — the custom `impl` blocks (family_counts / ptkp_override_for)
   # survive regen instead of living behind a CUSTOM marker outside the generated struct.
