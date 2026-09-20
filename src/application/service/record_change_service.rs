@@ -102,6 +102,10 @@ impl RecordChangeService {
             Err(e) => return Err(e.into()),
         };
 
+        let mut tx = self.pool.begin().await?;
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
+        }
         let inserted = sqlx::query_scalar::<_, Uuid>(
             r#"INSERT INTO employee.record_change_requests
                  (id, employee_id, field_path, current_value, proposed_value, reason,
@@ -116,9 +120,17 @@ impl RecordChangeService {
         .bind(proposed_value)
         .bind(reason)
         .bind(approval_request_id)
-        .fetch_optional(&self.pool)
+        // Scoped ride: under the composing service's fence the insert lands
+        // on the request-dedicated connection (org key filled by trigger
+        // from the ambient acting unit).
+        // Scoped ride: under the composing service's fence the insert lands
+        // on the request-dedicated connection (org key filled by trigger
+        // from the ambient acting unit); unfenced deployments behave as
+        // before.
+        .fetch_optional(&mut *tx)
         .await?
         .ok_or(RecordChangeError::NotFound)?;
+        tx.commit().await?;
         Ok(inserted)
     }
 
@@ -201,14 +213,19 @@ impl RecordChangeService {
                 return Err(RecordChangeError::Verdict("the approval is still pending"));
             }
         }
+        let mut tx = self.pool.begin().await?;
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
+        }
         sqlx::query(
             r#"UPDATE employee.record_change_requests
                   SET status = 'rejected', decided_at = now()
                 WHERE id = $1"#,
         )
         .bind(request_id)
-        .execute(&self.pool)
+        .execute(&mut *tx)
         .await?;
+        tx.commit().await?;
         Ok(())
     }
 
@@ -218,26 +235,33 @@ impl RecordChangeService {
         if row.status != "pending" {
             return Err(RecordChangeError::Invalid("only a pending request can be cancelled"));
         }
+        let mut tx = self.pool.begin().await?;
+        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
+        }
         sqlx::query(
             r#"UPDATE employee.record_change_requests
                   SET status = 'cancelled'
                 WHERE id = $1"#,
         )
         .bind(request_id)
-        .execute(&self.pool)
+        .execute(&mut *tx)
         .await?;
+        tx.commit().await?;
         Ok(())
     }
 
     async fn load(&self, request_id: Uuid) -> Result<Row, RecordChangeError> {
-        sqlx::query_as::<_, Row>(
-            r#"SELECT employee_id, field_path, proposed_value, status::text AS status,
-                      approval_request_id
-                 FROM employee.record_change_requests
-                WHERE id = $1 AND (metadata->>'deleted_at') IS NULL"#,
+        backbone_orm::company_scope::fetch_optional_scoped(
+            &self.pool,
+            sqlx::query_as::<_, Row>(
+                r#"SELECT employee_id, field_path, proposed_value, status::text AS status,
+                          approval_request_id
+                     FROM employee.record_change_requests
+                    WHERE id = $1 AND (metadata->>'deleted_at') IS NULL"#,
+            )
+            .bind(request_id),
         )
-        .bind(request_id)
-        .fetch_optional(&self.pool)
         .await?
         .ok_or(RecordChangeError::NotFound)
     }
