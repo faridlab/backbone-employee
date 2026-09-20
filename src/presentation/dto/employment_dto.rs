@@ -8,6 +8,7 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use chrono::{DateTime, Utc, NaiveDate};
+use rust_decimal::Decimal;
 
 #[cfg(feature = "openapi")]
 #[cfg(feature = "openapi")]
@@ -39,6 +40,11 @@ pub struct CreateEmploymentDto {
     pub employee_id: Uuid,
     #[serde(alias = "employment_status")]
     pub employment_status: EmploymentStatus,
+    #[serde(alias = "contracted_hours_per_week")]
+    pub contracted_hours_per_week: Decimal,
+    #[cfg_attr(feature = "openapi", schema(example = true))]
+    #[serde(alias = "punch_required")]
+    pub punch_required: bool,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
     #[serde(alias = "join_date")]
     pub join_date: NaiveDate,
@@ -73,6 +79,11 @@ pub struct UpdateEmploymentDto {
     pub employee_id: Uuid,
     #[serde(alias = "employment_status")]
     pub employment_status: EmploymentStatus,
+    #[serde(alias = "contracted_hours_per_week")]
+    pub contracted_hours_per_week: Decimal,
+    #[cfg_attr(feature = "openapi", schema(example = true))]
+    #[serde(alias = "punch_required")]
+    pub punch_required: bool,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
     #[serde(alias = "join_date")]
     pub join_date: NaiveDate,
@@ -107,6 +118,11 @@ pub struct PatchEmploymentDto {
     pub employee_id: Option<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "employment_status")]
     pub employment_status: Option<EmploymentStatus>,
+    #[serde(skip_serializing_if = "Option::is_none", alias = "contracted_hours_per_week")]
+    pub contracted_hours_per_week: Option<Decimal>,
+    #[cfg_attr(feature = "openapi", schema(example = true))]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "punch_required")]
+    pub punch_required: Option<bool>,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "join_date")]
     pub join_date: Option<NaiveDate>,
@@ -127,7 +143,7 @@ pub struct PatchEmploymentDto {
 impl PatchEmploymentDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.employee_id.is_some() || self.employment_status.is_some() || self.join_date.is_some() || self.end_join_date.is_some() || self.department_id.is_some() || self.level_id.is_some() || self.position_id.is_some() || self.direct_manager_id.is_some() || self.status.is_some()
+        self.employee_id.is_some() || self.employment_status.is_some() || self.contracted_hours_per_week.is_some() || self.punch_required.is_some() || self.join_date.is_some() || self.end_join_date.is_some() || self.department_id.is_some() || self.level_id.is_some() || self.position_id.is_some() || self.direct_manager_id.is_some() || self.status.is_some()
     }
 }
 
@@ -148,6 +164,9 @@ pub struct EmploymentResponseDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     pub employee_id: Uuid,
     pub employment_status: EmploymentStatus,
+    pub contracted_hours_per_week: Decimal,
+    #[cfg_attr(feature = "openapi", schema(example = true))]
+    pub punch_required: bool,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
     pub join_date: NaiveDate,
     pub end_join_date: Option<NaiveDate>,
@@ -215,7 +234,7 @@ pub struct EmploymentSummaryDto {
     pub id: Uuid,
     pub employee_id: Uuid,
     pub employment_status: EmploymentStatus,
-    pub join_date: NaiveDate,
+    pub contracted_hours_per_week: Decimal,
     pub created_at: Option<DateTime<Utc>>,
 }
 
@@ -229,6 +248,8 @@ impl From<Employment> for EmploymentResponseDto {
             id: entity.id,
             employee_id: entity.employee_id,
             employment_status: entity.employment_status,
+            contracted_hours_per_week: entity.contracted_hours_per_week,
+            punch_required: entity.punch_required,
             join_date: entity.join_date,
             end_join_date: entity.end_join_date,
             department_id: entity.department_id,
@@ -248,7 +269,7 @@ impl From<Employment> for EmploymentSummaryDto {
             id: entity.id,
             employee_id: entity.employee_id,
             employment_status: entity.employment_status,
-            join_date: entity.join_date,
+            contracted_hours_per_week: entity.contracted_hours_per_week,
             created_at,
         }
     }
@@ -260,6 +281,8 @@ impl From<CreateEmploymentDto> for Employment {
             id: Uuid::new_v4(),
             employee_id: dto.employee_id,
             employment_status: dto.employment_status,
+            contracted_hours_per_week: dto.contracted_hours_per_week,
+            punch_required: dto.punch_required,
             join_date: dto.join_date,
             end_join_date: dto.end_join_date,
             department_id: dto.department_id,
@@ -278,6 +301,8 @@ impl From<&Employment> for EmploymentResponseDto {
             id: entity.id.clone(),
             employee_id: entity.employee_id.clone(),
             employment_status: entity.employment_status.clone(),
+            contracted_hours_per_week: entity.contracted_hours_per_week.clone(),
+            punch_required: entity.punch_required.clone(),
             join_date: entity.join_date.clone(),
             end_join_date: entity.end_join_date.clone(),
             department_id: entity.department_id.clone(),
@@ -300,6 +325,8 @@ impl backbone_core::ApplyUpdateDto<UpdateEmploymentDto> for Employment {
     fn apply_update(mut self, dto: UpdateEmploymentDto) -> backbone_core::ServiceResult<Self> {
         self.employee_id = dto.employee_id;
         self.employment_status = dto.employment_status;
+        self.contracted_hours_per_week = dto.contracted_hours_per_week;
+        self.punch_required = dto.punch_required;
         self.join_date = dto.join_date;
         self.end_join_date = dto.end_join_date;
         self.department_id = dto.department_id;

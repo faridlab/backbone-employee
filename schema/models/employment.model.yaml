@@ -24,6 +24,16 @@ models:
         attributes: ["@required", "@default(permanent)"]
         description: "permanent/contract/probation/associate"
 
+      contracted_hours_per_week:
+        type: decimal
+        attributes: ["@required", "@default(40)", "@precision(5,2)", "@positive"]
+        description: "Hours per week the contract buys — 40 logged against a 20-hour contract reads as the exception it is, and capacity figures stop assuming everyone is full time"
+
+      punch_required:
+        type: boolean
+        attributes: ["@required", "@default(true)"]
+        description: "Whether this person must punch at all — working from home with no punch is then distinguishable from not turning up"
+
       join_date:
         type: date
         attributes: ["@required"]

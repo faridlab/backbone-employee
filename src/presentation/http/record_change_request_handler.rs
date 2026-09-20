@@ -186,4 +186,3 @@ pub fn create_protected_record_change_request_routes<A: AuthMiddleware + Send + 
             }
         }))
 }
-

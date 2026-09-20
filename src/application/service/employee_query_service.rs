@@ -722,6 +722,8 @@ fn employment_to_dto(e: Employment) -> Result<EmploymentDto> {
         employment_status: e.employment_status,
         join_date: e.join_date,
         end_join_date: e.end_join_date,
+        contracted_hours_per_week: e.contracted_hours_per_week,
+        punch_required: e.punch_required,
         department_id: e.department_id,
         level_id: e.level_id,
         position_id: e.position_id,

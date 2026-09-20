@@ -232,7 +232,7 @@ impl EmployeeModule {
             self.record_change_service.clone(),
         )
     }
-// END CUSTOM
+    // END CUSTOM
 }
 
 /// Builder for EmployeeModule

@@ -46,6 +46,7 @@ pub struct EmploymentPaginatedResult {
 pub struct EmploymentFilter {
     pub employee_id: Option<Uuid>,
     pub employment_status: Option<EmploymentStatus>,
+    pub punch_required: Option<bool>,
     pub department_id: Option<Uuid>,
     pub level_id: Option<Uuid>,
     pub position_id: Option<Uuid>,
@@ -56,7 +57,7 @@ pub struct EmploymentFilter {
 impl EmploymentFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.employee_id.is_some() || self.employment_status.is_some() || self.department_id.is_some() || self.level_id.is_some() || self.position_id.is_some() || self.direct_manager_id.is_some() || self.status.is_some()
+        self.employee_id.is_some() || self.employment_status.is_some() || self.punch_required.is_some() || self.department_id.is_some() || self.level_id.is_some() || self.position_id.is_some() || self.direct_manager_id.is_some() || self.status.is_some()
     }
 }
 

@@ -318,4 +318,3 @@ impl backbone_core::ApplyUpdateDto<UpdateRecordChangeRequestDto> for RecordChang
 // Add custom DTOs specific to RecordChangeRequest here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
-

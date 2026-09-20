@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
+use rust_decimal::Decimal;
 
 use super::EmploymentStatus;
 use super::EmploymentState;
@@ -53,6 +54,8 @@ pub struct Employment {
     pub id: Uuid,
     pub employee_id: Uuid,
     pub employment_status: EmploymentStatus,
+    pub contracted_hours_per_week: Decimal,
+    pub punch_required: bool,
     pub join_date: NaiveDate,
     pub end_join_date: Option<NaiveDate>,
     pub department_id: Option<Uuid>,
@@ -72,11 +75,13 @@ impl Employment {
     }
 
     /// Create a new Employment with required fields
-    pub fn new(employee_id: Uuid, employment_status: EmploymentStatus, join_date: NaiveDate, status: EmploymentState) -> Self {
+    pub fn new(employee_id: Uuid, employment_status: EmploymentStatus, contracted_hours_per_week: Decimal, punch_required: bool, join_date: NaiveDate, status: EmploymentState) -> Self {
         Self {
             id: Uuid::new_v4(),
             employee_id,
             employment_status,
+            contracted_hours_per_week,
+            punch_required,
             join_date,
             end_join_date: None,
             department_id: None,
@@ -192,6 +197,12 @@ impl Employment {
                 "employment_status" => {
                     if let Ok(v) = serde_json::from_value(value) { self.employment_status = v; }
                 }
+                "contracted_hours_per_week" => {
+                    if let Ok(v) = serde_json::from_value(value) { self.contracted_hours_per_week = v; }
+                }
+                "punch_required" => {
+                    if let Ok(v) = serde_json::from_value(value) { self.punch_required = v; }
+                }
                 "join_date" => {
                     if let Ok(v) = serde_json::from_value(value) { self.join_date = v; }
                 }
@@ -289,6 +300,8 @@ impl backbone_orm::EntityRepoMeta for Employment {
 pub struct EmploymentBuilder {
     employee_id: Option<Uuid>,
     employment_status: Option<EmploymentStatus>,
+    contracted_hours_per_week: Option<Decimal>,
+    punch_required: Option<bool>,
     join_date: Option<NaiveDate>,
     end_join_date: Option<NaiveDate>,
     department_id: Option<Uuid>,
@@ -308,6 +321,18 @@ impl EmploymentBuilder {
     /// Set the employment_status field (default: `EmploymentStatus::default()`)
     pub fn employment_status(mut self, value: EmploymentStatus) -> Self {
         self.employment_status = Some(value);
+        self
+    }
+
+    /// Set the contracted_hours_per_week field (default: `Decimal::from(40)`)
+    pub fn contracted_hours_per_week(mut self, value: Decimal) -> Self {
+        self.contracted_hours_per_week = Some(value);
+        self
+    }
+
+    /// Set the punch_required field (default: `true`)
+    pub fn punch_required(mut self, value: bool) -> Self {
+        self.punch_required = Some(value);
         self
     }
 
@@ -364,6 +389,8 @@ impl EmploymentBuilder {
             id: Uuid::new_v4(),
             employee_id,
             employment_status: self.employment_status.unwrap_or_default(),
+            contracted_hours_per_week: self.contracted_hours_per_week.unwrap_or(Decimal::from(40)),
+            punch_required: self.punch_required.unwrap_or(true),
             join_date,
             end_join_date: self.end_join_date,
             department_id: self.department_id,

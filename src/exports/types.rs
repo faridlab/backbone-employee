@@ -834,6 +834,8 @@ pub struct EmploymentDto {
     pub id: EmploymentId,
     pub employee_id: Uuid,
     pub employment_status: EmploymentStatus,
+    pub contracted_hours_per_week: Decimal,
+    pub punch_required: bool,
     pub join_date: NaiveDate,
     pub end_join_date: Option<NaiveDate>,
     pub department_id: Option<Uuid>,
