@@ -75,6 +75,9 @@ pub use events::*;
 /// - `PiiAccessLogDto` - Data transfer object for PiiAccessLog
 /// - `PiiAccessLogSummary` - Summary view of PiiAccessLog
 /// - `PiiAccessLogId` - Type-safe ID wrapper
+/// - `RecordChangeRequestDto` - Data transfer object for RecordChangeRequest
+/// - `RecordChangeRequestSummary` - Summary view of RecordChangeRequest
+/// - `RecordChangeRequestId` - Type-safe ID wrapper
 /// - `ReligionDto` - Data transfer object for Religion
 /// - `ReligionSummary` - Summary view of Religion
 /// - `ReligionId` - Type-safe ID wrapper
@@ -128,6 +131,9 @@ pub use events::*;
 /// - `PiiAccessLogCreatedEvent` - Published when PiiAccessLog is created
 /// - `PiiAccessLogUpdatedEvent` - Published when PiiAccessLog is updated
 /// - `PiiAccessLogDeletedEvent` - Published when PiiAccessLog is deleted
+/// - `RecordChangeRequestCreatedEvent` - Published when RecordChangeRequest is created
+/// - `RecordChangeRequestUpdatedEvent` - Published when RecordChangeRequest is updated
+/// - `RecordChangeRequestDeletedEvent` - Published when RecordChangeRequest is deleted
 /// - `ReligionCreatedEvent` - Published when Religion is created
 /// - `ReligionUpdatedEvent` - Published when Religion is updated
 /// - `ReligionDeletedEvent` - Published when Religion is deleted

@@ -18,6 +18,7 @@ pub mod employee_work_experience_domain_policy;
 pub mod employment_domain_policy;
 pub mod employment_history_domain_policy;
 pub mod pii_access_log_domain_policy;
+pub mod record_change_request_domain_policy;
 pub mod religion_domain_policy;
 
 pub use bank_domain_policy::BankDomainPolicy;
@@ -36,6 +37,7 @@ pub use employee_work_experience_domain_policy::EmployeeWorkExperienceDomainPoli
 pub use employment_domain_policy::EmploymentDomainPolicy;
 pub use employment_history_domain_policy::EmploymentHistoryDomainPolicy;
 pub use pii_access_log_domain_policy::PiiAccessLogDomainPolicy;
+pub use record_change_request_domain_policy::RecordChangeRequestDomainPolicy;
 pub use religion_domain_policy::ReligionDomainPolicy;
 
 // <<< CUSTOM

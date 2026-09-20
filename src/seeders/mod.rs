@@ -25,6 +25,7 @@ mod employee_work_experience_seeder;
 mod employment_seeder;
 mod employment_history_seeder;
 mod pii_access_log_seeder;
+mod record_change_request_seeder;
 mod religion_seeder;
 
 pub use bank_seeder::SeedBankSeeder;
@@ -43,6 +44,7 @@ pub use employee_work_experience_seeder::SeedEmployeeWorkExperienceSeeder;
 pub use employment_seeder::SeedEmploymentSeeder;
 pub use employment_history_seeder::SeedEmploymentHistorySeeder;
 pub use pii_access_log_seeder::SeedPiiAccessLogSeeder;
+pub use record_change_request_seeder::SeedRecordChangeRequestSeeder;
 pub use religion_seeder::SeedReligionSeeder;
 
 // ============================================================================

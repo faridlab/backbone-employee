@@ -18,6 +18,7 @@ pub mod employee_work_experience;
 pub mod employment;
 pub mod employment_history;
 pub mod pii_access_log;
+pub mod record_change_request;
 pub mod religion;
 pub mod data_category;
 pub mod lawful_basis;
@@ -35,6 +36,7 @@ pub mod tax_salary;
 pub mod employment_status;
 pub mod employment_state;
 pub mod employment_action;
+pub mod record_change_status;
 
 // Re-exports
 pub use bank::Bank;
@@ -85,6 +87,9 @@ pub use employment_history::EmploymentHistoryId;
 pub use pii_access_log::PiiAccessLog;
 pub use pii_access_log::PiiAccessLogBuilder;
 pub use pii_access_log::PiiAccessLogId;
+pub use record_change_request::RecordChangeRequest;
+pub use record_change_request::RecordChangeRequestBuilder;
+pub use record_change_request::RecordChangeRequestId;
 pub use religion::Religion;
 pub use religion::ReligionBuilder;
 pub use religion::ReligionId;
@@ -104,6 +109,7 @@ pub use tax_salary::TaxSalary;
 pub use employment_status::EmploymentStatus;
 pub use employment_state::EmploymentState;
 pub use employment_action::EmploymentAction;
+pub use record_change_status::RecordChangeStatus;
 
 // ==========================================================================
 // Entity Trait

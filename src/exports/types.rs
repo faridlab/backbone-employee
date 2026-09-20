@@ -979,6 +979,69 @@ pub struct PiiAccessLogRef {
 }
 
 // ============================================================================
+// RECORDCHANGEREQUEST TYPES
+// ============================================================================
+
+/// Type-safe ID for RecordChangeRequest
+///
+/// Use this instead of raw Uuid for type safety across modules.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct RecordChangeRequestId(pub Uuid);
+
+impl RecordChangeRequestId {
+    pub fn new(id: Uuid) -> Self {
+        Self(id)
+    }
+
+    pub fn into_inner(self) -> Uuid {
+        self.0
+    }
+}
+
+impl From<Uuid> for RecordChangeRequestId {
+    fn from(id: Uuid) -> Self {
+        Self(id)
+    }
+}
+
+impl From<RecordChangeRequestId> for Uuid {
+    fn from(id: RecordChangeRequestId) -> Self {
+        id.0
+    }
+}
+
+/// Data transfer object for RecordChangeRequest
+///
+/// This is the public representation of RecordChangeRequest for other modules.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordChangeRequestDto {
+    pub id: RecordChangeRequestId,
+    pub employee_id: Uuid,
+    pub field_path: String,
+    pub current_value: Option<String>,
+    pub proposed_value: Option<String>,
+    pub reason: Option<String>,
+    pub status: RecordChangeStatus,
+    pub approval_request_id: Option<Uuid>,
+    pub decided_at: Option<DateTime<Utc>>,
+    pub applied_at: Option<DateTime<Utc>>,
+    pub metadata: serde_json::Value,
+}
+
+/// Summary view of RecordChangeRequest for list displays
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordChangeRequestSummary {
+    pub id: RecordChangeRequestId,
+    pub status: RecordChangeStatus,
+}
+
+/// Reference to RecordChangeRequest for foreign key relationships
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordChangeRequestRef {
+    pub id: RecordChangeRequestId,
+}
+
+// ============================================================================
 // RELIGION TYPES
 // ============================================================================
 

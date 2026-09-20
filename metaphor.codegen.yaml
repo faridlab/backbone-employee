@@ -47,6 +47,13 @@ user_owned:
   # (impl block over the module's pub(crate) services — the composing app can't reach them).
   # Mirrors `TimeoffModule::readonly_routes`.
   - "src/presentation/http/guarded_routes.rs"
+  # The self-service record-change lifecycle (approvals seam port + service),
+  # and the emitted-for-it table migration pinned here so a later --force
+  # sweep treats it as hand-maintained (it carries no generator header).
+  - "src/application/service/record_change_approvals_port.rs"
+  - "src/application/service/record_change_service.rs"
+  - "migrations/20260911064001_create_record_change_request_table.up.sql"
+  - "migrations/20260911064001_create_record_change_request_table.down.sql"
 
   # Hand-authored behavior (services + their HTTP surface). Examples:
   # - "src/application/service/onboarding_service.rs"

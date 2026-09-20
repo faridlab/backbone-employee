@@ -22,10 +22,10 @@ pub mod employee_work_experience_api_test;
 pub mod employment_api_test;
 pub mod employment_history_api_test;
 pub mod pii_access_log_api_test;
+pub mod record_change_request_api_test;
 pub mod religion_api_test;
 
 // Re-exports for convenience
-pub use crud_test_base::*;
 pub use bank_api_test::*;
 pub use data_consent_api_test::*;
 pub use data_subject_request_api_test::*;
@@ -42,4 +42,5 @@ pub use employee_work_experience_api_test::*;
 pub use employment_api_test::*;
 pub use employment_history_api_test::*;
 pub use pii_access_log_api_test::*;
+pub use record_change_request_api_test::*;
 pub use religion_api_test::*;

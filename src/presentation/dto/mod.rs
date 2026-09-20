@@ -21,6 +21,7 @@ pub mod employee_work_experience_dto;
 pub mod employment_dto;
 pub mod employment_history_dto;
 pub mod pii_access_log_dto;
+pub mod record_change_request_dto;
 pub mod religion_dto;
 
 // Re-exports
@@ -151,6 +152,14 @@ pub use pii_access_log_dto::{
     PiiAccessLogResponseDto,
     PiiAccessLogListResponseDto,
     PiiAccessLogSummaryDto,
+};
+pub use record_change_request_dto::{
+    CreateRecordChangeRequestDto,
+    UpdateRecordChangeRequestDto,
+    PatchRecordChangeRequestDto,
+    RecordChangeRequestResponseDto,
+    RecordChangeRequestListResponseDto,
+    RecordChangeRequestSummaryDto,
 };
 pub use religion_dto::{
     CreateReligionDto,

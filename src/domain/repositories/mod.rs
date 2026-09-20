@@ -22,6 +22,7 @@ pub mod employee_work_experience_repository;
 pub mod employment_repository;
 pub mod employment_history_repository;
 pub mod pii_access_log_repository;
+pub mod record_change_request_repository;
 pub mod religion_repository;
 
 // Re-exports
@@ -120,6 +121,12 @@ pub use pii_access_log_repository::{
     PiiAccessLogPaginationParams,
     PiiAccessLogPaginatedResult,
     PiiAccessLogFilter,
+};
+pub use record_change_request_repository::{
+    RecordChangeRequestRepository,
+    RecordChangeRequestPaginationParams,
+    RecordChangeRequestPaginatedResult,
+    RecordChangeRequestFilter,
 };
 pub use religion_repository::{
     ReligionRepository,

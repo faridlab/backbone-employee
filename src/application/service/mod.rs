@@ -23,9 +23,12 @@ pub mod employee_work_experience_service;
 pub mod employment_service;
 pub mod employment_history_service;
 pub mod pii_access_log_service;
+pub mod record_change_request_service;
 pub mod religion_service;
 
 // <<< CUSTOM
+pub mod record_change_approvals_port;
+pub mod record_change_service;
 // Hand-written `EmployeeQueryService` impl (user-owned file). Standard lookups delegate to the
 // GenericCrudService aliases above; the `employee_ptkp` read-port delegates to the family/tax repos'
 // SQL (override > derived-from-dependents).
@@ -63,6 +66,7 @@ pub use employee_work_experience_service::EmployeeWorkExperienceService;
 pub use employment_service::EmploymentService;
 pub use employment_history_service::EmploymentHistoryService;
 pub use pii_access_log_service::PiiAccessLogService;
+pub use record_change_request_service::RecordChangeRequestService;
 pub use religion_service::ReligionService;
 // <<< CUSTOM
 pub use recruitment_hired_handler::RecruitmentHiredHandler;

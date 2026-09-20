@@ -21,6 +21,7 @@ pub mod employee_work_experience_validator;
 pub mod employment_validator;
 pub mod employment_history_validator;
 pub mod pii_access_log_validator;
+pub mod record_change_request_validator;
 pub mod religion_validator;
 
 pub use bank_validator::{BankValidator, bank_validator};
@@ -39,6 +40,7 @@ pub use employee_work_experience_validator::{EmployeeWorkExperienceValidator, em
 pub use employment_validator::{EmploymentValidator, employment_validator};
 pub use employment_history_validator::{EmploymentHistoryValidator, employment_history_validator};
 pub use pii_access_log_validator::{PiiAccessLogValidator, pii_access_log_validator};
+pub use record_change_request_validator::{RecordChangeRequestValidator, record_change_request_validator};
 pub use religion_validator::{ReligionValidator, religion_validator};
 
 // <<< CUSTOM

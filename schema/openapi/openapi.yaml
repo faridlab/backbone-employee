@@ -43,6 +43,8 @@ tags:
     description: EmploymentHistory management endpoints
   - name: PiiAccessLogs
     description: PiiAccessLog management endpoints
+  - name: RecordChangeRequests
+    description: RecordChangeRequest management endpoints
   - name: Religions
     description: Religion management endpoints
 
@@ -5903,6 +5905,372 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
+  /api/v1/employee/record_change_requests:
+    get:
+      tags:
+        - RecordChangeRequests
+      summary: List RecordChangeRequests
+      description: Get a paginated list of RecordChangeRequests with optional filtering and sorting
+      operationId: listRecordChangeRequests
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SortByParam'
+        - $ref: '#/components/parameters/SortOrderParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequestList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Create RecordChangeRequest
+      description: Create a new RecordChangeRequest
+      operationId: createRecordChangeRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecordChangeRequestRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/employee/record_change_requests/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+
+    get:
+      tags:
+        - RecordChangeRequests
+      summary: Get RecordChangeRequest by ID
+      operationId: getRecordChangeRequest
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - RecordChangeRequests
+      summary: Update RecordChangeRequest (full)
+      operationId: updateRecordChangeRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRecordChangeRequestRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - RecordChangeRequests
+      summary: Update RecordChangeRequest (partial)
+      operationId: patchRecordChangeRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchRecordChangeRequestRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - RecordChangeRequests
+      summary: Delete RecordChangeRequest (soft)
+      operationId: deleteRecordChangeRequest
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/employee/record_change_requests/bulk:
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Bulk create RecordChangeRequests
+      operationId: bulkCreateRecordChangeRequests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateRecordChangeRequestRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordChangeRequest'
+    put:
+      tags:
+        - RecordChangeRequests
+      summary: Bulk update RecordChangeRequests (full, atomic)
+      operationId: bulkUpdateRecordChangeRequests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                allOf:
+                  - type: object
+                    required: [id]
+                    properties:
+                      id:
+                        type: string
+                  - $ref: '#/components/schemas/UpdateRecordChangeRequestRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequestBulkResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    patch:
+      tags:
+        - RecordChangeRequests
+      summary: Bulk partial-update RecordChangeRequests (atomic)
+      operationId: bulkPatchRecordChangeRequests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  required: [ids, patch]
+                  properties:
+                    ids:
+                      type: array
+                      items: { type: string }
+                    patch:
+                      type: object
+                      additionalProperties: true
+                - type: object
+                  required: [items]
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        required: [id, patch]
+                        properties:
+                          id: { type: string }
+                          patch: { type: object, additionalProperties: true }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequestBulkResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v1/employee/record_change_requests/upsert:
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Upsert RecordChangeRequest
+      operationId: upsertRecordChangeRequest
+      parameters:
+        - name: key_field
+          in: query
+          schema:
+            type: string
+        - name: key_value
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRecordChangeRequestRequest'
+      responses:
+        '200':
+          description: Upserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequest'
+
+  /api/v1/employee/record_change_requests/trash:
+    get:
+      tags:
+        - RecordChangeRequests
+      summary: List deleted RecordChangeRequests
+      operationId: listDeletedRecordChangeRequests
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequestList'
+
+  /api/v1/employee/record_change_requests/{id}/restore:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Restore deleted RecordChangeRequest
+      operationId: restoreRecordChangeRequest
+      responses:
+        '200':
+          description: Restored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/employee/record_change_requests/empty:
+    delete:
+      tags:
+        - RecordChangeRequests
+      summary: Empty trash for RecordChangeRequests
+      operationId: emptyTrashRecordChangeRequests
+      responses:
+        '200':
+          description: Trash emptied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted_count:
+                    type: integer
+
+  /api/v1/employee/record_change_requests/delete/bulk:
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Bulk soft-delete RecordChangeRequests by ids (atomic)
+      operationId: bulkDeleteRecordChangeRequests
+      requestBody:
+        $ref: '#/components/requestBodies/BatchIds'
+      responses:
+        '200':
+          description: Soft-deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  soft_deleted: { type: integer }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v1/employee/record_change_requests/restore/bulk:
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Bulk restore RecordChangeRequests by ids (atomic)
+      operationId: bulkRestoreRecordChangeRequests
+      requestBody:
+        $ref: '#/components/requestBodies/BatchIds'
+      responses:
+        '200':
+          description: Restored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordChangeRequestBulkResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v1/employee/record_change_requests/restore/all:
+    post:
+      tags:
+        - RecordChangeRequests
+      summary: Restore all soft-deleted RecordChangeRequests
+      operationId: restoreAllRecordChangeRequests
+      responses:
+        '200':
+          description: Restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restored: { type: integer }
+
+  /api/v1/employee/record_change_requests/trash/bulk:
+    delete:
+      tags:
+        - RecordChangeRequests
+      summary: Bulk permanently-delete RecordChangeRequests from trash by ids (atomic)
+      operationId: bulkPermanentDeleteRecordChangeRequests
+      requestBody:
+        $ref: '#/components/requestBodies/BatchIds'
+      responses:
+        '200':
+          description: Permanently deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permanently_deleted: { type: integer }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
   /api/v1/employee/religions:
     get:
       tags:
@@ -8618,6 +8986,184 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PiiAccessLog'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    RecordChangeRequest:
+      type: object
+      required:
+        - id
+        - employee_id
+        - field_path
+        - status
+        - metadata
+      properties:
+        id:
+          type: string
+          format: uuid
+        employee_id:
+          type: string
+          format: uuid
+        field_path:
+          type: string
+        current_value:
+          nullable: true
+          type: string
+        proposed_value:
+          nullable: true
+          type: string
+        reason:
+          nullable: true
+          type: string
+        status:
+          type: string
+        approval_request_id:
+          nullable: true
+          type: string
+          format: uuid
+        decided_at:
+          nullable: true
+          type: string
+          format: date-time
+        applied_at:
+          nullable: true
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    RecordChangeRequestBulkResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordChangeRequest'
+        total: { type: integer }
+        failed: { type: integer }
+        errors:
+          type: array
+          items: { type: string }
+
+    CreateRecordChangeRequestRequest:
+      type: object
+      required:
+        - employee_id
+        - field_path
+        - status
+        - metadata
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        field_path:
+          type: string
+        current_value:
+          nullable: true
+          type: string
+        proposed_value:
+          nullable: true
+          type: string
+        reason:
+          nullable: true
+          type: string
+        status:
+          type: string
+        approval_request_id:
+          nullable: true
+          type: string
+          format: uuid
+        decided_at:
+          nullable: true
+          type: string
+          format: date-time
+        applied_at:
+          nullable: true
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    UpdateRecordChangeRequestRequest:
+      type: object
+      required:
+        - employee_id
+        - field_path
+        - status
+        - metadata
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        field_path:
+          type: string
+        current_value:
+          nullable: true
+          type: string
+        proposed_value:
+          nullable: true
+          type: string
+        reason:
+          nullable: true
+          type: string
+        status:
+          type: string
+        approval_request_id:
+          nullable: true
+          type: string
+          format: uuid
+        decided_at:
+          nullable: true
+          type: string
+          format: date-time
+        applied_at:
+          nullable: true
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    PatchRecordChangeRequestRequest:
+      type: object
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        field_path:
+          type: string
+        current_value:
+          nullable: true
+          type: string
+        proposed_value:
+          nullable: true
+          type: string
+        reason:
+          nullable: true
+          type: string
+        status:
+          type: string
+        approval_request_id:
+          nullable: true
+          type: string
+          format: uuid
+        decided_at:
+          nullable: true
+          type: string
+          format: date-time
+        applied_at:
+          nullable: true
+          type: string
+          format: date-time
+        metadata:
+          type: object
+
+    RecordChangeRequestList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordChangeRequest'
         meta:
           $ref: '#/components/schemas/PaginationMeta'
 

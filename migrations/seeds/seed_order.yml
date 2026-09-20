@@ -27,3 +27,6 @@
 - data_subject_request_seed
 - employee_identity_seed
 - employee_education_seed
+
+# Newly added seeds (preserve manual order above):
+- record_change_request_seed

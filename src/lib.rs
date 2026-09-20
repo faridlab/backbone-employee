@@ -48,6 +48,7 @@ pub use application::service::EmployeeWorkExperienceService;
 pub use application::service::EmploymentService;
 pub use application::service::EmploymentHistoryService;
 pub use application::service::PiiAccessLogService;
+pub use application::service::RecordChangeRequestService;
 pub use application::service::ReligionService;
 
 // Re-exports - Workflows
@@ -86,6 +87,7 @@ pub struct EmployeeModule {
     pub(crate) employment_service: Arc<EmploymentService>,
     pub(crate) employment_history_service: Arc<EmploymentHistoryService>,
     pub(crate) pii_access_log_service: Arc<PiiAccessLogService>,
+    pub(crate) record_change_request_service: Arc<RecordChangeRequestService>,
     pub(crate) religion_service: Arc<ReligionService>,
     // <<< CUSTOM FIELDS
     // Held so the `EmployeeQueryService` impl can delegate `employee_ptkp` to the family/tax repos'
@@ -95,6 +97,11 @@ pub struct EmployeeModule {
     pub(crate) employee_family_repository: Arc<EmployeeFamilyRepository>,
     pub(crate) employee_tax_repository: Arc<EmployeeTaxRepository>,
     pub(crate) db_pool: sqlx::PgPool,
+    /// The self-service record-change lifecycle (submit/apply/refuse/cancel
+    /// over the approvals seam) — user-owned, not schema-derived.
+    pub(crate) record_change_service: std::sync::Arc<
+        crate::application::service::record_change_service::RecordChangeService,
+    >,
     // END CUSTOM
 }
 
@@ -127,6 +134,7 @@ impl EmployeeModule {
             create_employment_routes,
             create_employment_history_routes,
             create_pii_access_log_routes,
+            create_record_change_request_routes,
             create_religion_routes,
         };
 
@@ -147,6 +155,7 @@ impl EmployeeModule {
             .merge(create_employment_routes(self.employment_service.clone()))
             .merge(create_employment_history_routes(self.employment_history_service.clone()))
             .merge(create_pii_access_log_routes(self.pii_access_log_service.clone()))
+            .merge(create_record_change_request_routes(self.record_change_request_service.clone()))
             .merge(create_religion_routes(self.religion_service.clone()))
     }
 
@@ -183,6 +192,7 @@ impl EmployeeModule {
             create_employment_read_routes,
             create_employment_history_read_routes,
             create_pii_access_log_read_routes,
+            create_record_change_request_read_routes,
             create_religion_read_routes,
         };
 
@@ -203,11 +213,26 @@ impl EmployeeModule {
             .merge(create_employment_read_routes(self.employment_service.clone()))
             .merge(create_employment_history_read_routes(self.employment_history_service.clone()))
             .merge(create_pii_access_log_read_routes(self.pii_access_log_service.clone()))
+            .merge(create_record_change_request_read_routes(self.record_change_request_service.clone()))
             .merge(create_religion_read_routes(self.religion_service.clone()))
     }
 
     // <<< CUSTOM METHODS
-    // END CUSTOM
+    /// The record-change lifecycle service (for the composing service to
+    /// wire its approvals adapter onto).
+    pub fn record_change_service(
+        &self,
+    ) -> std::sync::Arc<crate::application::service::record_change_service::RecordChangeService> {
+        self.record_change_service.clone()
+    }
+    
+    /// The record-change verb router (mount under the host's guarded tree).
+    pub fn record_change_verb_routes(&self) -> axum::Router {
+        crate::presentation::http::guarded_routes::record_change_verb_routes(
+            self.record_change_service.clone(),
+        )
+    }
+// END CUSTOM
 }
 
 /// Builder for EmployeeModule
@@ -301,11 +326,20 @@ impl EmployeeModuleBuilder {
         let pii_access_log_repository = Arc::new(PiiAccessLogRepository::new(db_pool.clone()));
         let pii_access_log_service = Arc::new(PiiAccessLogService::with_repository(pii_access_log_repository.clone()));
 
+        // RecordChangeRequest service
+        let record_change_request_repository = Arc::new(RecordChangeRequestRepository::new(db_pool.clone()));
+        let record_change_request_service = Arc::new(RecordChangeRequestService::with_repository(record_change_request_repository.clone()));
+
         // Religion service
         let religion_repository = Arc::new(ReligionRepository::new(db_pool.clone()));
         let religion_service = Arc::new(ReligionService::with_repository(religion_repository.clone()));
 
         // <<< CUSTOM
+        let record_change_service = std::sync::Arc::new(
+            crate::application::service::record_change_service::RecordChangeService::new(
+                db_pool.clone(),
+            ),
+        );
         // END CUSTOM
 
         Ok(EmployeeModule {
@@ -325,11 +359,13 @@ impl EmployeeModuleBuilder {
             employment_service,
             employment_history_service,
             pii_access_log_service,
+            record_change_request_service,
             religion_service,
             // <<< CUSTOM
             employee_family_repository: employee_family_repository.clone(),
             employee_tax_repository: employee_tax_repository.clone(),
             db_pool,
+            record_change_service,
             // END CUSTOM
         })
     }

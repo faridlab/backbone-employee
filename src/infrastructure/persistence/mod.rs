@@ -20,6 +20,7 @@ mod employee_work_experience_repository;
 mod employment_repository;
 mod employment_history_repository;
 mod pii_access_log_repository;
+mod record_change_request_repository;
 mod religion_repository;
 
 // Custom persistence modules
@@ -44,6 +45,7 @@ pub use employee_work_experience_repository::EmployeeWorkExperienceRepository;
 pub use employment_repository::EmploymentRepository;
 pub use employment_history_repository::EmploymentHistoryRepository;
 pub use pii_access_log_repository::PiiAccessLogRepository;
+pub use record_change_request_repository::RecordChangeRequestRepository;
 pub use religion_repository::ReligionRepository;
 
 // Re-export backbone-orm types

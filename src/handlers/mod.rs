@@ -25,6 +25,7 @@ use crate::application::service::EmployeeWorkExperienceService;
 use crate::application::service::EmploymentService;
 use crate::application::service::EmploymentHistoryService;
 use crate::application::service::PiiAccessLogService;
+use crate::application::service::RecordChangeRequestService;
 use crate::application::service::ReligionService;
 
 /// Application state for dependency injection.
@@ -77,6 +78,8 @@ pub struct AppState {
     pub employment_history_service: Arc<EmploymentHistoryService>,
     /// PiiAccessLog service
     pub pii_access_log_service: Arc<PiiAccessLogService>,
+    /// RecordChangeRequest service
+    pub record_change_request_service: Arc<RecordChangeRequestService>,
     /// Religion service
     pub religion_service: Arc<ReligionService>,
 }
@@ -100,6 +103,7 @@ impl AppState {
         employment_service: Arc<EmploymentService>,
         employment_history_service: Arc<EmploymentHistoryService>,
         pii_access_log_service: Arc<PiiAccessLogService>,
+        record_change_request_service: Arc<RecordChangeRequestService>,
         religion_service: Arc<ReligionService>
     ) -> Self {
         Self {
@@ -119,6 +123,7 @@ impl AppState {
             employment_service,
             employment_history_service,
             pii_access_log_service,
+            record_change_request_service,
             religion_service,
         }
     }
@@ -142,6 +147,7 @@ impl AppState {
             employment_service: module.employment_service.clone(),
             employment_history_service: module.employment_history_service.clone(),
             pii_access_log_service: module.pii_access_log_service.clone(),
+            record_change_request_service: module.record_change_request_service.clone(),
             religion_service: module.religion_service.clone(),
         }
     }
@@ -168,6 +174,7 @@ pub struct AppStateBuilder {
     employment_service: Option<Arc<EmploymentService>>,
     employment_history_service: Option<Arc<EmploymentHistoryService>>,
     pii_access_log_service: Option<Arc<PiiAccessLogService>>,
+    record_change_request_service: Option<Arc<RecordChangeRequestService>>,
     religion_service: Option<Arc<ReligionService>>,
 }
 
@@ -273,6 +280,12 @@ impl AppStateBuilder {
         self
     }
 
+    /// Set the RecordChangeRequest service.
+    pub fn with_record_change_request_service(mut self, service: Arc<RecordChangeRequestService>) -> Self {
+        self.record_change_request_service = Some(service);
+        self
+    }
+
     /// Set the Religion service.
     pub fn with_religion_service(mut self, service: Arc<ReligionService>) -> Self {
         self.religion_service = Some(service);
@@ -302,6 +315,7 @@ impl AppStateBuilder {
             employment_service: self.employment_service.expect("employment_service is required"),
             employment_history_service: self.employment_history_service.expect("employment_history_service is required"),
             pii_access_log_service: self.pii_access_log_service.expect("pii_access_log_service is required"),
+            record_change_request_service: self.record_change_request_service.expect("record_change_request_service is required"),
             religion_service: self.religion_service.expect("religion_service is required"),
         }
     }

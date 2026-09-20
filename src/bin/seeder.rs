@@ -28,6 +28,7 @@ use backbone_employee::seeders::SeedEmployeeWorkExperienceSeeder;
 use backbone_employee::seeders::SeedEmploymentSeeder;
 use backbone_employee::seeders::SeedEmploymentHistorySeeder;
 use backbone_employee::seeders::SeedPiiAccessLogSeeder;
+use backbone_employee::seeders::SeedRecordChangeRequestSeeder;
 use backbone_employee::seeders::SeedReligionSeeder;
 use backbone_employee::seeders::Seeder;
 
@@ -73,6 +74,7 @@ async fn main() -> Result<()> {
     seeders.push(Box::new(SeedEmploymentSeeder::new()));
     seeders.push(Box::new(SeedEmploymentHistorySeeder::new()));
     seeders.push(Box::new(SeedPiiAccessLogSeeder::new()));
+    seeders.push(Box::new(SeedRecordChangeRequestSeeder::new()));
     seeders.push(Box::new(SeedReligionSeeder::new()));
 
     // Sort by order

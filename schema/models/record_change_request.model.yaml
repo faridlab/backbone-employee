@@ -1,0 +1,84 @@
+# =============================================================================
+# Domain: employee
+# Entity: RecordChangeRequest
+# Description: An employee's ask for a change to their own record — the
+#              reviewable trail between "the data is out of date" and "the
+#              company record changed". Files into the approvals spine as
+#              resource 'employee_record'; nothing is written to the record
+#              itself until the request is approved AND applied.
+# =============================================================================
+
+models:
+  - name: RecordChangeRequest
+    collection: record_change_requests
+    description: "An employee's proposed change to their own record, with its approval trail."
+
+    fields:
+      id:
+        type: uuid
+        attributes: ["@id", "@default(uuid)"]
+
+      employee_id:
+        type: uuid
+        attributes: ["@required", "@foreign_key(Employee.id)"]
+        description: "The employee whose record the change concerns"
+
+      field_path:
+        type: string
+        attributes: ["@required", "@length(max=120)"]
+        description: "Which fact (e.g. 'mobile_phone', 'phone', 'email' on the base profile)"
+
+      current_value:
+        type: string?
+        attributes: ["@length(max=2000)"]
+        description: "What the company holds today (the requester's copy at ask time)"
+
+      proposed_value:
+        type: string?
+        attributes: ["@length(max=2000)"]
+        description: "What the employee says it should be"
+
+      reason:
+        type: string?
+        attributes: ["@length(max=1000)"]
+        description: "Why the change is asked for"
+
+      status:
+        type: RecordChangeStatus
+        attributes: ["@required", "@default(pending)"]
+        description: "pending → ready (approved) → applied; or rejected / cancelled"
+
+      approval_request_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "The approvals-engine request vouching for this change"
+
+      decided_at:
+        type: datetime?
+        description: "When the approval verdict landed"
+
+      applied_at:
+        type: datetime?
+        description: "When the approved change was written to the record"
+
+      metadata:
+        type: Metadata
+        attributes: ["@audit_metadata"]
+        description: Audit metadata
+
+    indexes:
+      - type: index
+        fields: [employee_id]
+      - type: index
+        fields: [status]
+
+enums:
+  - name: RecordChangeStatus
+    description: "The review trail: asked, approved-ready, applied — or refused."
+    variants:
+      - name: pending
+        default: true
+      - name: ready
+      - name: applied
+      - name: rejected
+      - name: cancelled

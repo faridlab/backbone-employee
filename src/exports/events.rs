@@ -443,6 +443,33 @@ pub struct PiiAccessLogDeletedEvent {
 }
 
 // ============================================================================
+// RECORDCHANGEREQUEST EVENTS
+// ============================================================================
+
+/// Event published when a RecordChangeRequest is created
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordChangeRequestCreatedEvent {
+    pub id: RecordChangeRequestId,
+    pub data: RecordChangeRequestDto,
+    pub occurred_at: DateTime<Utc>,
+}
+
+/// Event published when a RecordChangeRequest is updated
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordChangeRequestUpdatedEvent {
+    pub id: RecordChangeRequestId,
+    pub data: RecordChangeRequestDto,
+    pub occurred_at: DateTime<Utc>,
+}
+
+/// Event published when a RecordChangeRequest is deleted
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordChangeRequestDeletedEvent {
+    pub id: RecordChangeRequestId,
+    pub occurred_at: DateTime<Utc>,
+}
+
+// ============================================================================
 // RELIGION EVENTS
 // ============================================================================
 
@@ -525,6 +552,9 @@ pub enum EmployeeEvent {
     PiiAccessLogCreated(PiiAccessLogCreatedEvent),
     PiiAccessLogUpdated(PiiAccessLogUpdatedEvent),
     PiiAccessLogDeleted(PiiAccessLogDeletedEvent),
+    RecordChangeRequestCreated(RecordChangeRequestCreatedEvent),
+    RecordChangeRequestUpdated(RecordChangeRequestUpdatedEvent),
+    RecordChangeRequestDeleted(RecordChangeRequestDeletedEvent),
     ReligionCreated(ReligionCreatedEvent),
     ReligionUpdated(ReligionUpdatedEvent),
     ReligionDeleted(ReligionDeletedEvent),

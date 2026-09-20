@@ -25,6 +25,7 @@ use super::{
     employment_handler::create_employment_routes,
     employment_history_handler::create_employment_history_routes,
     pii_access_log_handler::create_pii_access_log_routes,
+    record_change_request_handler::create_record_change_request_routes,
     religion_handler::create_religion_routes,
 };
 
@@ -45,6 +46,7 @@ use crate::application::service::{
     EmploymentService,
     EmploymentHistoryService,
     PiiAccessLogService,
+    RecordChangeRequestService,
     ReligionService,
 };
 
@@ -66,6 +68,7 @@ pub struct HttpServices {
     pub employment: Arc<EmploymentService>,
     pub employment_history: Arc<EmploymentHistoryService>,
     pub pii_access_log: Arc<PiiAccessLogService>,
+    pub record_change_request: Arc<RecordChangeRequestService>,
     pub religion: Arc<ReligionService>,
 }
 
@@ -118,6 +121,8 @@ pub fn configure_routes(services: HttpServices) -> Router {
         .merge(create_employment_history_routes(services.employment_history))
         // PiiAccessLog routes (12 Backbone endpoints)
         .merge(create_pii_access_log_routes(services.pii_access_log))
+        // RecordChangeRequest routes (12 Backbone endpoints)
+        .merge(create_record_change_request_routes(services.record_change_request))
         // Religion routes (12 Backbone endpoints)
         .merge(create_religion_routes(services.religion))
 }
@@ -188,6 +193,10 @@ pub mod individual {
 
     pub fn pii_access_log_routes(service: Arc<PiiAccessLogService>) -> Router {
         create_pii_access_log_routes(service)
+    }
+
+    pub fn record_change_request_routes(service: Arc<RecordChangeRequestService>) -> Router {
+        create_record_change_request_routes(service)
     }
 
     pub fn religion_routes(service: Arc<ReligionService>) -> Router {

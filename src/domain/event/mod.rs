@@ -34,6 +34,8 @@ pub mod employment_history_events;
 pub mod employment_history_event_handlers;
 pub mod pii_access_log_events;
 pub mod pii_access_log_event_handlers;
+pub mod record_change_request_events;
+pub mod record_change_request_event_handlers;
 pub mod religion_events;
 pub mod religion_event_handlers;
 
@@ -69,6 +71,8 @@ pub use employment_history_events::{EmploymentHistoryEvent, EmploymentHistoryEve
 pub use employment_history_event_handlers::EmploymentHistoryEventHandler;
 pub use pii_access_log_events::{PiiAccessLogEvent, PiiAccessLogEventPublisher, NoopPiiAccessLogEventPublisher};
 pub use pii_access_log_event_handlers::PiiAccessLogEventHandler;
+pub use record_change_request_events::{RecordChangeRequestEvent, RecordChangeRequestEventPublisher, NoopRecordChangeRequestEventPublisher};
+pub use record_change_request_event_handlers::RecordChangeRequestEventHandler;
 pub use religion_events::{ReligionEvent, ReligionEventPublisher, NoopReligionEventPublisher};
 pub use religion_event_handlers::ReligionEventHandler;
 
