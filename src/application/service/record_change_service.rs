@@ -42,6 +42,22 @@ pub enum RecordChangeError {
 /// approved. Everything else refuses typed at apply time.
 const APPLIABLE_FIELDS: &[&str] = &["mobile_phone", "phone", "email"];
 
+/// The STRUCTURED kinds an approved change can apply onto a satellite
+/// table. The request's `field_path` names the kind; its `proposed_value`
+/// carries a JSON object with the kind's fields. Each entry documents the
+/// object it expects — the apply parses strictly (a missing field refuses
+/// typed, never silently defaults).
+///
+/// - `bank_account`  → {bankId, accountNumber, accountName} — a NEW
+///   employee_bank_accounts row (the account history keeps the old rows).
+/// - `tax_status`    → {ptkpOverride} — upserts the employee_tax row's
+///   PTKP override (the statutory field the payroll computation reads).
+/// - `family_member` → {name, relationship, birthDate?} — a NEW
+///   employee_family row.
+/// - `identity`      → {identityType, identityNumber, identityExpiryDate?,
+///   isPermanent?} — a NEW employee_identity row.
+const APPLIABLE_KINDS: &[&str] = &["bank_account", "tax_status", "family_member", "identity"];
+
 pub struct RecordChangeService {
     pool: PgPool,
     approvals: RwLock<std::sync::Arc<dyn RecordChangeFilingPort>>,
@@ -157,7 +173,8 @@ impl RecordChangeService {
                 return Err(RecordChangeError::Verdict("the approval was rejected"));
             }
         }
-        if !APPLIABLE_FIELDS.contains(&row.field_path.as_str()) {
+        let structured = APPLIABLE_KINDS.contains(&row.field_path.as_str());
+        if !structured && !APPLIABLE_FIELDS.contains(&row.field_path.as_str()) {
             return Err(RecordChangeError::Invalid(
                 "this field is not appliable through the self-service lane — route it through HR's audited edit",
             ));
@@ -167,21 +184,26 @@ impl RecordChangeService {
         if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
             backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
         }
-        let column = row.field_path.as_str();
-        // field_path is whitelist-checked above, so the interpolation names
-        // one of three known columns — never client input by the time it
-        // reaches here.
-        let sql = format!(
-            "UPDATE employee.employees SET {column} = $2 WHERE id = $1 AND (metadata->>'deleted_at') IS NULL"
-        );
-        let updated = sqlx::query(&sql)
-            .bind(row.employee_id)
-            .bind(&row.proposed_value)
-            .execute(&mut *tx)
-            .await?
-            .rows_affected();
-        if updated != 1 {
-            return Err(RecordChangeError::NotFound);
+
+        if structured {
+            self.apply_structured(&mut tx, &row).await?;
+        } else {
+            let column = row.field_path.as_str();
+            // field_path is whitelist-checked above, so the interpolation names
+            // one of three known columns — never client input by the time it
+            // reaches here.
+            let sql = format!(
+                "UPDATE employee.employees SET {column} = $2 WHERE id = $1 AND (metadata->>'deleted_at') IS NULL"
+            );
+            let updated = sqlx::query(&sql)
+                .bind(row.employee_id)
+                .bind(&row.proposed_value)
+                .execute(&mut *tx)
+                .await?
+                .rows_affected();
+            if updated != 1 {
+                return Err(RecordChangeError::NotFound);
+            }
         }
         sqlx::query(
             r#"UPDATE employee.record_change_requests
@@ -192,6 +214,164 @@ impl RecordChangeService {
         .execute(&mut *tx)
         .await?;
         tx.commit().await?;
+        Ok(())
+    }
+
+    /// Apply a structured kind onto its satellite table. The proposed value
+    /// parses STRICTLY: a missing or wrongly-typed field refuses with the
+    /// field named — never a silent default.
+    async fn apply_structured(
+        &self,
+        tx: &mut sqlx::PgTransaction<'_>,
+        row: &Row,
+    ) -> Result<(), RecordChangeError> {
+        let Some(proposed) = row.proposed_value.as_deref().map(str::trim) else {
+            return Err(RecordChangeError::Invalid(
+                "a structured change needs its proposed JSON object",
+            ));
+        };
+        let v: serde_json::Value = serde_json::from_str(proposed).map_err(|_| {
+            RecordChangeError::Invalid("a structured change's proposed value must be a JSON object")
+        })?;
+        if !v.is_object() {
+            return Err(RecordChangeError::Invalid(
+                "a structured change's proposed value must be a JSON object",
+            ));
+        }
+        let field = |name: &str| -> Result<serde_json::Value, RecordChangeError> {
+            v.get(name).cloned().ok_or_else(|| {
+                RecordChangeError::Invalid(
+                    "a required field of the structured change is missing from the proposed object",
+                )
+            })
+        };
+        let opt_str = |name: &str| -> Option<String> {
+            v.get(name)
+                .and_then(|x| x.as_str())
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty())
+        };
+
+        match row.field_path.as_str() {
+            "bank_account" => {
+                let bank_id: uuid::Uuid =
+                    serde_json::from_value(field("bankId")?).map_err(|_| {
+                        RecordChangeError::Invalid("bankId must be a uuid")
+                    })?;
+                let account_number = field("accountNumber")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("accountNumber must be a string"))?
+                    .trim()
+                    .to_string();
+                let account_name = field("accountName")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("accountName must be a string"))?
+                    .trim()
+                    .to_string();
+                sqlx::query(
+                    r#"INSERT INTO employee.employee_bank_accounts
+                           (employee_id, bank_id, account_number, account_name)
+                       VALUES ($1, $2, $3, $4)"#,
+                )
+                .bind(row.employee_id)
+                .bind(bank_id)
+                .bind(&account_number)
+                .bind(&account_name)
+                .execute(&mut **tx)
+                .await?;
+            }
+            "tax_status" => {
+                let ptkp = field("ptkpOverride")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("ptkpOverride must be a string"))?
+                    .trim()
+                    .to_uppercase();
+                // Upsert: the employee has at most one tax row; a change
+                // edits the PTKP override on it (creating the row when the
+                // employee never had one).
+                sqlx::query(
+                    r#"INSERT INTO employee.employee_taxes (employee_id, ptkp_override)
+                       SELECT $1, $2
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM employee.employee_taxes WHERE employee_id = $1
+                        )"#,
+                )
+                .bind(row.employee_id)
+                .bind(&ptkp)
+                .execute(&mut **tx)
+                .await?;
+                sqlx::query(
+                    "UPDATE employee.employee_taxes SET ptkp_override = $2 WHERE employee_id = $1",
+                )
+                .bind(row.employee_id)
+                .bind(&ptkp)
+                .execute(&mut **tx)
+                .await?;
+            }
+            "family_member" => {
+                let name = field("name")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("name must be a string"))?
+                    .trim()
+                    .to_string();
+                let relationship = field("relationship")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("relationship must be a string"))?
+                    .trim()
+                    .to_string();
+                let birth_date = opt_str("birthDate")
+                    .and_then(|d| chrono::NaiveDate::parse_from_str(&d, "%Y-%m-%d").ok());
+                sqlx::query(
+                    r#"INSERT INTO employee.employee_families
+                           (employee_id, name, relationship, birth_date)
+                       VALUES ($1, $2, $3, $4)"#,
+                )
+                .bind(row.employee_id)
+                .bind(&name)
+                .bind(&relationship)
+                .bind(birth_date)
+                .execute(&mut **tx)
+                .await?;
+            }
+            "identity" => {
+                let identity_type = field("identityType")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("identityType must be a string"))?
+                    .trim()
+                    .to_string();
+                let identity_number = field("identityNumber")?
+                    .as_str()
+                    .ok_or_else(|| RecordChangeError::Invalid("identityNumber must be a string"))?
+                    .trim()
+                    .to_string();
+                let identity_expiry_date = opt_str("identityExpiryDate")
+                    .and_then(|d| chrono::NaiveDate::parse_from_str(&d, "%Y-%m-%d").ok());
+                let is_permanent = v
+                    .get("isPermanent")
+                    .and_then(|x| x.as_bool())
+                    .unwrap_or(false);
+                sqlx::query(
+                    r#"INSERT INTO employee.employee_identities
+                           (employee_id, identity_type, identity_number,
+                            identity_expiry_date, is_permanent)
+                       VALUES ($1, $2, $3, $4, $5)"#,
+                )
+                .bind(row.employee_id)
+                .bind(&identity_type)
+                .bind(&identity_number)
+                .bind(identity_expiry_date)
+                .bind(is_permanent)
+                .execute(&mut **tx)
+                .await?;
+            }
+            // The whitelist check above means this arm is unreachable; kept
+            // exhaustive so a new kind without an apply arm fails to COMPILE.
+            _ => {
+                return Err(RecordChangeError::Invalid(
+                    "this field is not appliable through the self-service lane",
+                ))
+            }
+        }
         Ok(())
     }
 
