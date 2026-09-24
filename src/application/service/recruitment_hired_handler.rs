@@ -71,6 +71,12 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
                 .and_then(|s| s.parse::<rust_decimal::Decimal>().ok());
         // `join_date` is carried as an ISO date string; NaiveDate deserializes straight off it.
         let join_date: NaiveDate = json_field(p, "join_date")?;
+        // The payload's owning company leg: relay deliveries carry no
+        // ambient org scope, and the composing decorator's org-unit fill
+        // reads one — without a scope bound here the employee INSERT dies
+        // on the fill's kind guard. Bind the payload's unit before the tx.
+        let payload_company: Option<Uuid> =
+            serde_json::from_value(p["company_id"].clone()).ok();
 
         // Deterministic employee_number from the offer → a replay yields the SAME number, so even
         // without the inbox the employee_number unique (per-unit — the composing service's tenancy
@@ -89,14 +95,18 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
 
         // Tenancy posture (ADR-0029): the module owns no scoping column — the composing
         // service's tenancy decorator does. Relay the AMBIENT org scope onto this transaction
-        // when the caller bound one, so the decorator's org-unit fill (and any policy it
-        // installed) sees this transaction's inserts. An undecorated deployment has no ambient
-        // scope and skips this entirely.
-        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
-            backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
-                .await
-                .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
-        }
+        // when the caller bound one; a RELAY delivery has none, so fall back to the
+        // payload's owning company leg (the hire knows whose tenant it is — fail closed
+        // when the event names neither).
+        let scope = backbone_orm::org_scope::current_org_scope().or_else(|| {
+            payload_company.map(backbone_orm::org_scope::OrgScope::for_company_unit)
+        });
+        let scope = scope.ok_or_else(|| {
+            handler_err("no ambient org scope and no payload company_id — cannot place the hire".into())
+        })?;
+        backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
+            .await
+            .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
 
         // Claim the event in-tx with the effect: the inbox row + the employee/employment inserts commit
         // together (or roll back together). A failed apply thus re-claims on the next delivery and a
