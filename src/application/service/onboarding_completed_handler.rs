@@ -59,7 +59,16 @@ impl IntegrationEventHandler for OnboardingCompletedHandler {
         // when the caller bound one, so the decorator's org-unit fill (and any policy it
         // installed) sees this transaction's statements. An undecorated deployment has no
         // ambient scope and skips this entirely.
-        if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
+        // Relay the ambient request scope when the caller bound one; a
+        // RELAY delivery has none, and the composing decorator's org-unit
+        // fill reads a scope — fall back to the event's owning company leg
+        // (every lifecycle emit carries it) so the writes land fenced.
+        let payload_company: Option<Uuid> =
+            serde_json::from_value(p["company_id"].clone()).ok();
+        let scope = backbone_orm::org_scope::current_org_scope().or_else(|| {
+            payload_company.map(backbone_orm::org_scope::OrgScope::for_company_unit)
+        });
+        if let Some(scope) = scope {
             backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope)
                 .await
                 .map_err(|e| handler_err(format!("org scope bind: {e}")))?;
