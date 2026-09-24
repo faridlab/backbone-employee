@@ -118,6 +118,26 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
             .execute(&mut *tx)
             .await
             .map_err(map_db)?;
+
+            // The live employment follows the change in the SAME transaction
+            // as the history row: the placement every reader resolves against
+            // (approver routing, org charts, payroll) must not lag the
+            // history by a manual edit. Only the columns the event actually
+            // names move — an omitted dimension stays put.
+            sqlx::query(
+                r#"UPDATE employee.employments
+                      SET position_id = COALESCE($2, position_id),
+                          level_id = COALESCE($3, level_id),
+                          department_id = COALESCE($4, department_id)
+                    WHERE employee_id = $1 AND status = 'active'"#,
+            )
+            .bind(employee_id)
+            .bind(position_id_to)
+            .bind(level_id_to)
+            .bind(department_id_to)
+            .execute(&mut *tx)
+            .await
+            .map_err(map_db)?;
         }
 
         tx.commit().await.map_err(map_db)?;

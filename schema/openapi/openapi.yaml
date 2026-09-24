@@ -7059,6 +7059,9 @@ components:
         email:
           nullable: true
           type: string
+        base_salary:
+          nullable: true
+          type: string
         mobile_phone:
           nullable: true
           type: string
@@ -7122,6 +7125,9 @@ components:
         email:
           nullable: true
           type: string
+        base_salary:
+          nullable: true
+          type: string
         mobile_phone:
           nullable: true
           type: string
@@ -7172,6 +7178,9 @@ components:
         email:
           nullable: true
           type: string
+        base_salary:
+          nullable: true
+          type: string
         mobile_phone:
           nullable: true
           type: string
@@ -7216,6 +7225,9 @@ components:
           nullable: true
           type: string
         email:
+          nullable: true
+          type: string
+        base_salary:
           nullable: true
           type: string
         mobile_phone:

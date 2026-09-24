@@ -45,6 +45,16 @@ models:
         attributes: ["@length(max=255)"]
         description: "Email"
 
+      base_salary:
+        type: decimal?
+        attributes: ["@precision(18,2)"]
+        description: >
+          Starting salary captured at the employee master — the recruitment
+          offer's negotiated gross, written when a hire lands. NULL means
+          "no starting salary recorded yet" (payroll's onboarding enrollment
+          claims-but-skips). Payroll still owns the RUNNING salary via
+          compensation_changes; this column is the one-time recruitment seed.
+
       mobile_phone:
         type: string?
         attributes: ["@length(max=40)"]

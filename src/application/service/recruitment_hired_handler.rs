@@ -61,6 +61,14 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
         let position_id: Option<Uuid> = serde_json::from_value(p["position_id"].clone()).ok();
         let department_id: Option<Uuid> = serde_json::from_value(p["department_id"].clone()).ok();
         let offer_id: Option<Uuid> = serde_json::from_value(p["offer_id"].clone()).ok();
+        // The offer's negotiated gross, carried as a decimal STRING (the
+        // producer serializes Numeric through its Display) — parse to the
+        // column's NUMERIC(18,2) bind.
+        let proposed_salary: Option<rust_decimal::Decimal> =
+            serde_json::from_value::<Option<String>>(p["proposed_salary"].clone())
+                .ok()
+                .flatten()
+                .and_then(|s| s.parse::<rust_decimal::Decimal>().ok());
         // `join_date` is carried as an ISO date string; NaiveDate deserializes straight off it.
         let join_date: NaiveDate = json_field(p, "join_date")?;
 
@@ -107,17 +115,20 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             };
 
             // Employee (people master). metadata + id are left to column defaults; the audit trigger
-            // (in the real schema) stamps created_at/updated_at.
+            // (in the real schema) stamps created_at/updated_at. The offered salary rides along
+            // as base_salary — the one-time recruitment seed payroll's onboarding enrollment
+            // reads (a hire without pay data is a joiner payroll skips).
             let employee_id: Uuid = sqlx::query(
                 r#"INSERT INTO employee.employees
-                       (employee_number, first_name, last_name, email)
-                   VALUES ($1, $2, $3, $4)
+                       (employee_number, first_name, last_name, email, base_salary)
+                   VALUES ($1, $2, $3, $4, $5)
                    RETURNING id"#,
             )
             .bind(&employee_number)
             .bind(&first_name)
             .bind(last_name.as_deref())
             .bind(email.as_deref())
+            .bind(proposed_salary)
             .fetch_one(&mut *tx)
             .await
             .map(|r| r.get::<Uuid, _>("id"))

@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
+use rust_decimal::Decimal;
 
 use super::Gender;
 use super::MaritalStatus;
@@ -57,6 +58,7 @@ pub struct Employee {
     pub first_name: String,
     pub last_name: Option<String>,
     pub email: Option<String>,
+    pub base_salary: Option<Decimal>,
     pub mobile_phone: Option<String>,
     pub phone: Option<String>,
     pub birth_place: Option<String>,
@@ -85,6 +87,7 @@ impl Employee {
             first_name,
             last_name: None,
             email: None,
+            base_salary: None,
             mobile_phone: None,
             phone: None,
             birth_place: None,
@@ -170,6 +173,12 @@ impl Employee {
         self
     }
 
+    /// Set the base_salary field (chainable)
+    pub fn with_base_salary(mut self, value: Decimal) -> Self {
+        self.base_salary = Some(value);
+        self
+    }
+
     /// Set the mobile_phone field (chainable)
     pub fn with_mobile_phone(mut self, value: String) -> Self {
         self.mobile_phone = Some(value);
@@ -240,6 +249,9 @@ impl Employee {
                 }
                 "email" => {
                     if let Ok(v) = serde_json::from_value(value) { self.email = v; }
+                }
+                "base_salary" => {
+                    if let Ok(v) = serde_json::from_value(value) { self.base_salary = v; }
                 }
                 "mobile_phone" => {
                     if let Ok(v) = serde_json::from_value(value) { self.mobile_phone = v; }
@@ -342,6 +354,7 @@ pub struct EmployeeBuilder {
     first_name: Option<String>,
     last_name: Option<String>,
     email: Option<String>,
+    base_salary: Option<Decimal>,
     mobile_phone: Option<String>,
     phone: Option<String>,
     birth_place: Option<String>,
@@ -380,6 +393,12 @@ impl EmployeeBuilder {
     /// Set the email field (optional)
     pub fn email(mut self, value: String) -> Self {
         self.email = Some(value);
+        self
+    }
+
+    /// Set the base_salary field (optional)
+    pub fn base_salary(mut self, value: Decimal) -> Self {
+        self.base_salary = Some(value);
         self
     }
 
@@ -445,6 +464,7 @@ impl EmployeeBuilder {
             first_name,
             last_name: self.last_name,
             email: self.email,
+            base_salary: self.base_salary,
             mobile_phone: self.mobile_phone,
             phone: self.phone,
             birth_place: self.birth_place,

@@ -8,6 +8,7 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use chrono::{DateTime, Utc, NaiveDate};
+use rust_decimal::Decimal;
 
 #[cfg(feature = "openapi")]
 #[cfg(feature = "openapi")]
@@ -47,6 +48,8 @@ pub struct CreateEmployeeDto {
     pub last_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", alias = "base_salary")]
+    pub base_salary: Option<Decimal>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "mobile_phone")]
     pub mobile_phone: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -90,6 +93,8 @@ pub struct UpdateEmployeeDto {
     pub last_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", alias = "base_salary")]
+    pub base_salary: Option<Decimal>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "mobile_phone")]
     pub mobile_phone: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -133,6 +138,8 @@ pub struct PatchEmployeeDto {
     pub last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none", alias = "base_salary")]
+    pub base_salary: Option<Decimal>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "mobile_phone")]
     pub mobile_phone: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -154,7 +161,7 @@ pub struct PatchEmployeeDto {
 impl PatchEmployeeDto {
     /// Check if any field is set
     pub fn has_changes(&self) -> bool {
-        self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.birth_date.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
+        self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.base_salary.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.birth_date.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
     }
 }
 
@@ -179,6 +186,7 @@ pub struct EmployeeResponseDto {
     pub first_name: String,
     pub last_name: Option<String>,
     pub email: Option<String>,
+    pub base_salary: Option<Decimal>,
     pub mobile_phone: Option<String>,
     pub phone: Option<String>,
     pub birth_place: Option<String>,
@@ -263,6 +271,7 @@ impl From<Employee> for EmployeeResponseDto {
             first_name: entity.first_name,
             last_name: entity.last_name,
             email: entity.email,
+            base_salary: entity.base_salary,
             mobile_phone: entity.mobile_phone,
             phone: entity.phone,
             birth_place: entity.birth_place,
@@ -298,6 +307,7 @@ impl From<CreateEmployeeDto> for Employee {
             first_name: dto.first_name,
             last_name: dto.last_name,
             email: dto.email,
+            base_salary: dto.base_salary,
             mobile_phone: dto.mobile_phone,
             phone: dto.phone,
             birth_place: dto.birth_place,
@@ -320,6 +330,7 @@ impl From<&Employee> for EmployeeResponseDto {
             first_name: entity.first_name.clone(),
             last_name: entity.last_name.clone(),
             email: entity.email.clone(),
+            base_salary: entity.base_salary.clone(),
             mobile_phone: entity.mobile_phone.clone(),
             phone: entity.phone.clone(),
             birth_place: entity.birth_place.clone(),
@@ -346,6 +357,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeDto> for Employee {
         self.first_name = dto.first_name;
         self.last_name = dto.last_name;
         self.email = dto.email;
+        self.base_salary = dto.base_salary;
         self.mobile_phone = dto.mobile_phone;
         self.phone = dto.phone;
         self.birth_place = dto.birth_place;

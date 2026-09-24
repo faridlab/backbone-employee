@@ -232,6 +232,7 @@ pub struct EmployeeDto {
     pub first_name: String,
     pub last_name: Option<String>,
     pub email: Option<String>,
+    pub base_salary: Option<Decimal>,
     pub mobile_phone: Option<String>,
     pub phone: Option<String>,
     pub birth_place: Option<String>,
