@@ -45,6 +45,11 @@ models:
         attributes: ["@length(max=255)"]
         description: "Email"
 
+      candidate_id:
+        type: uuid?
+        attributes: ["@exclude_from_foreign_key_check"]
+        description: "The recruitment candidate this employee was hired from # logical FK recruitment.candidates.id — the hire event's link back"
+
       base_salary:
         type: decimal?
         attributes: ["@precision(18,2)"]

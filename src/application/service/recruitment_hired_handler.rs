@@ -61,6 +61,7 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
         let position_id: Option<Uuid> = serde_json::from_value(p["position_id"].clone()).ok();
         let department_id: Option<Uuid> = serde_json::from_value(p["department_id"].clone()).ok();
         let offer_id: Option<Uuid> = serde_json::from_value(p["offer_id"].clone()).ok();
+        let candidate_id: Option<Uuid> = serde_json::from_value(p["candidate_id"].clone()).ok();
         // The offer's negotiated gross, carried as a decimal STRING (the
         // producer serializes Numeric through its Display) — parse to the
         // column's NUMERIC(18,2) bind.
@@ -130,7 +131,7 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             // reads (a hire without pay data is a joiner payroll skips).
             let employee_id: Uuid = sqlx::query(
                 r#"INSERT INTO employee.employees
-                       (employee_number, first_name, last_name, email, base_salary)
+                       (employee_number, first_name, last_name, email, candidate_id, base_salary)
                    VALUES ($1, $2, $3, $4, $5)
                    RETURNING id"#,
             )
@@ -138,6 +139,7 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             .bind(&first_name)
             .bind(last_name.as_deref())
             .bind(email.as_deref())
+            .bind(candidate_id)
             .bind(proposed_salary)
             .fetch_one(&mut *tx)
             .await
