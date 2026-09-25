@@ -294,7 +294,7 @@ impl RecordChangeService {
                 // employee never had one).
                 sqlx::query(
                     r#"INSERT INTO employee.employee_taxes (employee_id, ptkp_override)
-                       SELECT $1, $2
+                       SELECT $1, $2::ptkp_tier
                         WHERE NOT EXISTS (
                             SELECT 1 FROM employee.employee_taxes WHERE employee_id = $1
                         )"#,
@@ -304,7 +304,7 @@ impl RecordChangeService {
                 .execute(&mut **tx)
                 .await?;
                 sqlx::query(
-                    "UPDATE employee.employee_taxes SET ptkp_override = $2 WHERE employee_id = $1",
+                    "UPDATE employee.employee_taxes SET ptkp_override = $2::ptkp_tier WHERE employee_id = $1",
                 )
                 .bind(row.employee_id)
                 .bind(&ptkp)
