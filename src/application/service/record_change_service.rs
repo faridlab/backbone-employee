@@ -285,7 +285,10 @@ impl RecordChangeService {
                     .as_str()
                     .ok_or_else(|| RecordChangeError::Invalid("ptkpOverride must be a string"))?
                     .trim()
-                    .to_uppercase();
+                    // Accept both spellings: "K/1" (form speech) and "k1"
+                    // (the enum's own label). The insert casts to ptkp_tier.
+                    .replace('/', "")
+                    .to_lowercase();
                 // Upsert: the employee has at most one tax row; a change
                 // edits the PTKP override on it (creating the row when the
                 // employee never had one).
@@ -324,7 +327,7 @@ impl RecordChangeService {
                 sqlx::query(
                     r#"INSERT INTO employee.employee_families
                            (employee_id, name, relationship, birth_date)
-                       VALUES ($1, $2, $3, $4)"#,
+                       VALUES ($1, $2, $3::family_relationship, $4)"#,
                 )
                 .bind(row.employee_id)
                 .bind(&name)
@@ -336,7 +339,7 @@ impl RecordChangeService {
             "identity" => {
                 let identity_type = field("identityType")?
                     .as_str()
-                    .ok_or_else(|| RecordChangeError::Invalid("identityType must be a string"))?
+                    .ok_or_else(|| RecordChangeError::Invalid("identityType must be a string (ktp, passport, sim, or the labels the identity_type enum carries)"))?
                     .trim()
                     .to_string();
                 let identity_number = field("identityNumber")?
@@ -354,7 +357,7 @@ impl RecordChangeService {
                     r#"INSERT INTO employee.employee_identities
                            (employee_id, identity_type, identity_number,
                             identity_expiry_date, is_permanent)
-                       VALUES ($1, $2, $3, $4, $5)"#,
+                       VALUES ($1, $2::identity_type, $3, $4, $5)"#,
                 )
                 .bind(row.employee_id)
                 .bind(&identity_type)
