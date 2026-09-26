@@ -339,7 +339,11 @@ impl backbone_orm::EntityRepoMeta for Employee {
         m
     }
     fn search_fields() -> &'static [&'static str] {
-        &["employee_number", "first_name"]
+        // Full-name, surname and email search (#589): a person is looked up
+        // by any part of their name or their address, not just the given
+        // name. The entity file is declared user-owned so a regen keeps the
+        // wider field list until the generator derives it from the schema.
+        &["employee_number", "first_name", "last_name", "email"]
     }
 }
 
