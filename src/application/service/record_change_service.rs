@@ -56,7 +56,7 @@ const APPLIABLE_FIELDS: &[&str] = &["mobile_phone", "phone", "email"];
 ///   employee_family row.
 /// - `identity`      → {identityType, identityNumber, identityExpiryDate?,
 ///   isPermanent?} — a NEW employee_identity row.
-const APPLIABLE_KINDS: &[&str] = &["bank_account", "tax_status", "family_member", "identity"];
+const APPLIABLE_KINDS: &[&str] = &["bank_account", "tax_status", "family_member", "identity", "employment_term"];
 
 pub struct RecordChangeService {
     pool: PgPool,

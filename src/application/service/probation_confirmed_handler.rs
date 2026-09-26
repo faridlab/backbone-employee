@@ -109,6 +109,12 @@ impl IntegrationEventHandler for ProbationConfirmedHandler {
 
             // 2. CAS probation → permanent. Zero affected rows is a logged no-op (already
             //    permanent, or hired straight to permanent without probation).
+            // The single-writer guard's allowlist: this handler is one of the
+            // two sanctioned writers of employment_status (tx-local GUC).
+            sqlx::query("SELECT set_config('app.allow_employment_term_write', '1', true)")
+                .execute(&mut *tx)
+                .await
+                .map_err(map_db)?;
             let flipped = sqlx::query(
                 r#"UPDATE employee.employments
                       SET employment_status = 'permanent'
