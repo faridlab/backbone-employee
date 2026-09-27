@@ -35,6 +35,13 @@ pub struct OffboardingClosedHandler {
 }
 
 impl OffboardingClosedHandler {
+    /// The database this consumer writes on: the relay binds the tenant's
+    /// pool as the request pool for the whole consumer call (ADR-0029 pool
+    /// law); the composed pool is the fallback.
+    fn rpool(&self) -> sqlx::PgPool {
+        crate::request_pool::current().unwrap_or_else(|| self.pool.clone())
+    }
+
     /// Create a new handler bound to the given pool.
     pub fn new(pool: PgPool) -> Self {
         Self { pool }
@@ -55,7 +62,7 @@ impl IntegrationEventHandler for OffboardingClosedHandler {
             .and_then(|v| v.as_str())
             .and_then(|s| chrono::NaiveDate::parse_from_str(s, "%Y-%m-%d").ok());
 
-        let mut tx = self.pool.begin().await.map_err(map_db)?;
+        let mut tx = self.rpool().begin().await.map_err(map_db)?;
 
         // Tenancy posture (ADR-0029): the module owns no scoping column — the composing
         // service's tenancy decorator does. Relay the AMBIENT org scope onto this transaction
