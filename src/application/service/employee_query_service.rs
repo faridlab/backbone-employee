@@ -34,6 +34,14 @@ use crate::exports::EmployeeQueryService;
 use crate::exports::*;
 use crate::EmployeeModule;
 
+impl EmployeeModule {
+    /// The database these reads run on: the composer's request pool when the
+    /// tenant router installed one, else the composed pool (ADR-0029 pool law).
+    pub(crate) fn rpool(&self) -> sqlx::PgPool {
+        crate::request_pool::current().unwrap_or_else(|| self.db_pool.clone())
+    }
+}
+
 #[async_trait]
 impl EmployeeQueryService for EmployeeModule {
     async fn get_bank(&self, id: BankId) -> Result<Option<BankDto>> {
@@ -489,7 +497,7 @@ impl EmployeeQueryService for EmployeeModule {
         // Override wins: an explicit ptkp_override short-circuits derivation.
         if let Some(tier) = self
             .employee_tax_repository
-            .ptkp_override_for(&self.db_pool, employee_id)
+            .ptkp_override_for(&self.rpool(), employee_id)
             .await?
         {
             return Ok(tier);
@@ -497,7 +505,7 @@ impl EmployeeQueryService for EmployeeModule {
         // Derive: married = EXISTS spouse; dependents = min(child count, 3).
         let (spouse, children) = self
             .employee_family_repository
-            .family_counts(&self.db_pool, employee_id)
+            .family_counts(&self.rpool(), employee_id)
             .await?;
         let dependents = children.min(3);
         Ok(if spouse > 0 {
@@ -522,7 +530,7 @@ impl EmployeeQueryService for EmployeeModule {
         // to NULL columns rather than dropping the bundle; only a missing employee returns None.
         let row = self
             .employee_tax_repository
-            .statutory_row_for(&self.db_pool, employee_id)
+            .statutory_row_for(&self.rpool(), employee_id)
             .await?
             .ok_or_else(|| anyhow::anyhow!("employee not found: {}", employee_id))?;
 
