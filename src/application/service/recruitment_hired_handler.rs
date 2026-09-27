@@ -139,7 +139,7 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
             let employee_id: Uuid = sqlx::query(
                 r#"INSERT INTO employee.employees
                        (employee_number, first_name, last_name, email, candidate_id, base_salary)
-                   VALUES ($1, $2, $3, $4, $5)
+                   VALUES ($1, $2, $3, $4, $5, $6)
                    RETURNING id"#,
             )
             .bind(&employee_number)
