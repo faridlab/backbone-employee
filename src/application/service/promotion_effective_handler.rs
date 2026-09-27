@@ -115,11 +115,10 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
             };
 
             sqlx::query(
-                r#"INSERT INTO employee.employment_histories
-                       (employee_id, effective_date, action, position_id_from,
+                r#"INSERT INTO employee.employment_histories (employee_id, effective_date, action, position_id_from,
                         position_id_to, level_id_from, level_id_to, department_id_from,
-                        department_id_to, reference_id)
-                   VALUES ($1, $2, $3::employment_action, $4, $5, $6, $7, $8, $9, $10)"#,
+                        department_id_to, reference_id, org_unit_id)
+                   VALUES ($1, $2, $3::employment_action, $4, $5, $6, $7, $8, $9, $10, $11::uuid)"#,
             )
             .bind(employee_id)
             .bind(effective_date)
@@ -131,6 +130,7 @@ impl IntegrationEventHandler for PromotionEffectiveHandler {
             .bind(department_id_from)
             .bind(department_id_to)
             .bind(promotion_id)
+                .bind(backbone_orm::org_scope::current_org_scope().map(|s| s.acting_unit_id()))
             .execute(&mut *tx)
             .await
             .map_err(map_db)?;

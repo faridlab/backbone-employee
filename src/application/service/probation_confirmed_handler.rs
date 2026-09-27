@@ -103,13 +103,14 @@ impl IntegrationEventHandler for ProbationConfirmedHandler {
             //    back to the onboarding that produced the event.
             sqlx::query(
                 r#"INSERT INTO employee.employment_histories
-                       (employee_id, effective_date, action, reference_id, note)
-                   VALUES ($1, $2, 'confirmation', $3, $4)"#,
+                       (employee_id, effective_date, action, reference_id, note, org_unit_id)
+                   VALUES ($1, $2, 'confirmation', $3, $4, $5::uuid)"#,
             )
             .bind(employee_id)
             .bind(confirmation_date)
             .bind(onboarding_id)
             .bind("probation confirmed")
+            .bind(backbone_orm::org_scope::current_org_scope().map(|s| s.acting_unit_id()))
             .execute(&mut *tx)
             .await
             .map_err(map_db)?;
