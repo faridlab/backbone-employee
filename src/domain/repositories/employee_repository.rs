@@ -49,6 +49,7 @@ pub struct EmployeeFilter {
     pub first_name: Option<String>,
     pub last_name: Option<String>,
     pub email: Option<String>,
+    pub candidate_id: Option<Uuid>,
     pub mobile_phone: Option<String>,
     pub phone: Option<String>,
     pub birth_place: Option<String>,
@@ -61,7 +62,7 @@ pub struct EmployeeFilter {
 impl EmployeeFilter {
     /// Check if any filter is set
     pub fn has_filters(&self) -> bool {
-        self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
+        self.employee_number.is_some() || self.user_id.is_some() || self.first_name.is_some() || self.last_name.is_some() || self.email.is_some() || self.candidate_id.is_some() || self.mobile_phone.is_some() || self.phone.is_some() || self.birth_place.is_some() || self.gender.is_some() || self.marital_status.is_some() || self.blood_type.is_some() || self.religion_id.is_some()
     }
 }
 

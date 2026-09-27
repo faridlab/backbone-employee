@@ -7,6 +7,8 @@
 models:
   - name: Employment
     collection: employments
+    # Data-change audit capture (ADR-0025): per-row trigger -> auditlog.capture_data_change.
+    audited: true
     description: "Employment lifecycle + organization placement (dept/level/position/manager)."
 
     fields:

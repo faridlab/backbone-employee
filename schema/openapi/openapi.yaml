@@ -7059,6 +7059,10 @@ components:
         email:
           nullable: true
           type: string
+        candidate_id:
+          nullable: true
+          type: string
+          format: uuid
         base_salary:
           nullable: true
           type: string
@@ -7125,6 +7129,10 @@ components:
         email:
           nullable: true
           type: string
+        candidate_id:
+          nullable: true
+          type: string
+          format: uuid
         base_salary:
           nullable: true
           type: string
@@ -7178,6 +7186,10 @@ components:
         email:
           nullable: true
           type: string
+        candidate_id:
+          nullable: true
+          type: string
+          format: uuid
         base_salary:
           nullable: true
           type: string
@@ -7227,6 +7239,10 @@ components:
         email:
           nullable: true
           type: string
+        candidate_id:
+          nullable: true
+          type: string
+          format: uuid
         base_salary:
           nullable: true
           type: string

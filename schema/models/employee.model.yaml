@@ -12,6 +12,8 @@ models:
   # per-unit unique on (employee_number) that keeps one number per unit.
   - name: Employee
     collection: employees
+    # Data-change audit capture (ADR-0025): per-row trigger -> auditlog.capture_data_change.
+    audited: true
     description: "The canonical people master. Owns employee_id (logical FK every module references)."
 
     fields:
