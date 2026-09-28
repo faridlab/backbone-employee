@@ -64,6 +64,12 @@ pub struct RecordChangeService {
 }
 
 impl RecordChangeService {
+    /// The database this verb runs on: the composer's request pool when the
+    /// tenant router installed one, else the composed pool (ADR-0029).
+    fn rpool(&self) -> sqlx::PgPool {
+        crate::request_pool::current().unwrap_or_else(|| self.pool.clone())
+    }
+
     pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
@@ -118,7 +124,7 @@ impl RecordChangeService {
             Err(e) => return Err(e.into()),
         };
 
-        let mut tx = self.pool.begin().await?;
+        let mut tx = self.rpool().begin().await?;
         if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
             backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
         }
@@ -180,7 +186,7 @@ impl RecordChangeService {
             ));
         }
 
-        let mut tx = self.pool.begin().await?;
+        let mut tx = self.rpool().begin().await?;
         if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
             backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
         }
@@ -396,7 +402,7 @@ impl RecordChangeService {
                 return Err(RecordChangeError::Verdict("the approval is still pending"));
             }
         }
-        let mut tx = self.pool.begin().await?;
+        let mut tx = self.rpool().begin().await?;
         if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
             backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
         }
@@ -418,7 +424,7 @@ impl RecordChangeService {
         if row.status != "pending" {
             return Err(RecordChangeError::Invalid("only a pending request can be cancelled"));
         }
-        let mut tx = self.pool.begin().await?;
+        let mut tx = self.rpool().begin().await?;
         if let Some(scope) = backbone_orm::org_scope::current_org_scope() {
             backbone_orm::org_scope::bind_org_scope_on(&mut tx, &scope).await?;
         }
@@ -436,7 +442,7 @@ impl RecordChangeService {
 
     async fn load(&self, request_id: Uuid) -> Result<Row, RecordChangeError> {
         backbone_orm::company_scope::fetch_optional_scoped(
-            &self.pool,
+            &self.rpool(),
             sqlx::query_as::<_, Row>(
                 r#"SELECT employee_id, field_path, proposed_value, status::text AS status,
                           approval_request_id

@@ -34,6 +34,12 @@ pub struct PiiWriteService {
 }
 
 impl PiiWriteService {
+    /// The database this verb runs on: the composer's request pool when the
+    /// tenant router installed one, else the composed pool (ADR-0029).
+    fn rpool(&self) -> sqlx::PgPool {
+        crate::request_pool::current().unwrap_or_else(|| self.pool.clone())
+    }
+
     pub fn new(
         pool: PgPool,
         identity: Arc<EmployeeIdentityService>,
@@ -49,7 +55,7 @@ impl PiiWriteService {
     // --- Identity (KTP / passport) → category: identity ---
 
     pub async fn create_identity(&self, dto: CreateEmployeeIdentityDto) -> ServiceResult<EmployeeIdentity> {
-        consent_guard::require_consent(&self.pool, dto.employee_id, &DataCategory::Identity)
+        consent_guard::require_consent(&self.rpool(), dto.employee_id, &DataCategory::Identity)
             .await
             .map_err(ServiceError::Validation)?;
         self.identity.create(dto).await
@@ -58,7 +64,7 @@ impl PiiWriteService {
     // --- Tax (NPWP) → category: financial ---
 
     pub async fn create_tax(&self, dto: CreateEmployeeTaxDto) -> ServiceResult<EmployeeTax> {
-        consent_guard::require_consent(&self.pool, dto.employee_id, &DataCategory::Financial)
+        consent_guard::require_consent(&self.rpool(), dto.employee_id, &DataCategory::Financial)
             .await
             .map_err(ServiceError::Validation)?;
         self.tax.create(dto).await
@@ -67,7 +73,7 @@ impl PiiWriteService {
     // --- BPJS → category: financial ---
 
     pub async fn create_bpjs(&self, dto: CreateEmployeeBpjsDto) -> ServiceResult<EmployeeBpjs> {
-        consent_guard::require_consent(&self.pool, dto.employee_id, &DataCategory::Financial)
+        consent_guard::require_consent(&self.rpool(), dto.employee_id, &DataCategory::Financial)
             .await
             .map_err(ServiceError::Validation)?;
         self.bpjs.create(dto).await
@@ -76,7 +82,7 @@ impl PiiWriteService {
     // --- Family / dependents → category: family ---
 
     pub async fn create_family(&self, dto: CreateEmployeeFamilyDto) -> ServiceResult<EmployeeFamily> {
-        consent_guard::require_consent(&self.pool, dto.employee_id, &DataCategory::Family)
+        consent_guard::require_consent(&self.rpool(), dto.employee_id, &DataCategory::Family)
             .await
             .map_err(ServiceError::Validation)?;
         self.family.create(dto).await
@@ -85,7 +91,7 @@ impl PiiWriteService {
     // --- Bank account → category: financial ---
 
     pub async fn create_bank_account(&self, dto: CreateEmployeeBankAccountDto) -> ServiceResult<EmployeeBankAccount> {
-        consent_guard::require_consent(&self.pool, dto.employee_id, &DataCategory::Financial)
+        consent_guard::require_consent(&self.rpool(), dto.employee_id, &DataCategory::Financial)
             .await
             .map_err(ServiceError::Validation)?;
         self.bank.create(dto).await
@@ -94,7 +100,7 @@ impl PiiWriteService {
     // --- Contact → category: contact ---
 
     pub async fn create_contact(&self, dto: CreateEmployeeContactDto) -> ServiceResult<EmployeeContact> {
-        consent_guard::require_consent(&self.pool, dto.employee_id, &DataCategory::Contact)
+        consent_guard::require_consent(&self.rpool(), dto.employee_id, &DataCategory::Contact)
             .await
             .map_err(ServiceError::Validation)?;
         self.contact.create(dto).await
