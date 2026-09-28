@@ -121,5 +121,10 @@ pub fn record_change_verb_routes(
         .route("/record-change-requests/:request_id/apply", post(apply))
         .route("/record-change-requests/:request_id/refuse", post(refuse))
         .route("/record-change-requests/:request_id/cancel", post(cancel))
+        // Pool law (ADR-0029): bind the composer-installed request pool for
+        // the whole handler call — the write services resolve their database
+        // through the module's task-local, and without this binding a tenant
+        // verb falls back to the composed boot pool.
+        .layer(axum::middleware::from_fn(crate::request_pool::bind_request_pool))
         .with_state(svc)
 }
