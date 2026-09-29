@@ -89,7 +89,8 @@ pub struct EmployeeModule {
     pub(crate) pii_access_log_service: Arc<PiiAccessLogService>,
     pub(crate) record_change_request_service: Arc<RecordChangeRequestService>,
     pub(crate) religion_service: Arc<ReligionService>,
-    // <<< CUSTOM FIELDS
+    // <<< CUSTOM pub mod request_pool;
+FIELDS
     // Held so the `EmployeeQueryService` impl can delegate `employee_ptkp` to the family/tax repos'
     // hand-written SQL, and standard lookups to the CRUD services above. `db_pool` is the same pool
     // the repos were constructed with (the repo methods take it per the backbone-hr read-port

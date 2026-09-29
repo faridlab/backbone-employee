@@ -11,6 +11,7 @@
 # Add your hand-authored services, handlers, tests, and docs below as you write them.
 
 user_owned:
+  - "src/request_pool.rs"
   # carries the widened search_fields (number, first, last, email)
   - "src/domain/entity/employee.rs"
   # Hand-written files the audit found undeclared; declared so a schema
