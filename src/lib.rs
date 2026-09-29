@@ -18,6 +18,9 @@
 #![allow(unused_imports)]
 
 // Generated modules
+// The hand-owned request-pool shim (tenant pool resolution): the
+// declaration sits above the generated header region, so keep it listed
+// and preserved through regeneration.
 pub mod request_pool;
 pub mod domain;
 pub mod infrastructure;
