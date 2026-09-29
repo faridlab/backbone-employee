@@ -174,6 +174,7 @@ impl backbone_orm::EntityRepoMeta for PiiAccessLog {
         m.insert("id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("data_category".to_string(), "data_category".to_string());
+        m.insert("accessed_at".to_string(), "timestamptz".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

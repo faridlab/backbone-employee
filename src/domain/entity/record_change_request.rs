@@ -275,6 +275,8 @@ impl backbone_orm::EntityRepoMeta for RecordChangeRequest {
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("approval_request_id".to_string(), "uuid".to_string());
         m.insert("status".to_string(), "record_change_status".to_string());
+        m.insert("decided_at".to_string(), "timestamptz".to_string());
+        m.insert("applied_at".to_string(), "timestamptz".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

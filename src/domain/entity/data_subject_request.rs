@@ -248,6 +248,8 @@ impl backbone_orm::EntityRepoMeta for DataSubjectRequest {
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("request_type".to_string(), "data_subject_right".to_string());
         m.insert("status".to_string(), "dsar_status".to_string());
+        m.insert("requested_at".to_string(), "timestamptz".to_string());
+        m.insert("fulfilled_at".to_string(), "timestamptz".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

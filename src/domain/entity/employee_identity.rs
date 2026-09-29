@@ -219,6 +219,7 @@ impl backbone_orm::EntityRepoMeta for EmployeeIdentity {
         m.insert("id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("identity_type".to_string(), "identity_type".to_string());
+        m.insert("identity_expiry_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

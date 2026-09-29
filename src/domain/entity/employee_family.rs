@@ -214,6 +214,7 @@ impl backbone_orm::EntityRepoMeta for EmployeeFamily {
         m.insert("id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("relationship".to_string(), "family_relationship".to_string());
+        m.insert("birth_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

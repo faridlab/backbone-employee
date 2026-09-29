@@ -276,6 +276,7 @@ impl backbone_orm::EntityRepoMeta for EmployeeTax {
         m.insert("tax_method".to_string(), "tax_method".to_string());
         m.insert("ter_category".to_string(), "ter_category".to_string());
         m.insert("tax_salary".to_string(), "tax_salary".to_string());
+        m.insert("taxable_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

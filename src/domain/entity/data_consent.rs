@@ -260,6 +260,9 @@ impl backbone_orm::EntityRepoMeta for DataConsent {
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("data_category".to_string(), "data_category".to_string());
         m.insert("lawful_basis".to_string(), "lawful_basis".to_string());
+        m.insert("consent_given_at".to_string(), "timestamptz".to_string());
+        m.insert("retention_until".to_string(), "date".to_string());
+        m.insert("withdrawn_at".to_string(), "timestamptz".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

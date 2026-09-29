@@ -285,6 +285,8 @@ impl backbone_orm::EntityRepoMeta for Employment {
         m.insert("direct_manager_id".to_string(), "uuid".to_string());
         m.insert("employment_status".to_string(), "employment_status".to_string());
         m.insert("status".to_string(), "employment_state".to_string());
+        m.insert("join_date".to_string(), "date".to_string());
+        m.insert("end_join_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

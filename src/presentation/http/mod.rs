@@ -33,7 +33,7 @@ pub mod guarded_routes;
 pub use bank_handler::{create_bank_routes, create_bank_read_routes, create_bank_write_routes};
 pub use data_consent_handler::{create_data_consent_routes, create_data_consent_read_routes, create_data_consent_write_routes};
 pub use data_subject_request_handler::{create_data_subject_request_routes, create_data_subject_request_read_routes, create_data_subject_request_write_routes};
-pub use employee_handler::{create_employee_routes, create_employee_read_routes, create_employee_write_routes};
+pub use employee_handler::{create_employee_routes, create_employee_read_routes, create_employee_write_routes, create_employee_history_route};
 pub use employee_bank_account_handler::{create_employee_bank_account_routes, create_employee_bank_account_read_routes, create_employee_bank_account_write_routes};
 pub use employee_bpjs_handler::{create_employee_bpjs_routes, create_employee_bpjs_read_routes, create_employee_bpjs_write_routes};
 pub use employee_certification_handler::{create_employee_certification_routes, create_employee_certification_read_routes, create_employee_certification_write_routes};
@@ -43,7 +43,7 @@ pub use employee_family_handler::{create_employee_family_routes, create_employee
 pub use employee_identity_handler::{create_employee_identity_routes, create_employee_identity_read_routes, create_employee_identity_write_routes};
 pub use employee_tax_handler::{create_employee_tax_routes, create_employee_tax_read_routes, create_employee_tax_write_routes};
 pub use employee_work_experience_handler::{create_employee_work_experience_routes, create_employee_work_experience_read_routes, create_employee_work_experience_write_routes};
-pub use employment_handler::{create_employment_routes, create_employment_read_routes, create_employment_write_routes};
+pub use employment_handler::{create_employment_routes, create_employment_read_routes, create_employment_write_routes, create_employment_history_route};
 pub use employment_history_handler::{create_employment_history_routes, create_employment_history_read_routes, create_employment_history_write_routes};
 pub use pii_access_log_handler::{create_pii_access_log_routes, create_pii_access_log_read_routes, create_pii_access_log_write_routes};
 pub use record_change_request_handler::{create_record_change_request_routes, create_record_change_request_read_routes, create_record_change_request_write_routes};

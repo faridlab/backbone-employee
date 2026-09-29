@@ -292,6 +292,7 @@ impl backbone_orm::EntityRepoMeta for EmploymentHistory {
         m.insert("employee_id".to_string(), "uuid".to_string());
         m.insert("reference_id".to_string(), "uuid".to_string());
         m.insert("action".to_string(), "employment_action".to_string());
+        m.insert("effective_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {

@@ -267,6 +267,9 @@ impl backbone_orm::EntityRepoMeta for EmployeeBpjs {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
         m.insert("employee_id".to_string(), "uuid".to_string());
+        m.insert("bpjs_ketenagakerjaan_date".to_string(), "date".to_string());
+        m.insert("bpjs_kesehatan_date".to_string(), "date".to_string());
+        m.insert("jaminan_pensiun_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {
