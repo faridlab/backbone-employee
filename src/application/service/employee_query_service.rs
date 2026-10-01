@@ -614,6 +614,7 @@ fn employee_to_dto(e: Employee) -> Result<EmployeeDto> {
         marital_status: e.marital_status,
         blood_type: e.blood_type,
         religion_id: e.religion_id,
+        candidate_id: e.candidate_id,
         // The public directory view is PII-redacted by design — pay data has
         // no business in a peer-facing read, so the seed column stays absent.
         base_salary: None,

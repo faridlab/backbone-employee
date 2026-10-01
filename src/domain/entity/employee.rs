@@ -67,6 +67,7 @@ pub struct Employee {
     pub marital_status: Option<MaritalStatus>,
     pub blood_type: Option<BloodType>,
     pub religion_id: Option<Uuid>,
+    pub candidate_id: Option<Uuid>,
     #[serde(default)]
     #[sqlx(json)]
     pub metadata: AuditMetadata,
@@ -96,6 +97,7 @@ impl Employee {
             marital_status: None,
             blood_type: None,
             religion_id: None,
+            candidate_id: None,
             metadata: AuditMetadata::default(),
         }
     }
@@ -226,6 +228,11 @@ impl Employee {
         self.religion_id = Some(value);
         self
     }
+    /// Set the candidate_id field (chainable)
+    pub fn with_candidate_id(mut self, value: Uuid) -> Self {
+        self.candidate_id = Some(value);
+        self
+    }
 
     // ==========================================================
     // Partial Update
@@ -276,6 +283,9 @@ impl Employee {
                 }
                 "religion_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.religion_id = v; }
+                }
+                "candidate_id" => {
+                    if let Ok(v) = serde_json::from_value(value) { self.candidate_id = v; }
                 }
                 _ => {} // ignore unknown fields
             }
@@ -333,6 +343,7 @@ impl backbone_orm::EntityRepoMeta for Employee {
         m.insert("id".to_string(), "uuid".to_string());
         m.insert("user_id".to_string(), "uuid".to_string());
         m.insert("religion_id".to_string(), "uuid".to_string());
+        m.insert("candidate_id".to_string(), "uuid".to_string());
         m.insert("gender".to_string(), "gender".to_string());
         m.insert("marital_status".to_string(), "marital_status".to_string());
         m.insert("blood_type".to_string(), "blood_type".to_string());
@@ -367,6 +378,7 @@ pub struct EmployeeBuilder {
     marital_status: Option<MaritalStatus>,
     blood_type: Option<BloodType>,
     religion_id: Option<Uuid>,
+    candidate_id: Option<Uuid>,
 }
 
 impl EmployeeBuilder {
@@ -453,6 +465,11 @@ impl EmployeeBuilder {
         self.religion_id = Some(value);
         self
     }
+    /// Set the candidate_id field (optional)
+    pub fn candidate_id(mut self, value: Uuid) -> Self {
+        self.candidate_id = Some(value);
+        self
+    }
 
     /// Build the Employee entity
     ///
@@ -477,6 +494,7 @@ impl EmployeeBuilder {
             marital_status: self.marital_status,
             blood_type: self.blood_type,
             religion_id: self.religion_id,
+            candidate_id: self.candidate_id,
             metadata: AuditMetadata::default(),
         })
     }
