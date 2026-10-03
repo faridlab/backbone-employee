@@ -13,12 +13,22 @@
 //! the relay preserves from the outbox row's id — so dedup keys end-to-end. A redelivery re-runs
 //! `inbox::once`, which returns `false`, so the inserts are skipped and the handler returns `Ok(())`.
 //!
-//! As defense-in-depth, `employee_number` is derived deterministically from the `offer_id`
-//! (`REC-{offer_id}`), so even a bug that bypassed the inbox would collide on the employee_number
-//! unique (per-unit — the composing service's tenancy decorator posture) rather than silently
-//! duplicate.
+//! As defense-in-depth, the employee's **id** is derived deterministically from the `offer_id`
+//! ([`hired_employee_id`]), so even a bug that bypassed the inbox would collide on the primary key
+//! rather than silently duplicate. The same derivation is how the other consumers of the event
+//! (the composing service's onboarding and initial-compensation legs) find the employee this
+//! handler created, without the event having to carry it.
+//!
+//! ## What the hire writes
+//!
+//! - `employee_number`: the next number in the company's sequence ([`allocate_employee_number`]),
+//!   in the format the composer's [`EmployeeNumberFormatSource`] answers (default `E000001`).
+//! - `employments.join_date`: the hire's first day ([`hire_first_day`]) — the offer's proposed
+//!   start date when the event carries one, the day of the hire otherwise.
 //!
 //! This is a user-owned custom file — it is NEVER regenerated.
+
+use std::sync::Arc;
 
 use async_trait::async_trait;
 use backbone_messaging::{EventError, IntegrationEventEnvelope, IntegrationEventHandler};
@@ -27,16 +37,56 @@ use chrono::NaiveDate;
 use sqlx::{PgPool, Row};
 use uuid::Uuid;
 
+use super::employee_numbering::{
+    allocate_employee_number, DefaultEmployeeNumberFormat, EmployeeNumberFormatSource,
+};
+
 /// The consumer name stamped into the employee inbox. Scoped so multiple employee consumers (future)
 /// each process the same event exactly once.
 const CONSUMER: &str = "recruitment.hired";
 
+/// The UUIDv5 namespace a hired employee's id is derived in (see [`hired_employee_id`]). Fixed
+/// forever: changing it would make the event's consumers disagree on which employee a hire made.
+const HIRED_EMPLOYEE_NAMESPACE: Uuid = Uuid::from_u128(0x6a1d_3c0e_8f4b_5e21_9b7a_2d4c_6e8f_0a13);
+
+/// The id of the employee a hire creates, derived from the offer it was hired from.
+///
+/// Every consumer of `recruitment.hired` computes the same id from the same offer, so the
+/// onboarding and initial-compensation legs reach the new employee without a lookup by any
+/// mutable field, and a replay that slipped past the inbox collides on the primary key.
+pub fn hired_employee_id(offer_id: Uuid) -> Uuid {
+    Uuid::new_v5(&HIRED_EMPLOYEE_NAMESPACE, offer_id.as_bytes())
+}
+
+/// [`hired_employee_id`] for a `recruitment.hired` envelope: keyed on the payload's `offer_id`,
+/// or on the envelope id for a hire that names no offer. `None` only for a malformed envelope.
+pub fn hired_employee_id_for(envelope: &IntegrationEventEnvelope) -> Option<Uuid> {
+    serde_json::from_value::<Option<Uuid>>(envelope.payload["offer_id"].clone())
+        .ok()
+        .flatten()
+        .or_else(|| Uuid::parse_str(&envelope.id).ok())
+        .map(hired_employee_id)
+}
+
+/// The hire's first day: the offer's proposed `start_date` when the event carries one, else the
+/// `join_date` the producer stamps (the day of the hire). `None` when neither parses.
+pub fn hire_first_day(payload: &serde_json::Value) -> Option<NaiveDate> {
+    let date = |key: &str| {
+        serde_json::from_value::<Option<NaiveDate>>(payload[key].clone())
+            .ok()
+            .flatten()
+    };
+    date("start_date").or_else(|| date("join_date"))
+}
+
 /// Integration-event handler that turns a `recruitment.hired` envelope into an `Employee` +
-/// `Employment`, idempotently. Holds only the pool — the apply is plain SQL inside an `inbox`-guarded
-/// transaction, so it needs no service-layer wiring (and ties the dedup + the inserts atomically,
-/// which a GenericCrudService `.create()` on its own connection could not).
+/// `Employment`, idempotently. Holds the pool and the employee-number format port — the apply is
+/// plain SQL inside an `inbox`-guarded transaction, so it needs no service-layer wiring (and ties
+/// the dedup + the inserts atomically, which a GenericCrudService `.create()` on its own
+/// connection could not).
 pub struct RecruitmentHiredHandler {
     pool: PgPool,
+    numbering: Arc<dyn EmployeeNumberFormatSource>,
 }
 
 impl RecruitmentHiredHandler {
@@ -47,9 +97,19 @@ impl RecruitmentHiredHandler {
         crate::request_pool::current().unwrap_or_else(|| self.pool.clone())
     }
 
-    /// Create a new handler bound to the given pool.
+    /// Create a new handler bound to the given pool, numbering hires in the default format.
     pub fn new(pool: PgPool) -> Self {
-        Self { pool }
+        Self {
+            pool,
+            numbering: Arc::new(DefaultEmployeeNumberFormat),
+        }
+    }
+
+    /// Take the employee-number format from `source` (the composer's settings) instead of the
+    /// default.
+    pub fn with_number_format(mut self, source: Arc<dyn EmployeeNumberFormatSource>) -> Self {
+        self.numbering = source;
+        self
     }
 }
 
@@ -77,8 +137,12 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
                 .ok()
                 .flatten()
                 .and_then(|s| s.parse::<rust_decimal::Decimal>().ok());
-        // `join_date` is carried as an ISO date string; NaiveDate deserializes straight off it.
-        let join_date: NaiveDate = json_field(p, "join_date")?;
+        // The first day: the offer's proposed start date when given, else the hire day the
+        // producer stamps as `join_date` (both ISO date strings).
+        let join_date: NaiveDate = match hire_first_day(p) {
+            Some(d) => d,
+            None => json_field(p, "join_date")?,
+        };
         // The payload's owning company leg: relay deliveries carry no
         // ambient org scope, and the composing decorator's org-unit fill
         // reads one — without a scope bound here the employee INSERT dies
@@ -86,18 +150,10 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
         let payload_company: Option<Uuid> =
             serde_json::from_value(p["company_id"].clone()).ok();
 
-        // Deterministic employee_number from the offer → a replay yields the SAME number, so even
-        // without the inbox the employee_number unique (per-unit — the composing service's tenancy
-        // decorator posture) would fence a duplicate (defense in depth).
-        // 40-char budget: "REC-" + 36-char uuid = 40.
-        let employee_number = match offer_id {
-            Some(id) => format!("REC-{id}"),
-            None => format!("REC-{event_id}"),
-        };
-        debug_assert!(
-            employee_number.len() <= 40,
-            "employee_number derived from a uuid fits the 40-char column budget"
-        );
+        // The id is derived from the offer (see `hired_employee_id`); the number is allocated
+        // inside the transaction below, once the claim says this is the first delivery.
+        let employee_id = hired_employee_id(offer_id.unwrap_or(event_id));
+        let number_format = self.numbering.employee_number_format().await;
 
         let mut tx = self.rpool().begin().await.map_err(map_db)?;
 
@@ -132,16 +188,22 @@ impl IntegrationEventHandler for RecruitmentHiredHandler {
                 _ => "permanent",
             };
 
-            // Employee (people master). metadata + id are left to column defaults; the audit trigger
-            // (in the real schema) stamps created_at/updated_at. The offered salary rides along
-            // as base_salary — the one-time recruitment seed payroll's onboarding enrollment
-            // reads (a hire without pay data is a joiner payroll skips).
+            // The next number in the company's sequence, under the advisory lock this
+            // transaction holds until the employee row commits.
+            let employee_number = allocate_employee_number(&mut *tx, &number_format)
+                .await
+                .map_err(map_db)?;
+
+            // Employee (people master). metadata is left to its column default; the audit
+            // trigger (in the real schema) stamps created_at/updated_at. The offered salary rides
+            // along as base_salary — the employee-master copy of the pay the hire was offered.
             let employee_id: Uuid = sqlx::query(
                 r#"INSERT INTO employee.employees
-                       (employee_number, first_name, last_name, email, candidate_id, base_salary)
-                   VALUES ($1, $2, $3, $4, $5, $6)
+                       (id, employee_number, first_name, last_name, email, candidate_id, base_salary)
+                   VALUES ($1, $2, $3, $4, $5, $6, $7)
                    RETURNING id"#,
             )
+            .bind(employee_id)
             .bind(&employee_number)
             .bind(&first_name)
             .bind(last_name.as_deref())

@@ -32,6 +32,8 @@ user_owned:
   - "src/application/service/employee_query_service.rs"
   # ADR-005 consumers: lifecycle event handlers (idempotent inbox consumers).
   - "src/application/service/recruitment_hired_handler.rs"
+  # The hire's employee number: the company sequence and its settings-driven format.
+  - "src/application/service/employee_numbering.rs"
   - "src/application/service/promotion_effective_handler.rs"
   - "src/application/service/onboarding_completed_handler.rs"
   - "src/application/service/offboarding_closed_handler.rs"
