@@ -36,7 +36,7 @@ impl Seeder for SeedEmployeeTaxSeeder {
     }
 
     fn order(&self) -> i32 {
-        12
+        13
     }
 
     async fn should_run(&self, pool: &PgPool) -> Result<bool> {

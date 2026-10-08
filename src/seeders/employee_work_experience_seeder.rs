@@ -36,7 +36,7 @@ impl Seeder for SeedEmployeeWorkExperienceSeeder {
     }
 
     fn order(&self) -> i32 {
-        13
+        14
     }
 
     async fn should_run(&self, pool: &PgPool) -> Result<bool> {

@@ -1,6 +1,6 @@
 [package]
 name = "backbone-employee"
-version = "0.2.46"
+version = "0.3.0"
 edition = "2021"
 description = "the people master — identity, employment lifecycle, payroll identity, dependents"
 license = "MIT OR Apache-2.0"
@@ -20,14 +20,14 @@ path = "src/lib.rs"
 # or `rev = "<commit-sha>"`. Cargo dedupes the git fetch — the repo is only
 # cloned once even though four crates reference it.
 # -----------------------------------------------------------------------------
-backbone-core = { version = "2.7.35", features = ["postgres"] }
-backbone-orm = { version = "2.7.35" }
-backbone-auth = { version = "2.7.35", features = ["axum"] }
-backbone-messaging = { version = "2.7.35" }
+backbone-core = { version = "3.0.0", features = ["postgres"] }
+backbone-orm = { version = "3.0.0" }
+backbone-auth = { version = "3.0.0", features = ["axum"] }
+backbone-messaging = { version = "3.0.0" }
 # Transactional-outbox consumer (ADR-005): the `recruitment.hired` handler dedups via `inbox::once` in
 # the same tx as the Employee+Employment insert. v2.7.4 = backbone-outbox 0.2.0; the HR composer's
 # [patch] block unifies it onto local HEAD for dev. No features needed on the consumer side.
-backbone-outbox = { version = "2.7.35" }
+backbone-outbox = { version = "3.0.0" }
 
 # Core async runtime and serialization
 tokio = { version = "1.0", features = ["full"] }

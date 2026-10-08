@@ -36,7 +36,7 @@ impl Seeder for SeedEmploymentHistorySeeder {
     }
 
     fn order(&self) -> i32 {
-        15
+        16
     }
 
     async fn should_run(&self, pool: &PgPool) -> Result<bool> {

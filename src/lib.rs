@@ -241,6 +241,8 @@ impl EmployeeModule {
 /// Builder for EmployeeModule
 pub struct EmployeeModuleBuilder {
     db_pool: Option<PgPool>,
+    // <<< CUSTOM BUILDER FIELDS
+    // END CUSTOM
 }
 
 impl EmployeeModuleBuilder {
@@ -248,6 +250,8 @@ impl EmployeeModuleBuilder {
     pub fn new() -> Self {
         Self {
             db_pool: None,
+            // <<< CUSTOM BUILDER DEFAULTS
+            // END CUSTOM
         }
     }
 
