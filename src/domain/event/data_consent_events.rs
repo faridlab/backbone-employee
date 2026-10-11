@@ -11,8 +11,6 @@ use crate::domain::entity::DataConsent;
 /// enum containing a `Crud(CrudEvent<DataConsent>)` variant.
 pub type DataConsentEvent = CrudEvent<DataConsent>;
 
-// <<< CUSTOM
-// END CUSTOM
 
 use backbone_messaging::{CrudEventPublisher, NoOpCrudEventPublisher};
 use std::sync::Arc;

@@ -32,5 +32,3 @@ pub type EmployeeTaxService = GenericCrudService<
     EmployeeTaxRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

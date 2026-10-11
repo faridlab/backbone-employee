@@ -257,7 +257,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeFamilyDto> for EmployeeFamily {
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeFamily here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

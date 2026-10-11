@@ -276,7 +276,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeIdentityDto> for EmployeeIdenti
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeIdentity here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

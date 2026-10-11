@@ -271,7 +271,7 @@ impl backbone_core::ApplyUpdateDto<UpdatePiiAccessLogDto> for PiiAccessLog {
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to PiiAccessLog here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

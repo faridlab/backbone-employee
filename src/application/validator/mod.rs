@@ -43,5 +43,3 @@ pub use pii_access_log_validator::{PiiAccessLogValidator, pii_access_log_validat
 pub use record_change_request_validator::{RecordChangeRequestValidator, record_change_request_validator};
 pub use religion_validator::{ReligionValidator, religion_validator};
 
-// <<< CUSTOM
-// END CUSTOM

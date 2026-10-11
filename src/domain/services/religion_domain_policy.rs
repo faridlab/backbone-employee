@@ -18,5 +18,3 @@ use crate::domain::entity::Religion;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type ReligionDomainPolicy = PermitAllPolicy<Religion>;
 
-// <<< CUSTOM
-// END CUSTOM

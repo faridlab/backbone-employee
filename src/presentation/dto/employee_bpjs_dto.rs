@@ -300,7 +300,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeBpjsDto> for EmployeeBpjs {
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeBpjs here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

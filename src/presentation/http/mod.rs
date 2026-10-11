@@ -24,8 +24,6 @@ pub mod pii_access_log_handler;
 pub mod record_change_request_handler;
 pub mod religion_handler;
 
-// <<< CUSTOM
-// END CUSTOM
 
 // Re-exports
 pub use bank_handler::{create_bank_routes, create_bank_read_routes, create_bank_write_routes};
@@ -46,8 +44,6 @@ pub use employment_history_handler::{create_employment_history_routes, create_em
 pub use pii_access_log_handler::{create_pii_access_log_routes, create_pii_access_log_read_routes, create_pii_access_log_write_routes};
 pub use record_change_request_handler::{create_record_change_request_routes, create_record_change_request_read_routes, create_record_change_request_write_routes};
 pub use religion_handler::{create_religion_routes, create_religion_read_routes, create_religion_write_routes};
-// <<< CUSTOM
-// END CUSTOM
 
 // This directory's extension (hand-written; ADR-0031).
 include!("mod.ext.rs");

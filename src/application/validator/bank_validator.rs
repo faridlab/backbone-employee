@@ -17,9 +17,5 @@ pub fn bank_validator() -> BankValidator {
     EntityValidator::new()
         .rule(RequiredString::new("name", |e: &Bank| &e.name))
         .rule(OptionalNotBlank::new("code", |e: &Bank| e.code.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

@@ -16,9 +16,5 @@ pub type EmployeeIdentityValidator = EntityValidator<EmployeeIdentity>;
 pub fn employee_identity_validator() -> EmployeeIdentityValidator {
     EntityValidator::new()
         .rule(RequiredString::new("identity_number", |e: &EmployeeIdentity| &e.identity_number))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

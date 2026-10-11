@@ -22,9 +22,5 @@ pub fn employee_validator() -> EmployeeValidator {
         .rule(OptionalNotBlank::new("mobile_phone", |e: &Employee| e.mobile_phone.as_deref()))
         .rule(OptionalNotBlank::new("phone", |e: &Employee| e.phone.as_deref()))
         .rule(OptionalNotBlank::new("birth_place", |e: &Employee| e.birth_place.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

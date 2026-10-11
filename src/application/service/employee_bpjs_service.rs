@@ -32,5 +32,3 @@ pub type EmployeeBpjsService = GenericCrudService<
     EmployeeBpjsRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

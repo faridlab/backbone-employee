@@ -32,5 +32,3 @@ pub type ReligionService = GenericCrudService<
     ReligionRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

@@ -14,10 +14,6 @@ pub type EmploymentValidator = EntityValidator<Employment>;
 /// Build a validator for Employment with all schema-defined field rules.
 pub fn employment_validator() -> EmploymentValidator {
     EntityValidator::new()
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
         // No schema-derived rules — add custom rules above.
 }
 
-// <<< CUSTOM
-// END CUSTOM

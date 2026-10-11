@@ -32,5 +32,3 @@ pub type EmployeeEducationService = GenericCrudService<
     EmployeeEducationRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

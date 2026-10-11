@@ -32,5 +32,3 @@ pub type EmployeeWorkExperienceService = GenericCrudService<
     EmployeeWorkExperienceRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

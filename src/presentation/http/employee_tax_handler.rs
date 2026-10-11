@@ -188,3 +188,4 @@ pub fn create_protected_employee_tax_routes<A: AuthMiddleware + Send + Sync + 's
             }
         }))
 }
+

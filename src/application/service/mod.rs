@@ -26,8 +26,6 @@ pub mod pii_access_log_service;
 pub mod record_change_request_service;
 pub mod religion_service;
 
-// <<< CUSTOM
-// END CUSTOM
 
 pub use bank_service::BankService;
 pub use data_consent_service::DataConsentService;
@@ -47,8 +45,6 @@ pub use employment_history_service::EmploymentHistoryService;
 pub use pii_access_log_service::PiiAccessLogService;
 pub use record_change_request_service::RecordChangeRequestService;
 pub use religion_service::ReligionService;
-// <<< CUSTOM
-// END CUSTOM
 
 // This directory's extension (hand-written; ADR-0031).
 include!("mod.ext.rs");

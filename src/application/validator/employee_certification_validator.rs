@@ -18,9 +18,5 @@ pub fn employee_certification_validator() -> EmployeeCertificationValidator {
         .rule(RequiredString::new("name", |e: &EmployeeCertification| &e.name))
         .rule(OptionalNotBlank::new("issuing_organization", |e: &EmployeeCertification| e.issuing_organization.as_deref()))
         .rule(OptionalNotBlank::new("description", |e: &EmployeeCertification| e.description.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

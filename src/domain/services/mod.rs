@@ -40,5 +40,3 @@ pub use pii_access_log_domain_policy::PiiAccessLogDomainPolicy;
 pub use record_change_request_domain_policy::RecordChangeRequestDomainPolicy;
 pub use religion_domain_policy::ReligionDomainPolicy;
 
-// <<< CUSTOM
-// END CUSTOM

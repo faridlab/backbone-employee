@@ -32,5 +32,3 @@ pub type DataSubjectRequestService = GenericCrudService<
     DataSubjectRequestRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

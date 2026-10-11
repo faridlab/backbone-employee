@@ -18,5 +18,3 @@ use crate::domain::entity::PiiAccessLog;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type PiiAccessLogDomainPolicy = PermitAllPolicy<PiiAccessLog>;
 
-// <<< CUSTOM
-// END CUSTOM

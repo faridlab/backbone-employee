@@ -264,7 +264,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeBankAccountDto> for EmployeeBan
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeBankAccount here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

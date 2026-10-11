@@ -16,9 +16,5 @@ pub type ReligionValidator = EntityValidator<Religion>;
 pub fn religion_validator() -> ReligionValidator {
     EntityValidator::new()
         .rule(RequiredString::new("name", |e: &Religion| &e.name))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

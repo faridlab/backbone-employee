@@ -16,9 +16,5 @@ pub type EmployeeTaxValidator = EntityValidator<EmployeeTax>;
 pub fn employee_tax_validator() -> EmployeeTaxValidator {
     EntityValidator::new()
         .rule(OptionalNotBlank::new("npwp_number", |e: &EmployeeTax| e.npwp_number.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

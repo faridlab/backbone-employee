@@ -24,8 +24,6 @@ pub mod application;
 pub mod presentation;
 pub mod seeders;
 pub mod exports;
-// <<< CUSTOM MODULES
-// END CUSTOM
 
 // The module's extension (hand-written; ADR-0031).
 #[path = "lib.ext.rs"]
@@ -103,8 +101,6 @@ pub struct EmployeeModule {
     pub(crate) religion_service: Arc<ReligionService>,
     /// The module's extension state (`lib.ext.rs`); its fields read through `Deref`.
     pub(crate) ext: ModuleExt,
-    // <<< CUSTOM FIELDS
-    // END CUSTOM
 }
 
 impl std::ops::Deref for EmployeeModule {
@@ -274,8 +270,6 @@ impl EmployeeModule {
             .merge(create_religion_read_routes(self.religion_service.clone()))
     }
 
-    // <<< CUSTOM METHODS
-    // END CUSTOM
 }
 
 /// Builder for EmployeeModule
@@ -283,8 +277,6 @@ pub struct EmployeeModuleBuilder {
     db_pool: Option<PgPool>,
     /// The builder's extension state (`lib.ext.rs`); its fields read through `Deref`.
     ext: ModuleBuilderExt,
-    // <<< CUSTOM BUILDER FIELDS
-    // END CUSTOM
 }
 
 impl std::ops::Deref for EmployeeModuleBuilder {
@@ -306,8 +298,6 @@ impl EmployeeModuleBuilder {
         Self {
             db_pool: None,
             ext: Default::default(),
-            // <<< CUSTOM BUILDER DEFAULTS
-            // END CUSTOM
         }
     }
 
@@ -317,8 +307,6 @@ impl EmployeeModuleBuilder {
         self
     }
 
-    // <<< CUSTOM - custom builder methods
-    // END CUSTOM
 
     /// Build the module with configured dependencies
     pub fn build(self) -> anyhow::Result<EmployeeModule> {
@@ -397,8 +385,6 @@ impl EmployeeModuleBuilder {
         let religion_repository = Arc::new(ReligionRepository::new(db_pool.clone()));
         let religion_service = Arc::new(ReligionService::with_repository(religion_repository.clone()));
 
-        // <<< CUSTOM
-        // END CUSTOM
 
         // The extension builds its own state from what the generated build made.
         let ext = self.ext.build(&ModuleParts {
@@ -461,8 +447,6 @@ impl EmployeeModuleBuilder {
             record_change_request_service,
             religion_service,
             ext,
-            // <<< CUSTOM
-            // END CUSTOM
         })
     }
 }

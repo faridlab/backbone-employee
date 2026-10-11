@@ -17,9 +17,5 @@ pub fn employee_work_experience_validator() -> EmployeeWorkExperienceValidator {
     EntityValidator::new()
         .rule(RequiredString::new("company_name", |e: &EmployeeWorkExperience| &e.company_name))
         .rule(OptionalNotBlank::new("job_position", |e: &EmployeeWorkExperience| e.job_position.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

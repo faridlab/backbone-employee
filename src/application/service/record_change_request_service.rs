@@ -32,5 +32,3 @@ pub type RecordChangeRequestService = GenericCrudService<
     RecordChangeRequestRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

@@ -18,5 +18,3 @@ use crate::domain::entity::EmploymentHistory;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type EmploymentHistoryDomainPolicy = PermitAllPolicy<EmploymentHistory>;
 
-// <<< CUSTOM
-// END CUSTOM

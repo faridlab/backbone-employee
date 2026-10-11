@@ -18,5 +18,3 @@ use crate::domain::entity::EmployeeBankAccount;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type EmployeeBankAccountDomainPolicy = PermitAllPolicy<EmployeeBankAccount>;
 
-// <<< CUSTOM
-// END CUSTOM

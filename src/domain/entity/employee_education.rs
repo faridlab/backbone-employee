@@ -201,8 +201,6 @@ impl EmployeeEducation {
         }
     }
 
-    // <<< CUSTOM METHODS START >>>
-    // <<< CUSTOM METHODS END >>>
 }
 
 impl super::Entity for EmployeeEducation {

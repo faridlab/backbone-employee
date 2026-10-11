@@ -32,5 +32,3 @@ pub type EmploymentHistoryService = GenericCrudService<
     EmploymentHistoryRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

@@ -16,9 +16,5 @@ pub type EmploymentHistoryValidator = EntityValidator<EmploymentHistory>;
 pub fn employment_history_validator() -> EmploymentHistoryValidator {
     EntityValidator::new()
         .rule(OptionalNotBlank::new("note", |e: &EmploymentHistory| e.note.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

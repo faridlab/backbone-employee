@@ -32,5 +32,3 @@ pub type EmployeeCertificationService = GenericCrudService<
     EmployeeCertificationRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

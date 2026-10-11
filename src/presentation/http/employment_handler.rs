@@ -364,3 +364,4 @@ pub fn create_employment_history_route(pool: sqlx::PgPool) -> axum::Router {
         .route("/employments/:id/history", axum::routing::get(employment_history))
         .with_state(pool)
 }
+

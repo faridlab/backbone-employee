@@ -18,5 +18,3 @@ use crate::domain::entity::EmployeeFamily;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type EmployeeFamilyDomainPolicy = PermitAllPolicy<EmployeeFamily>;
 
-// <<< CUSTOM
-// END CUSTOM

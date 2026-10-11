@@ -32,5 +32,3 @@ pub type PiiAccessLogService = GenericCrudService<
     PiiAccessLogRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

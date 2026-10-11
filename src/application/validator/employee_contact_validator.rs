@@ -18,9 +18,5 @@ pub fn employee_contact_validator() -> EmployeeContactValidator {
         .rule(RequiredString::new("name", |e: &EmployeeContact| &e.name))
         .rule(OptionalNotBlank::new("phone", |e: &EmployeeContact| e.phone.as_deref()))
         .rule(OptionalNotBlank::new("email", |e: &EmployeeContact| e.email.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

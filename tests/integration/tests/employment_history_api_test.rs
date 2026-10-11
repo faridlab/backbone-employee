@@ -127,6 +127,4 @@ mod tests {
 // CUSTOM TESTS
 // ============================================================================
 
-// <<< CUSTOM TESTS START >>>
 // Add EmploymentHistory specific tests here
-// <<< CUSTOM TESTS END >>>

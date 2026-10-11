@@ -32,5 +32,3 @@ pub type DataConsentService = GenericCrudService<
     DataConsentRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

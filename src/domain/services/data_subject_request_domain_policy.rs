@@ -18,5 +18,3 @@ use crate::domain::entity::DataSubjectRequest;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type DataSubjectRequestDomainPolicy = PermitAllPolicy<DataSubjectRequest>;
 
-// <<< CUSTOM
-// END CUSTOM

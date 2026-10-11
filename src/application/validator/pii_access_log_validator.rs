@@ -16,9 +16,5 @@ pub type PiiAccessLogValidator = EntityValidator<PiiAccessLog>;
 pub fn pii_access_log_validator() -> PiiAccessLogValidator {
     EntityValidator::new()
         .rule(OptionalNotBlank::new("purpose", |e: &PiiAccessLog| e.purpose.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

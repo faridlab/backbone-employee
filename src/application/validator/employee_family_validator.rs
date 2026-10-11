@@ -16,9 +16,5 @@ pub type EmployeeFamilyValidator = EntityValidator<EmployeeFamily>;
 pub fn employee_family_validator() -> EmployeeFamilyValidator {
     EntityValidator::new()
         .rule(RequiredString::new("name", |e: &EmployeeFamily| &e.name))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

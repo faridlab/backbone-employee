@@ -293,7 +293,7 @@ impl backbone_core::ApplyUpdateDto<UpdateDataSubjectRequestDto> for DataSubjectR
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to DataSubjectRequest here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

@@ -280,7 +280,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeCertificationDto> for EmployeeC
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeCertification here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

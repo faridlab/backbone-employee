@@ -18,9 +18,5 @@ pub fn employee_bpjs_validator() -> EmployeeBpjsValidator {
         .rule(OptionalNotBlank::new("bpjs_ketenagakerjaan_number", |e: &EmployeeBpjs| e.bpjs_ketenagakerjaan_number.as_deref()))
         .rule(OptionalNotBlank::new("npp_bpjs_ketenagakerjaan", |e: &EmployeeBpjs| e.npp_bpjs_ketenagakerjaan.as_deref()))
         .rule(OptionalNotBlank::new("bpjs_kesehatan_number", |e: &EmployeeBpjs| e.bpjs_kesehatan_number.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

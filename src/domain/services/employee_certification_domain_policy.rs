@@ -18,5 +18,3 @@ use crate::domain::entity::EmployeeCertification;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type EmployeeCertificationDomainPolicy = PermitAllPolicy<EmployeeCertification>;
 
-// <<< CUSTOM
-// END CUSTOM

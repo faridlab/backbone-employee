@@ -16,9 +16,5 @@ pub type DataSubjectRequestValidator = EntityValidator<DataSubjectRequest>;
 pub fn data_subject_request_validator() -> DataSubjectRequestValidator {
     EntityValidator::new()
         .rule(OptionalNotBlank::new("note", |e: &DataSubjectRequest| e.note.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

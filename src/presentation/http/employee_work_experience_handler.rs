@@ -187,3 +187,4 @@ pub fn create_protected_employee_work_experience_routes<A: AuthMiddleware + Send
             }
         }))
 }
+

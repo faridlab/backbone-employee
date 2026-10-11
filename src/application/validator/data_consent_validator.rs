@@ -17,9 +17,5 @@ pub fn data_consent_validator() -> DataConsentValidator {
     EntityValidator::new()
         .rule(OptionalNotBlank::new("consent_method", |e: &DataConsent| e.consent_method.as_deref()))
         .rule(OptionalNotBlank::new("privacy_notice_version", |e: &DataConsent| e.privacy_notice_version.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

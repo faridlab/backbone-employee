@@ -187,3 +187,4 @@ pub fn create_protected_employment_history_routes<A: AuthMiddleware + Send + Syn
             }
         }))
 }
+

@@ -17,9 +17,5 @@ pub fn employee_bank_account_validator() -> EmployeeBankAccountValidator {
     EntityValidator::new()
         .rule(RequiredString::new("account_number", |e: &EmployeeBankAccount| &e.account_number))
         .rule(OptionalNotBlank::new("account_name", |e: &EmployeeBankAccount| e.account_name.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

@@ -32,5 +32,3 @@ pub type EmploymentService = GenericCrudService<
     EmploymentRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

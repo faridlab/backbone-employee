@@ -294,7 +294,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeEducationDto> for EmployeeEduca
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeEducation here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

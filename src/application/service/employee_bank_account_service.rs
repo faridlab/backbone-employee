@@ -32,5 +32,3 @@ pub type EmployeeBankAccountService = GenericCrudService<
     EmployeeBankAccountRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

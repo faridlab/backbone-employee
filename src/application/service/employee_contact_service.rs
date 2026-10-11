@@ -32,5 +32,3 @@ pub type EmployeeContactService = GenericCrudService<
     EmployeeContactRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

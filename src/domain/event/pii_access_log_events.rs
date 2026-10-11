@@ -11,8 +11,6 @@ use crate::domain::entity::PiiAccessLog;
 /// enum containing a `Crud(CrudEvent<PiiAccessLog>)` variant.
 pub type PiiAccessLogEvent = CrudEvent<PiiAccessLog>;
 
-// <<< CUSTOM
-// END CUSTOM
 
 use backbone_messaging::{CrudEventPublisher, NoOpCrudEventPublisher};
 use std::sync::Arc;

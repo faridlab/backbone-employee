@@ -25,5 +25,3 @@ pub mod pii_access_log_specification;
 pub mod record_change_request_specification;
 pub mod religion_specification;
 
-// <<< CUSTOM
-// END CUSTOM

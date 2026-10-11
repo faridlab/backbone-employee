@@ -11,8 +11,6 @@ use crate::domain::entity::DataSubjectRequest;
 /// enum containing a `Crud(CrudEvent<DataSubjectRequest>)` variant.
 pub type DataSubjectRequestEvent = CrudEvent<DataSubjectRequest>;
 
-// <<< CUSTOM
-// END CUSTOM
 
 use backbone_messaging::{CrudEventPublisher, NoOpCrudEventPublisher};
 use std::sync::Arc;

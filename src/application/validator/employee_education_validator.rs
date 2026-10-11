@@ -18,9 +18,5 @@ pub fn employee_education_validator() -> EmployeeEducationValidator {
         .rule(RequiredString::new("institution_name", |e: &EmployeeEducation| &e.institution_name))
         .rule(OptionalNotBlank::new("major", |e: &EmployeeEducation| e.major.as_deref()))
         .rule(OptionalNotBlank::new("field", |e: &EmployeeEducation| e.field.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

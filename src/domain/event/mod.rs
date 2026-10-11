@@ -76,5 +76,3 @@ pub use record_change_request_event_handlers::RecordChangeRequestEventHandler;
 pub use religion_events::{ReligionEvent, ReligionEventPublisher, NoopReligionEventPublisher};
 pub use religion_event_handlers::ReligionEventHandler;
 
-// <<< CUSTOM
-// END CUSTOM

@@ -302,7 +302,7 @@ impl backbone_core::ApplyUpdateDto<UpdateDataConsentDto> for DataConsent {
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to DataConsent here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+

@@ -18,5 +18,3 @@ use crate::domain::entity::EmployeeWorkExperience;
 /// service. `PermitAllPolicy` is the safe default until then.
 pub type EmployeeWorkExperienceDomainPolicy = PermitAllPolicy<EmployeeWorkExperience>;
 
-// <<< CUSTOM
-// END CUSTOM

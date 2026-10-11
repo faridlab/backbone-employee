@@ -11,8 +11,6 @@ use crate::domain::entity::RecordChangeRequest;
 /// enum containing a `Crud(CrudEvent<RecordChangeRequest>)` variant.
 pub type RecordChangeRequestEvent = CrudEvent<RecordChangeRequest>;
 
-// <<< CUSTOM
-// END CUSTOM
 
 use backbone_messaging::{CrudEventPublisher, NoOpCrudEventPublisher};
 use std::sync::Arc;

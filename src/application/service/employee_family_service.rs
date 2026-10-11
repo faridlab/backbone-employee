@@ -32,5 +32,3 @@ pub type EmployeeFamilyService = GenericCrudService<
     EmployeeFamilyRepository,
 >;
 
-// <<< CUSTOM
-// END CUSTOM

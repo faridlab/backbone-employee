@@ -19,9 +19,5 @@ pub fn record_change_request_validator() -> RecordChangeRequestValidator {
         .rule(OptionalNotBlank::new("current_value", |e: &RecordChangeRequest| e.current_value.as_deref()))
         .rule(OptionalNotBlank::new("proposed_value", |e: &RecordChangeRequest| e.proposed_value.as_deref()))
         .rule(OptionalNotBlank::new("reason", |e: &RecordChangeRequest| e.reason.as_deref()))
-    // <<< CUSTOM RULES
-    // END CUSTOM RULES
 }
 
-// <<< CUSTOM
-// END CUSTOM

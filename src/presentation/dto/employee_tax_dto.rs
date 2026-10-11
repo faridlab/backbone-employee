@@ -316,7 +316,7 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeTaxDto> for EmployeeTax {
 // Custom DTOs
 // =============================================================================
 
-// <<< CUSTOM DTOs
 // Add custom DTOs specific to EmployeeTax here.
 // This section will be preserved during regeneration.
 // >>> END CUSTOM DTOs
+
