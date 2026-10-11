@@ -25,8 +25,17 @@ pub mod presentation;
 pub mod seeders;
 pub mod exports;
 // <<< CUSTOM MODULES
-pub mod request_pool;
 // END CUSTOM
+
+// The module's extension (hand-written; ADR-0031).
+#[path = "lib.ext.rs"]
+mod lib_ext;
+pub use lib_ext::*;
+/// This crate's module and builder under fixed names, for the extension's `impl` blocks.
+#[allow(dead_code)]
+pub(crate) type ThisModule = EmployeeModule;
+#[allow(dead_code)]
+pub(crate) type ThisModuleBuilder = EmployeeModuleBuilder;
 
 // Re-exports for convenience - Domain entities
 pub use domain::entity::*;
@@ -92,20 +101,65 @@ pub struct EmployeeModule {
     pub(crate) pii_access_log_service: Arc<PiiAccessLogService>,
     pub(crate) record_change_request_service: Arc<RecordChangeRequestService>,
     pub(crate) religion_service: Arc<ReligionService>,
+    /// The module's extension state (`lib.ext.rs`); its fields read through `Deref`.
+    pub(crate) ext: ModuleExt,
     // <<< CUSTOM FIELDS
-    // Held so the `EmployeeQueryService` impl can delegate `employee_ptkp` to the family/tax repos'
-    // hand-written SQL, and standard lookups to the CRUD services above. `db_pool` is the same pool
-    // the repos were constructed with (the repo methods take it per the backbone-hr read-port
-    // convention — org scoping is applied inside via `org_scope::fetch_optional_row_scoped`).
-    pub(crate) employee_family_repository: Arc<EmployeeFamilyRepository>,
-    pub(crate) employee_tax_repository: Arc<EmployeeTaxRepository>,
-    pub(crate) db_pool: sqlx::PgPool,
-    /// The self-service record-change lifecycle (submit/apply/refuse/cancel
-    /// over the approvals seam) — user-owned, not schema-derived.
-    pub(crate) record_change_service: std::sync::Arc<
-        crate::application::service::record_change_service::RecordChangeService,
-    >,
     // END CUSTOM
+}
+
+impl std::ops::Deref for EmployeeModule {
+    type Target = ModuleExt;
+    fn deref(&self) -> &Self::Target {
+        &self.ext
+    }
+}
+
+impl std::ops::DerefMut for EmployeeModule {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.ext
+    }
+}
+
+/// What the extension's `build` hook receives from the generated build (ADR-0031).
+#[allow(dead_code)]
+pub(crate) struct ModuleParts<'a> {
+    pub(crate) db_pool: &'a PgPool,
+    pub(crate) bank_service: &'a Arc<BankService>,
+    pub(crate) bank_repository: &'a Arc<BankRepository>,
+    pub(crate) data_consent_service: &'a Arc<DataConsentService>,
+    pub(crate) data_consent_repository: &'a Arc<DataConsentRepository>,
+    pub(crate) data_subject_request_service: &'a Arc<DataSubjectRequestService>,
+    pub(crate) data_subject_request_repository: &'a Arc<DataSubjectRequestRepository>,
+    pub(crate) employee_service: &'a Arc<EmployeeService>,
+    pub(crate) employee_repository: &'a Arc<EmployeeRepository>,
+    pub(crate) employee_bank_account_service: &'a Arc<EmployeeBankAccountService>,
+    pub(crate) employee_bank_account_repository: &'a Arc<EmployeeBankAccountRepository>,
+    pub(crate) employee_bpjs_service: &'a Arc<EmployeeBpjsService>,
+    pub(crate) employee_bpjs_repository: &'a Arc<EmployeeBpjsRepository>,
+    pub(crate) employee_certification_service: &'a Arc<EmployeeCertificationService>,
+    pub(crate) employee_certification_repository: &'a Arc<EmployeeCertificationRepository>,
+    pub(crate) employee_contact_service: &'a Arc<EmployeeContactService>,
+    pub(crate) employee_contact_repository: &'a Arc<EmployeeContactRepository>,
+    pub(crate) employee_education_service: &'a Arc<EmployeeEducationService>,
+    pub(crate) employee_education_repository: &'a Arc<EmployeeEducationRepository>,
+    pub(crate) employee_family_service: &'a Arc<EmployeeFamilyService>,
+    pub(crate) employee_family_repository: &'a Arc<EmployeeFamilyRepository>,
+    pub(crate) employee_identity_service: &'a Arc<EmployeeIdentityService>,
+    pub(crate) employee_identity_repository: &'a Arc<EmployeeIdentityRepository>,
+    pub(crate) employee_tax_service: &'a Arc<EmployeeTaxService>,
+    pub(crate) employee_tax_repository: &'a Arc<EmployeeTaxRepository>,
+    pub(crate) employee_work_experience_service: &'a Arc<EmployeeWorkExperienceService>,
+    pub(crate) employee_work_experience_repository: &'a Arc<EmployeeWorkExperienceRepository>,
+    pub(crate) employment_service: &'a Arc<EmploymentService>,
+    pub(crate) employment_repository: &'a Arc<EmploymentRepository>,
+    pub(crate) employment_history_service: &'a Arc<EmploymentHistoryService>,
+    pub(crate) employment_history_repository: &'a Arc<EmploymentHistoryRepository>,
+    pub(crate) pii_access_log_service: &'a Arc<PiiAccessLogService>,
+    pub(crate) pii_access_log_repository: &'a Arc<PiiAccessLogRepository>,
+    pub(crate) record_change_request_service: &'a Arc<RecordChangeRequestService>,
+    pub(crate) record_change_request_repository: &'a Arc<RecordChangeRequestRepository>,
+    pub(crate) religion_service: &'a Arc<ReligionService>,
+    pub(crate) religion_repository: &'a Arc<ReligionRepository>,
 }
 
 impl EmployeeModule {
@@ -221,28 +275,29 @@ impl EmployeeModule {
     }
 
     // <<< CUSTOM METHODS
-    /// The record-change lifecycle service (for the composing service to
-    /// wire its approvals adapter onto).
-    pub fn record_change_service(
-        &self,
-    ) -> std::sync::Arc<crate::application::service::record_change_service::RecordChangeService> {
-        self.record_change_service.clone()
-    }
-    
-    /// The record-change verb router (mount under the host's guarded tree).
-    pub fn record_change_verb_routes(&self) -> axum::Router {
-        crate::presentation::http::guarded_routes::record_change_verb_routes(
-            self.record_change_service.clone(),
-        )
-    }
     // END CUSTOM
 }
 
 /// Builder for EmployeeModule
 pub struct EmployeeModuleBuilder {
     db_pool: Option<PgPool>,
+    /// The builder's extension state (`lib.ext.rs`); its fields read through `Deref`.
+    ext: ModuleBuilderExt,
     // <<< CUSTOM BUILDER FIELDS
     // END CUSTOM
+}
+
+impl std::ops::Deref for EmployeeModuleBuilder {
+    type Target = ModuleBuilderExt;
+    fn deref(&self) -> &Self::Target {
+        &self.ext
+    }
+}
+
+impl std::ops::DerefMut for EmployeeModuleBuilder {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.ext
+    }
 }
 
 impl EmployeeModuleBuilder {
@@ -250,6 +305,7 @@ impl EmployeeModuleBuilder {
     pub fn new() -> Self {
         Self {
             db_pool: None,
+            ext: Default::default(),
             // <<< CUSTOM BUILDER DEFAULTS
             // END CUSTOM
         }
@@ -342,12 +398,48 @@ impl EmployeeModuleBuilder {
         let religion_service = Arc::new(ReligionService::with_repository(religion_repository.clone()));
 
         // <<< CUSTOM
-        let record_change_service = std::sync::Arc::new(
-            crate::application::service::record_change_service::RecordChangeService::new(
-                db_pool.clone(),
-            ),
-        );
         // END CUSTOM
+
+        // The extension builds its own state from what the generated build made.
+        let ext = self.ext.build(&ModuleParts {
+            db_pool: &db_pool,
+            bank_service: &bank_service,
+            bank_repository: &bank_repository,
+            data_consent_service: &data_consent_service,
+            data_consent_repository: &data_consent_repository,
+            data_subject_request_service: &data_subject_request_service,
+            data_subject_request_repository: &data_subject_request_repository,
+            employee_service: &employee_service,
+            employee_repository: &employee_repository,
+            employee_bank_account_service: &employee_bank_account_service,
+            employee_bank_account_repository: &employee_bank_account_repository,
+            employee_bpjs_service: &employee_bpjs_service,
+            employee_bpjs_repository: &employee_bpjs_repository,
+            employee_certification_service: &employee_certification_service,
+            employee_certification_repository: &employee_certification_repository,
+            employee_contact_service: &employee_contact_service,
+            employee_contact_repository: &employee_contact_repository,
+            employee_education_service: &employee_education_service,
+            employee_education_repository: &employee_education_repository,
+            employee_family_service: &employee_family_service,
+            employee_family_repository: &employee_family_repository,
+            employee_identity_service: &employee_identity_service,
+            employee_identity_repository: &employee_identity_repository,
+            employee_tax_service: &employee_tax_service,
+            employee_tax_repository: &employee_tax_repository,
+            employee_work_experience_service: &employee_work_experience_service,
+            employee_work_experience_repository: &employee_work_experience_repository,
+            employment_service: &employment_service,
+            employment_repository: &employment_repository,
+            employment_history_service: &employment_history_service,
+            employment_history_repository: &employment_history_repository,
+            pii_access_log_service: &pii_access_log_service,
+            pii_access_log_repository: &pii_access_log_repository,
+            record_change_request_service: &record_change_request_service,
+            record_change_request_repository: &record_change_request_repository,
+            religion_service: &religion_service,
+            religion_repository: &religion_repository,
+        })?;
 
         Ok(EmployeeModule {
             bank_service,
@@ -368,11 +460,8 @@ impl EmployeeModuleBuilder {
             pii_access_log_service,
             record_change_request_service,
             religion_service,
+            ext,
             // <<< CUSTOM
-            employee_family_repository: employee_family_repository.clone(),
-            employee_tax_repository: employee_tax_repository.clone(),
-            db_pool,
-            record_change_service,
             // END CUSTOM
         })
     }
@@ -383,3 +472,6 @@ impl Default for EmployeeModuleBuilder {
         Self::new()
     }
 }
+
+// This directory's extension (hand-written; ADR-0031).
+include!("mod.ext.rs");
