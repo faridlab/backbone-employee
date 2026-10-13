@@ -32,3 +32,53 @@ pub type EmployeeEducationService = GenericCrudService<
     EmployeeEducationRepository,
 >;
 
+/// The rules the schema declares for EmployeeEducation, checked against the row a create or update
+/// would store. The generated build attaches it to [`EmployeeEducationService`]. A refusing rule's
+/// break answers 422; a rule in shadow is logged under `backbone::write_guard` and the
+/// write goes ahead.
+pub struct EmployeeEducationRowRules;
+
+#[async_trait::async_trait]
+impl backbone_core::write_guard::WriteGuard<EmployeeEducation> for EmployeeEducationRowRules {
+    async fn check(
+        &self,
+        ctx: &backbone_core::write_guard::WriteCtx<'_, EmployeeEducation>,
+    ) -> backbone_core::write_guard::GuardOutcome {
+        use backbone_core::row_rule as r;
+        use backbone_core::violation::Violation;
+        use backbone_core::write_guard::{GuardOutcome, WriteKind};
+        let (create, update) = (ctx.kind == WriteKind::Create, ctx.kind == WriteKind::Update);
+        let Some(after) = ctx.after.filter(|_| create || update) else {
+            return GuardOutcome::allow();
+        };
+        let Ok(row) = serde_json::to_value(after) else {
+            return GuardOutcome::allow();
+        };
+        let row = &row;
+        let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
+        let mut shadow = Vec::new();
+        let mut refuse = Vec::new();
+        // `employee_id_required` (@required on EmployeeEducation.employee_id)
+        if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
+            refuse.push(Violation::new("employee_id", "required", "employee_id is required"));
+        }
+        // `institution_name_required` (@required on EmployeeEducation.institution_name)
+        if (create || (update && r::changed(old.as_ref(), row, &["institution_name"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "institution_name")), r::not(r::is_empty(r::trim(r::field(row, "institution_name")))))) {
+            refuse.push(Violation::new("institution_name", "required", "institution_name is required"));
+        }
+        // `institution_name_max_length` (@length(max=180) on EmployeeEducation.institution_name)
+        if (create || (update && r::changed(old.as_ref(), row, &["institution_name"]))) && !r::holds(&r::le(r::length(r::field(row, "institution_name")), r::Val::Num(180.0_f64))) {
+            shadow.push(Violation::new("institution_name", "max_length", "institution_name must be at most 180 characters").with_param("max", 180_i64));
+        }
+        // `major_max_length` (@length(max=120) on EmployeeEducation.major)
+        if (create || (update && r::changed(old.as_ref(), row, &["major"]))) && !r::holds(&r::le(r::length(r::field(row, "major")), r::Val::Num(120.0_f64))) {
+            shadow.push(Violation::new("major", "max_length", "major must be at most 120 characters").with_param("max", 120_i64));
+        }
+        // `field_max_length` (@length(max=120) on EmployeeEducation.field)
+        if (create || (update && r::changed(old.as_ref(), row, &["field"]))) && !r::holds(&r::le(r::length(r::field(row, "field")), r::Val::Num(120.0_f64))) {
+            shadow.push(Violation::new("field", "max_length", "field must be at most 120 characters").with_param("max", 120_i64));
+        }
+        GuardOutcome { refuse, shadow }
+    }
+}
+

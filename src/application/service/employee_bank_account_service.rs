@@ -32,3 +32,53 @@ pub type EmployeeBankAccountService = GenericCrudService<
     EmployeeBankAccountRepository,
 >;
 
+/// The rules the schema declares for EmployeeBankAccount, checked against the row a create or update
+/// would store. The generated build attaches it to [`EmployeeBankAccountService`]. A refusing rule's
+/// break answers 422; a rule in shadow is logged under `backbone::write_guard` and the
+/// write goes ahead.
+pub struct EmployeeBankAccountRowRules;
+
+#[async_trait::async_trait]
+impl backbone_core::write_guard::WriteGuard<EmployeeBankAccount> for EmployeeBankAccountRowRules {
+    async fn check(
+        &self,
+        ctx: &backbone_core::write_guard::WriteCtx<'_, EmployeeBankAccount>,
+    ) -> backbone_core::write_guard::GuardOutcome {
+        use backbone_core::row_rule as r;
+        use backbone_core::violation::Violation;
+        use backbone_core::write_guard::{GuardOutcome, WriteKind};
+        let (create, update) = (ctx.kind == WriteKind::Create, ctx.kind == WriteKind::Update);
+        let Some(after) = ctx.after.filter(|_| create || update) else {
+            return GuardOutcome::allow();
+        };
+        let Ok(row) = serde_json::to_value(after) else {
+            return GuardOutcome::allow();
+        };
+        let row = &row;
+        let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
+        let mut shadow = Vec::new();
+        let mut refuse = Vec::new();
+        // `employee_id_required` (@required on EmployeeBankAccount.employee_id)
+        if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
+            refuse.push(Violation::new("employee_id", "required", "employee_id is required"));
+        }
+        // `bank_id_required` (@required on EmployeeBankAccount.bank_id)
+        if (create || (update && r::changed(old.as_ref(), row, &["bank_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "bank_id")), r::not(r::is_empty(r::trim(r::field(row, "bank_id")))))) {
+            refuse.push(Violation::new("bank_id", "required", "bank_id is required"));
+        }
+        // `account_number_required` (@required on EmployeeBankAccount.account_number)
+        if (create || (update && r::changed(old.as_ref(), row, &["account_number"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "account_number")), r::not(r::is_empty(r::trim(r::field(row, "account_number")))))) {
+            refuse.push(Violation::new("account_number", "required", "account_number is required"));
+        }
+        // `account_number_max_length` (@length(max=40) on EmployeeBankAccount.account_number)
+        if (create || (update && r::changed(old.as_ref(), row, &["account_number"]))) && !r::holds(&r::le(r::length(r::field(row, "account_number")), r::Val::Num(40.0_f64))) {
+            shadow.push(Violation::new("account_number", "max_length", "account_number must be at most 40 characters").with_param("max", 40_i64));
+        }
+        // `account_name_max_length` (@length(max=120) on EmployeeBankAccount.account_name)
+        if (create || (update && r::changed(old.as_ref(), row, &["account_name"]))) && !r::holds(&r::le(r::length(r::field(row, "account_name")), r::Val::Num(120.0_f64))) {
+            shadow.push(Violation::new("account_name", "max_length", "account_name must be at most 120 characters").with_param("max", 120_i64));
+        }
+        GuardOutcome { refuse, shadow }
+    }
+}
+

@@ -32,3 +32,57 @@ pub type RecordChangeRequestService = GenericCrudService<
     RecordChangeRequestRepository,
 >;
 
+/// The rules the schema declares for RecordChangeRequest, checked against the row a create or update
+/// would store. The generated build attaches it to [`RecordChangeRequestService`]. A refusing rule's
+/// break answers 422; a rule in shadow is logged under `backbone::write_guard` and the
+/// write goes ahead.
+pub struct RecordChangeRequestRowRules;
+
+#[async_trait::async_trait]
+impl backbone_core::write_guard::WriteGuard<RecordChangeRequest> for RecordChangeRequestRowRules {
+    async fn check(
+        &self,
+        ctx: &backbone_core::write_guard::WriteCtx<'_, RecordChangeRequest>,
+    ) -> backbone_core::write_guard::GuardOutcome {
+        use backbone_core::row_rule as r;
+        use backbone_core::violation::Violation;
+        use backbone_core::write_guard::{GuardOutcome, WriteKind};
+        let (create, update) = (ctx.kind == WriteKind::Create, ctx.kind == WriteKind::Update);
+        let Some(after) = ctx.after.filter(|_| create || update) else {
+            return GuardOutcome::allow();
+        };
+        let Ok(row) = serde_json::to_value(after) else {
+            return GuardOutcome::allow();
+        };
+        let row = &row;
+        let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
+        let mut shadow = Vec::new();
+        let mut refuse = Vec::new();
+        // `employee_id_required` (@required on RecordChangeRequest.employee_id)
+        if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
+            refuse.push(Violation::new("employee_id", "required", "employee_id is required"));
+        }
+        // `field_path_required` (@required on RecordChangeRequest.field_path)
+        if (create || (update && r::changed(old.as_ref(), row, &["field_path"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "field_path")), r::not(r::is_empty(r::trim(r::field(row, "field_path")))))) {
+            refuse.push(Violation::new("field_path", "required", "field_path is required"));
+        }
+        // `field_path_max_length` (@length(max=120) on RecordChangeRequest.field_path)
+        if (create || (update && r::changed(old.as_ref(), row, &["field_path"]))) && !r::holds(&r::le(r::length(r::field(row, "field_path")), r::Val::Num(120.0_f64))) {
+            shadow.push(Violation::new("field_path", "max_length", "field_path must be at most 120 characters").with_param("max", 120_i64));
+        }
+        // `current_value_max_length` (@length(max=2000) on RecordChangeRequest.current_value)
+        if (create || (update && r::changed(old.as_ref(), row, &["current_value"]))) && !r::holds(&r::le(r::length(r::field(row, "current_value")), r::Val::Num(2000.0_f64))) {
+            shadow.push(Violation::new("current_value", "max_length", "current_value must be at most 2000 characters").with_param("max", 2000_i64));
+        }
+        // `proposed_value_max_length` (@length(max=2000) on RecordChangeRequest.proposed_value)
+        if (create || (update && r::changed(old.as_ref(), row, &["proposed_value"]))) && !r::holds(&r::le(r::length(r::field(row, "proposed_value")), r::Val::Num(2000.0_f64))) {
+            shadow.push(Violation::new("proposed_value", "max_length", "proposed_value must be at most 2000 characters").with_param("max", 2000_i64));
+        }
+        // `reason_max_length` (@length(max=1000) on RecordChangeRequest.reason)
+        if (create || (update && r::changed(old.as_ref(), row, &["reason"]))) && !r::holds(&r::le(r::length(r::field(row, "reason")), r::Val::Num(1000.0_f64))) {
+            shadow.push(Violation::new("reason", "max_length", "reason must be at most 1000 characters").with_param("max", 1000_i64));
+        }
+        GuardOutcome { refuse, shadow }
+    }
+}
+

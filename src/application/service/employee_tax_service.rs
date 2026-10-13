@@ -32,3 +32,49 @@ pub type EmployeeTaxService = GenericCrudService<
     EmployeeTaxRepository,
 >;
 
+/// The rules the schema declares for EmployeeTax, checked against the row a create or update
+/// would store. The generated build attaches it to [`EmployeeTaxService`]. A refusing rule's
+/// break answers 422; a rule in shadow is logged under `backbone::write_guard` and the
+/// write goes ahead.
+pub struct EmployeeTaxRowRules;
+
+#[async_trait::async_trait]
+impl backbone_core::write_guard::WriteGuard<EmployeeTax> for EmployeeTaxRowRules {
+    async fn check(
+        &self,
+        ctx: &backbone_core::write_guard::WriteCtx<'_, EmployeeTax>,
+    ) -> backbone_core::write_guard::GuardOutcome {
+        use backbone_core::row_rule as r;
+        use backbone_core::violation::Violation;
+        use backbone_core::write_guard::{GuardOutcome, WriteKind};
+        let (create, update) = (ctx.kind == WriteKind::Create, ctx.kind == WriteKind::Update);
+        let Some(after) = ctx.after.filter(|_| create || update) else {
+            return GuardOutcome::allow();
+        };
+        let Ok(row) = serde_json::to_value(after) else {
+            return GuardOutcome::allow();
+        };
+        let row = &row;
+        let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
+        let mut shadow = Vec::new();
+        let mut refuse = Vec::new();
+        // `employee_id_required` (@required on EmployeeTax.employee_id)
+        if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
+            refuse.push(Violation::new("employee_id", "required", "employee_id is required"));
+        }
+        // `npwp_number_max_length` (@length(max=30) on EmployeeTax.npwp_number)
+        if (create || (update && r::changed(old.as_ref(), row, &["npwp_number"]))) && !r::holds(&r::le(r::length(r::field(row, "npwp_number")), r::Val::Num(30.0_f64))) {
+            shadow.push(Violation::new("npwp_number", "max_length", "npwp_number must be at most 30 characters").with_param("max", 30_i64));
+        }
+        // `beginning_netto_non_negative` (@non_negative on EmployeeTax.beginning_netto)
+        if (create || (update && r::changed(old.as_ref(), row, &["beginning_netto"]))) && !r::holds(&r::ge(r::field(row, "beginning_netto"), r::Val::Num(0.0_f64))) {
+            shadow.push(Violation::new("beginning_netto", "non_negative", "beginning_netto must not be negative"));
+        }
+        // `pph21_paid_non_negative` (@non_negative on EmployeeTax.pph21_paid)
+        if (create || (update && r::changed(old.as_ref(), row, &["pph21_paid"]))) && !r::holds(&r::ge(r::field(row, "pph21_paid"), r::Val::Num(0.0_f64))) {
+            shadow.push(Violation::new("pph21_paid", "non_negative", "pph21_paid must not be negative"));
+        }
+        GuardOutcome { refuse, shadow }
+    }
+}
+

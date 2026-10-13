@@ -315,75 +315,75 @@ impl EmployeeModuleBuilder {
 
         // Bank service
         let bank_repository = Arc::new(BankRepository::new(db_pool.clone()));
-        let bank_service = Arc::new(BankService::with_repository(bank_repository.clone()));
+        let bank_service = Arc::new(BankService::with_repository(bank_repository.clone()).with_guard(Arc::new(crate::application::service::BankRowRules)));
 
         // DataConsent service
         let data_consent_repository = Arc::new(DataConsentRepository::new(db_pool.clone()));
-        let data_consent_service = Arc::new(DataConsentService::with_repository(data_consent_repository.clone()));
+        let data_consent_service = Arc::new(DataConsentService::with_repository(data_consent_repository.clone()).with_guard(Arc::new(crate::application::service::DataConsentRowRules)));
 
         // DataSubjectRequest service
         let data_subject_request_repository = Arc::new(DataSubjectRequestRepository::new(db_pool.clone()));
-        let data_subject_request_service = Arc::new(DataSubjectRequestService::with_repository(data_subject_request_repository.clone()));
+        let data_subject_request_service = Arc::new(DataSubjectRequestService::with_repository(data_subject_request_repository.clone()).with_guard(Arc::new(crate::application::service::DataSubjectRequestRowRules)));
 
         // Employee service
         let employee_repository = Arc::new(EmployeeRepository::new(db_pool.clone()));
-        let employee_service = Arc::new(EmployeeService::with_repository(employee_repository.clone()));
+        let employee_service = Arc::new(EmployeeService::with_repository(employee_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeRowRules)));
 
         // EmployeeBankAccount service
         let employee_bank_account_repository = Arc::new(EmployeeBankAccountRepository::new(db_pool.clone()));
-        let employee_bank_account_service = Arc::new(EmployeeBankAccountService::with_repository(employee_bank_account_repository.clone()));
+        let employee_bank_account_service = Arc::new(EmployeeBankAccountService::with_repository(employee_bank_account_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeBankAccountRowRules)));
 
         // EmployeeBpjs service
         let employee_bpjs_repository = Arc::new(EmployeeBpjsRepository::new(db_pool.clone()));
-        let employee_bpjs_service = Arc::new(EmployeeBpjsService::with_repository(employee_bpjs_repository.clone()));
+        let employee_bpjs_service = Arc::new(EmployeeBpjsService::with_repository(employee_bpjs_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeBpjsRowRules)));
 
         // EmployeeCertification service
         let employee_certification_repository = Arc::new(EmployeeCertificationRepository::new(db_pool.clone()));
-        let employee_certification_service = Arc::new(EmployeeCertificationService::with_repository(employee_certification_repository.clone()));
+        let employee_certification_service = Arc::new(EmployeeCertificationService::with_repository(employee_certification_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeCertificationRowRules)));
 
         // EmployeeContact service
         let employee_contact_repository = Arc::new(EmployeeContactRepository::new(db_pool.clone()));
-        let employee_contact_service = Arc::new(EmployeeContactService::with_repository(employee_contact_repository.clone()));
+        let employee_contact_service = Arc::new(EmployeeContactService::with_repository(employee_contact_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeContactRowRules)));
 
         // EmployeeEducation service
         let employee_education_repository = Arc::new(EmployeeEducationRepository::new(db_pool.clone()));
-        let employee_education_service = Arc::new(EmployeeEducationService::with_repository(employee_education_repository.clone()));
+        let employee_education_service = Arc::new(EmployeeEducationService::with_repository(employee_education_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeEducationRowRules)));
 
         // EmployeeFamily service
         let employee_family_repository = Arc::new(EmployeeFamilyRepository::new(db_pool.clone()));
-        let employee_family_service = Arc::new(EmployeeFamilyService::with_repository(employee_family_repository.clone()));
+        let employee_family_service = Arc::new(EmployeeFamilyService::with_repository(employee_family_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeFamilyRowRules)));
 
         // EmployeeIdentity service
         let employee_identity_repository = Arc::new(EmployeeIdentityRepository::new(db_pool.clone()));
-        let employee_identity_service = Arc::new(EmployeeIdentityService::with_repository(employee_identity_repository.clone()));
+        let employee_identity_service = Arc::new(EmployeeIdentityService::with_repository(employee_identity_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeIdentityRowRules)));
 
         // EmployeeTax service
         let employee_tax_repository = Arc::new(EmployeeTaxRepository::new(db_pool.clone()));
-        let employee_tax_service = Arc::new(EmployeeTaxService::with_repository(employee_tax_repository.clone()));
+        let employee_tax_service = Arc::new(EmployeeTaxService::with_repository(employee_tax_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeTaxRowRules)));
 
         // EmployeeWorkExperience service
         let employee_work_experience_repository = Arc::new(EmployeeWorkExperienceRepository::new(db_pool.clone()));
-        let employee_work_experience_service = Arc::new(EmployeeWorkExperienceService::with_repository(employee_work_experience_repository.clone()));
+        let employee_work_experience_service = Arc::new(EmployeeWorkExperienceService::with_repository(employee_work_experience_repository.clone()).with_guard(Arc::new(crate::application::service::EmployeeWorkExperienceRowRules)));
 
         // Employment service
         let employment_repository = Arc::new(EmploymentRepository::new(db_pool.clone()));
-        let employment_service = Arc::new(EmploymentService::with_repository(employment_repository.clone()));
+        let employment_service = Arc::new(EmploymentService::with_repository(employment_repository.clone()).with_guard(Arc::new(crate::application::service::EmploymentRowRules)));
 
         // EmploymentHistory service
         let employment_history_repository = Arc::new(EmploymentHistoryRepository::new(db_pool.clone()));
-        let employment_history_service = Arc::new(EmploymentHistoryService::with_repository(employment_history_repository.clone()));
+        let employment_history_service = Arc::new(EmploymentHistoryService::with_repository(employment_history_repository.clone()).with_guard(Arc::new(crate::application::service::EmploymentHistoryRowRules)));
 
         // PiiAccessLog service
         let pii_access_log_repository = Arc::new(PiiAccessLogRepository::new(db_pool.clone()));
-        let pii_access_log_service = Arc::new(PiiAccessLogService::with_repository(pii_access_log_repository.clone()));
+        let pii_access_log_service = Arc::new(PiiAccessLogService::with_repository(pii_access_log_repository.clone()).with_guard(Arc::new(crate::application::service::PiiAccessLogRowRules)));
 
         // RecordChangeRequest service
         let record_change_request_repository = Arc::new(RecordChangeRequestRepository::new(db_pool.clone()));
-        let record_change_request_service = Arc::new(RecordChangeRequestService::with_repository(record_change_request_repository.clone()));
+        let record_change_request_service = Arc::new(RecordChangeRequestService::with_repository(record_change_request_repository.clone()).with_guard(Arc::new(crate::application::service::RecordChangeRequestRowRules)));
 
         // Religion service
         let religion_repository = Arc::new(ReligionRepository::new(db_pool.clone()));
-        let religion_service = Arc::new(ReligionService::with_repository(religion_repository.clone()));
+        let religion_service = Arc::new(ReligionService::with_repository(religion_repository.clone()).with_guard(Arc::new(crate::application::service::ReligionRowRules)));
 
 
         // The extension builds its own state from what the generated build made.

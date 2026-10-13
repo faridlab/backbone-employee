@@ -45,6 +45,24 @@ pub use employment_history_service::EmploymentHistoryService;
 pub use pii_access_log_service::PiiAccessLogService;
 pub use record_change_request_service::RecordChangeRequestService;
 pub use religion_service::ReligionService;
+pub use bank_service::BankRowRules;
+pub use data_consent_service::DataConsentRowRules;
+pub use data_subject_request_service::DataSubjectRequestRowRules;
+pub use employee_service::EmployeeRowRules;
+pub use employee_bank_account_service::EmployeeBankAccountRowRules;
+pub use employee_bpjs_service::EmployeeBpjsRowRules;
+pub use employee_certification_service::EmployeeCertificationRowRules;
+pub use employee_contact_service::EmployeeContactRowRules;
+pub use employee_education_service::EmployeeEducationRowRules;
+pub use employee_family_service::EmployeeFamilyRowRules;
+pub use employee_identity_service::EmployeeIdentityRowRules;
+pub use employee_tax_service::EmployeeTaxRowRules;
+pub use employee_work_experience_service::EmployeeWorkExperienceRowRules;
+pub use employment_service::EmploymentRowRules;
+pub use employment_history_service::EmploymentHistoryRowRules;
+pub use pii_access_log_service::PiiAccessLogRowRules;
+pub use record_change_request_service::RecordChangeRequestRowRules;
+pub use religion_service::ReligionRowRules;
 
 // This directory's extension (hand-written; ADR-0031).
 include!("mod.ext.rs");
