@@ -280,6 +280,9 @@ impl backbone_orm::EntityRepoMeta for EmployeeTax {
     fn search_fields() -> &'static [&'static str] {
         &[]
     }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("employee", "employees", "employeeId")]
+    }
 }
 
 /// Builder for EmployeeTax entity

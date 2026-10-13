@@ -253,6 +253,9 @@ impl backbone_orm::EntityRepoMeta for DataSubjectRequest {
     fn search_fields() -> &'static [&'static str] {
         &[]
     }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("employee", "employees", "employeeId")]
+    }
 }
 
 /// Builder for DataSubjectRequest entity

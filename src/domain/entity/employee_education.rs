@@ -254,6 +254,9 @@ impl backbone_orm::EntityRepoMeta for EmployeeEducation {
     fn search_fields() -> &'static [&'static str] {
         &["institution_name"]
     }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("employee", "employees", "employeeId")]
+    }
 }
 
 /// Builder for EmployeeEducation entity

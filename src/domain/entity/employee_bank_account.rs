@@ -215,6 +215,9 @@ impl backbone_orm::EntityRepoMeta for EmployeeBankAccount {
     fn search_fields() -> &'static [&'static str] {
         &["account_number"]
     }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("employee", "employees", "employeeId"), ("bank", "banks", "bankId")]
+    }
 }
 
 /// Builder for EmployeeBankAccount entity

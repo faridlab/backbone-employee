@@ -218,6 +218,9 @@ impl backbone_orm::EntityRepoMeta for EmployeeFamily {
     fn search_fields() -> &'static [&'static str] {
         &["name"]
     }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("employee", "employees", "employeeId")]
+    }
 }
 
 /// Builder for EmployeeFamily entity

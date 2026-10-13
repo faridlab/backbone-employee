@@ -233,6 +233,9 @@ impl backbone_orm::EntityRepoMeta for EmployeeWorkExperience {
     fn search_fields() -> &'static [&'static str] {
         &["company_name"]
     }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("employee", "employees", "employeeId")]
+    }
 }
 
 /// Builder for EmployeeWorkExperience entity
