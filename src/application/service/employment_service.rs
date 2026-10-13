@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<Employment> for EmploymentRowRules {
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_id_required` (@required on Employment.employee_id)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
@@ -64,7 +64,7 @@ impl backbone_core::write_guard::WriteGuard<Employment> for EmploymentRowRules {
         }
         // `contracted_hours_per_week_positive` (@positive on Employment.contracted_hours_per_week)
         if (create || (update && r::changed(old.as_ref(), row, &["contracted_hours_per_week"]))) && !r::holds(&r::gt(r::field(row, "contracted_hours_per_week"), r::Val::Num(0.0_f64))) {
-            shadow.push(Violation::new("contracted_hours_per_week", "positive", "contracted_hours_per_week must be positive"));
+            refuse.push(Violation::new("contracted_hours_per_week", "positive", "contracted_hours_per_week must be positive"));
         }
         GuardOutcome { refuse, shadow }
     }

@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<EmployeeCertification> for EmployeeC
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_id_required` (@required on EmployeeCertification.employee_id)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
@@ -68,11 +68,11 @@ impl backbone_core::write_guard::WriteGuard<EmployeeCertification> for EmployeeC
         }
         // `name_max_length` (@length(max=180) on EmployeeCertification.name)
         if (create || (update && r::changed(old.as_ref(), row, &["name"]))) && !r::holds(&r::le(r::length(r::field(row, "name")), r::Val::Num(180.0_f64))) {
-            shadow.push(Violation::new("name", "max_length", "name must be at most 180 characters").with_param("max", 180_i64));
+            refuse.push(Violation::new("name", "max_length", "name must be at most 180 characters").with_param("max", 180_i64));
         }
         // `issuing_organization_max_length` (@length(max=180) on EmployeeCertification.issuing_organization)
         if (create || (update && r::changed(old.as_ref(), row, &["issuing_organization"]))) && !r::holds(&r::le(r::length(r::field(row, "issuing_organization")), r::Val::Num(180.0_f64))) {
-            shadow.push(Violation::new("issuing_organization", "max_length", "issuing_organization must be at most 180 characters").with_param("max", 180_i64));
+            refuse.push(Violation::new("issuing_organization", "max_length", "issuing_organization must be at most 180 characters").with_param("max", 180_i64));
         }
         GuardOutcome { refuse, shadow }
     }

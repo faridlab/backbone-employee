@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<EmployeeBpjs> for EmployeeBpjsRowRul
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_id_required` (@required on EmployeeBpjs.employee_id)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
@@ -64,15 +64,15 @@ impl backbone_core::write_guard::WriteGuard<EmployeeBpjs> for EmployeeBpjsRowRul
         }
         // `bpjs_ketenagakerjaan_number_max_length` (@length(max=30) on EmployeeBpjs.bpjs_ketenagakerjaan_number)
         if (create || (update && r::changed(old.as_ref(), row, &["bpjs_ketenagakerjaan_number"]))) && !r::holds(&r::le(r::length(r::field(row, "bpjs_ketenagakerjaan_number")), r::Val::Num(30.0_f64))) {
-            shadow.push(Violation::new("bpjs_ketenagakerjaan_number", "max_length", "bpjs_ketenagakerjaan_number must be at most 30 characters").with_param("max", 30_i64));
+            refuse.push(Violation::new("bpjs_ketenagakerjaan_number", "max_length", "bpjs_ketenagakerjaan_number must be at most 30 characters").with_param("max", 30_i64));
         }
         // `npp_bpjs_ketenagakerjaan_max_length` (@length(max=30) on EmployeeBpjs.npp_bpjs_ketenagakerjaan)
         if (create || (update && r::changed(old.as_ref(), row, &["npp_bpjs_ketenagakerjaan"]))) && !r::holds(&r::le(r::length(r::field(row, "npp_bpjs_ketenagakerjaan")), r::Val::Num(30.0_f64))) {
-            shadow.push(Violation::new("npp_bpjs_ketenagakerjaan", "max_length", "npp_bpjs_ketenagakerjaan must be at most 30 characters").with_param("max", 30_i64));
+            refuse.push(Violation::new("npp_bpjs_ketenagakerjaan", "max_length", "npp_bpjs_ketenagakerjaan must be at most 30 characters").with_param("max", 30_i64));
         }
         // `bpjs_kesehatan_number_max_length` (@length(max=30) on EmployeeBpjs.bpjs_kesehatan_number)
         if (create || (update && r::changed(old.as_ref(), row, &["bpjs_kesehatan_number"]))) && !r::holds(&r::le(r::length(r::field(row, "bpjs_kesehatan_number")), r::Val::Num(30.0_f64))) {
-            shadow.push(Violation::new("bpjs_kesehatan_number", "max_length", "bpjs_kesehatan_number must be at most 30 characters").with_param("max", 30_i64));
+            refuse.push(Violation::new("bpjs_kesehatan_number", "max_length", "bpjs_kesehatan_number must be at most 30 characters").with_param("max", 30_i64));
         }
         GuardOutcome { refuse, shadow }
     }

@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<Employee> for EmployeeRowRules {
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_number_required` (@required on Employee.employee_number)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_number"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_number")), r::not(r::is_empty(r::trim(r::field(row, "employee_number")))))) {
@@ -64,7 +64,7 @@ impl backbone_core::write_guard::WriteGuard<Employee> for EmployeeRowRules {
         }
         // `employee_number_max_length` (@length(max=40) on Employee.employee_number)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_number"]))) && !r::holds(&r::le(r::length(r::field(row, "employee_number")), r::Val::Num(40.0_f64))) {
-            shadow.push(Violation::new("employee_number", "max_length", "employee_number must be at most 40 characters").with_param("max", 40_i64));
+            refuse.push(Violation::new("employee_number", "max_length", "employee_number must be at most 40 characters").with_param("max", 40_i64));
         }
         // `first_name_required` (@required on Employee.first_name)
         if (create || (update && r::changed(old.as_ref(), row, &["first_name"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "first_name")), r::not(r::is_empty(r::trim(r::field(row, "first_name")))))) {
@@ -72,27 +72,27 @@ impl backbone_core::write_guard::WriteGuard<Employee> for EmployeeRowRules {
         }
         // `first_name_max_length` (@length(max=120) on Employee.first_name)
         if (create || (update && r::changed(old.as_ref(), row, &["first_name"]))) && !r::holds(&r::le(r::length(r::field(row, "first_name")), r::Val::Num(120.0_f64))) {
-            shadow.push(Violation::new("first_name", "max_length", "first_name must be at most 120 characters").with_param("max", 120_i64));
+            refuse.push(Violation::new("first_name", "max_length", "first_name must be at most 120 characters").with_param("max", 120_i64));
         }
         // `last_name_max_length` (@length(max=120) on Employee.last_name)
         if (create || (update && r::changed(old.as_ref(), row, &["last_name"]))) && !r::holds(&r::le(r::length(r::field(row, "last_name")), r::Val::Num(120.0_f64))) {
-            shadow.push(Violation::new("last_name", "max_length", "last_name must be at most 120 characters").with_param("max", 120_i64));
+            refuse.push(Violation::new("last_name", "max_length", "last_name must be at most 120 characters").with_param("max", 120_i64));
         }
         // `email_max_length` (@length(max=255) on Employee.email)
         if (create || (update && r::changed(old.as_ref(), row, &["email"]))) && !r::holds(&r::le(r::length(r::field(row, "email")), r::Val::Num(255.0_f64))) {
-            shadow.push(Violation::new("email", "max_length", "email must be at most 255 characters").with_param("max", 255_i64));
+            refuse.push(Violation::new("email", "max_length", "email must be at most 255 characters").with_param("max", 255_i64));
         }
         // `mobile_phone_max_length` (@length(max=40) on Employee.mobile_phone)
         if (create || (update && r::changed(old.as_ref(), row, &["mobile_phone"]))) && !r::holds(&r::le(r::length(r::field(row, "mobile_phone")), r::Val::Num(40.0_f64))) {
-            shadow.push(Violation::new("mobile_phone", "max_length", "mobile_phone must be at most 40 characters").with_param("max", 40_i64));
+            refuse.push(Violation::new("mobile_phone", "max_length", "mobile_phone must be at most 40 characters").with_param("max", 40_i64));
         }
         // `phone_max_length` (@length(max=40) on Employee.phone)
         if (create || (update && r::changed(old.as_ref(), row, &["phone"]))) && !r::holds(&r::le(r::length(r::field(row, "phone")), r::Val::Num(40.0_f64))) {
-            shadow.push(Violation::new("phone", "max_length", "phone must be at most 40 characters").with_param("max", 40_i64));
+            refuse.push(Violation::new("phone", "max_length", "phone must be at most 40 characters").with_param("max", 40_i64));
         }
         // `birth_place_max_length` (@length(max=120) on Employee.birth_place)
         if (create || (update && r::changed(old.as_ref(), row, &["birth_place"]))) && !r::holds(&r::le(r::length(r::field(row, "birth_place")), r::Val::Num(120.0_f64))) {
-            shadow.push(Violation::new("birth_place", "max_length", "birth_place must be at most 120 characters").with_param("max", 120_i64));
+            refuse.push(Violation::new("birth_place", "max_length", "birth_place must be at most 120 characters").with_param("max", 120_i64));
         }
         GuardOutcome { refuse, shadow }
     }

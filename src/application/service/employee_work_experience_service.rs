@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<EmployeeWorkExperience> for Employee
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_id_required` (@required on EmployeeWorkExperience.employee_id)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
@@ -68,11 +68,11 @@ impl backbone_core::write_guard::WriteGuard<EmployeeWorkExperience> for Employee
         }
         // `company_name_max_length` (@length(max=180) on EmployeeWorkExperience.company_name)
         if (create || (update && r::changed(old.as_ref(), row, &["company_name"]))) && !r::holds(&r::le(r::length(r::field(row, "company_name")), r::Val::Num(180.0_f64))) {
-            shadow.push(Violation::new("company_name", "max_length", "company_name must be at most 180 characters").with_param("max", 180_i64));
+            refuse.push(Violation::new("company_name", "max_length", "company_name must be at most 180 characters").with_param("max", 180_i64));
         }
         // `job_position_max_length` (@length(max=120) on EmployeeWorkExperience.job_position)
         if (create || (update && r::changed(old.as_ref(), row, &["job_position"]))) && !r::holds(&r::le(r::length(r::field(row, "job_position")), r::Val::Num(120.0_f64))) {
-            shadow.push(Violation::new("job_position", "max_length", "job_position must be at most 120 characters").with_param("max", 120_i64));
+            refuse.push(Violation::new("job_position", "max_length", "job_position must be at most 120 characters").with_param("max", 120_i64));
         }
         GuardOutcome { refuse, shadow }
     }

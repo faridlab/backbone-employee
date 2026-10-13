@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<RecordChangeRequest> for RecordChang
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_id_required` (@required on RecordChangeRequest.employee_id)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
@@ -68,19 +68,19 @@ impl backbone_core::write_guard::WriteGuard<RecordChangeRequest> for RecordChang
         }
         // `field_path_max_length` (@length(max=120) on RecordChangeRequest.field_path)
         if (create || (update && r::changed(old.as_ref(), row, &["field_path"]))) && !r::holds(&r::le(r::length(r::field(row, "field_path")), r::Val::Num(120.0_f64))) {
-            shadow.push(Violation::new("field_path", "max_length", "field_path must be at most 120 characters").with_param("max", 120_i64));
+            refuse.push(Violation::new("field_path", "max_length", "field_path must be at most 120 characters").with_param("max", 120_i64));
         }
         // `current_value_max_length` (@length(max=2000) on RecordChangeRequest.current_value)
         if (create || (update && r::changed(old.as_ref(), row, &["current_value"]))) && !r::holds(&r::le(r::length(r::field(row, "current_value")), r::Val::Num(2000.0_f64))) {
-            shadow.push(Violation::new("current_value", "max_length", "current_value must be at most 2000 characters").with_param("max", 2000_i64));
+            refuse.push(Violation::new("current_value", "max_length", "current_value must be at most 2000 characters").with_param("max", 2000_i64));
         }
         // `proposed_value_max_length` (@length(max=2000) on RecordChangeRequest.proposed_value)
         if (create || (update && r::changed(old.as_ref(), row, &["proposed_value"]))) && !r::holds(&r::le(r::length(r::field(row, "proposed_value")), r::Val::Num(2000.0_f64))) {
-            shadow.push(Violation::new("proposed_value", "max_length", "proposed_value must be at most 2000 characters").with_param("max", 2000_i64));
+            refuse.push(Violation::new("proposed_value", "max_length", "proposed_value must be at most 2000 characters").with_param("max", 2000_i64));
         }
         // `reason_max_length` (@length(max=1000) on RecordChangeRequest.reason)
         if (create || (update && r::changed(old.as_ref(), row, &["reason"]))) && !r::holds(&r::le(r::length(r::field(row, "reason")), r::Val::Num(1000.0_f64))) {
-            shadow.push(Violation::new("reason", "max_length", "reason must be at most 1000 characters").with_param("max", 1000_i64));
+            refuse.push(Violation::new("reason", "max_length", "reason must be at most 1000 characters").with_param("max", 1000_i64));
         }
         GuardOutcome { refuse, shadow }
     }

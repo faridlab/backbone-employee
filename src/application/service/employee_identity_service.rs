@@ -56,7 +56,7 @@ impl backbone_core::write_guard::WriteGuard<EmployeeIdentity> for EmployeeIdenti
         };
         let row = &row;
         let old = ctx.before.and_then(|b| serde_json::to_value(b).ok());
-        let mut shadow = Vec::new();
+        let shadow = Vec::new();
         let mut refuse = Vec::new();
         // `employee_id_required` (@required on EmployeeIdentity.employee_id)
         if (create || (update && r::changed(old.as_ref(), row, &["employee_id"]))) && !r::holds(&r::and(r::is_not_null(r::field(row, "employee_id")), r::not(r::is_empty(r::trim(r::field(row, "employee_id")))))) {
@@ -68,7 +68,7 @@ impl backbone_core::write_guard::WriteGuard<EmployeeIdentity> for EmployeeIdenti
         }
         // `identity_number_max_length` (@length(max=64) on EmployeeIdentity.identity_number)
         if (create || (update && r::changed(old.as_ref(), row, &["identity_number"]))) && !r::holds(&r::le(r::length(r::field(row, "identity_number")), r::Val::Num(64.0_f64))) {
-            shadow.push(Violation::new("identity_number", "max_length", "identity_number must be at most 64 characters").with_param("max", 64_i64));
+            refuse.push(Violation::new("identity_number", "max_length", "identity_number must be at most 64 characters").with_param("max", 64_i64));
         }
         GuardOutcome { refuse, shadow }
     }
