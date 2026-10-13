@@ -61,9 +61,6 @@ pub use application::service::PiiAccessLogService;
 pub use application::service::RecordChangeRequestService;
 pub use application::service::ReligionService;
 
-// Re-exports - Workflows
-pub use application::workflows::*;
-
 use std::sync::Arc;
 use axum::Router;
 use sqlx::PgPool;
