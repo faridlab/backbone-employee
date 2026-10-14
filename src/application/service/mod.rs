@@ -64,5 +64,149 @@ pub use pii_access_log_service::PiiAccessLogRowRules;
 pub use record_change_request_service::RecordChangeRequestRowRules;
 pub use religion_service::ReligionRowRules;
 
+/// A `BankService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_bank_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::BankRepository>,
+) -> BankService {
+    BankService::with_repository(repository).with_guard(std::sync::Arc::new(BankRowRules))
+}
+
+/// A `DataConsentService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_data_consent_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::DataConsentRepository>,
+) -> DataConsentService {
+    DataConsentService::with_repository(repository).with_guard(std::sync::Arc::new(DataConsentRowRules))
+}
+
+/// A `DataSubjectRequestService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_data_subject_request_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::DataSubjectRequestRepository>,
+) -> DataSubjectRequestService {
+    DataSubjectRequestService::with_repository(repository).with_guard(std::sync::Arc::new(DataSubjectRequestRowRules))
+}
+
+/// A `EmployeeService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeRepository>,
+) -> EmployeeService {
+    EmployeeService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeRowRules))
+}
+
+/// A `EmployeeBankAccountService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_bank_account_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeBankAccountRepository>,
+) -> EmployeeBankAccountService {
+    EmployeeBankAccountService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeBankAccountRowRules))
+}
+
+/// A `EmployeeBpjsService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_bpjs_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeBpjsRepository>,
+) -> EmployeeBpjsService {
+    EmployeeBpjsService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeBpjsRowRules))
+}
+
+/// A `EmployeeCertificationService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_certification_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeCertificationRepository>,
+) -> EmployeeCertificationService {
+    EmployeeCertificationService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeCertificationRowRules))
+}
+
+/// A `EmployeeContactService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_contact_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeContactRepository>,
+) -> EmployeeContactService {
+    EmployeeContactService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeContactRowRules))
+}
+
+/// A `EmployeeEducationService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_education_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeEducationRepository>,
+) -> EmployeeEducationService {
+    EmployeeEducationService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeEducationRowRules))
+}
+
+/// A `EmployeeFamilyService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_family_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeFamilyRepository>,
+) -> EmployeeFamilyService {
+    EmployeeFamilyService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeFamilyRowRules))
+}
+
+/// A `EmployeeIdentityService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_identity_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeIdentityRepository>,
+) -> EmployeeIdentityService {
+    EmployeeIdentityService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeIdentityRowRules))
+}
+
+/// A `EmployeeTaxService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_tax_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeTaxRepository>,
+) -> EmployeeTaxService {
+    EmployeeTaxService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeTaxRowRules))
+}
+
+/// A `EmployeeWorkExperienceService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employee_work_experience_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmployeeWorkExperienceRepository>,
+) -> EmployeeWorkExperienceService {
+    EmployeeWorkExperienceService::with_repository(repository).with_guard(std::sync::Arc::new(EmployeeWorkExperienceRowRules))
+}
+
+/// A `EmploymentService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employment_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmploymentRepository>,
+) -> EmploymentService {
+    EmploymentService::with_repository(repository).with_guard(std::sync::Arc::new(EmploymentRowRules))
+}
+
+/// A `EmploymentHistoryService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_employment_history_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::EmploymentHistoryRepository>,
+) -> EmploymentHistoryService {
+    EmploymentHistoryService::with_repository(repository).with_guard(std::sync::Arc::new(EmploymentHistoryRowRules))
+}
+
+/// A `PiiAccessLogService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_pii_access_log_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::PiiAccessLogRepository>,
+) -> PiiAccessLogService {
+    PiiAccessLogService::with_repository(repository).with_guard(std::sync::Arc::new(PiiAccessLogRowRules))
+}
+
+/// A `RecordChangeRequestService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_record_change_request_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::RecordChangeRequestRepository>,
+) -> RecordChangeRequestService {
+    RecordChangeRequestService::with_repository(repository).with_guard(std::sync::Arc::new(RecordChangeRequestRowRules))
+}
+
+/// A `ReligionService` over `repository` with its write guard attached: the way to build it, so its writes are
+/// served only with the rules the schema declares.
+pub fn build_religion_service(
+    repository: std::sync::Arc<crate::infrastructure::persistence::ReligionRepository>,
+) -> ReligionService {
+    ReligionService::with_repository(repository).with_guard(std::sync::Arc::new(ReligionRowRules))
+}
+
 // This directory's extension (hand-written; ADR-0031).
 include!("mod.ext.rs");
