@@ -80,6 +80,13 @@ impl axum::response::IntoResponse for ReligionError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `religion:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn religion_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("religion")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for Religion.
 ///
 /// # Routes
@@ -109,21 +116,23 @@ impl axum::response::IntoResponse for ReligionError {
 /// let router = create_religion_routes(service);
 /// ```
 pub fn create_religion_routes(service: Arc<ReligionService>) -> Router {
-    BackboneCrudHandler::<ReligionService, Religion, CreateReligionDto, UpdateReligionDto, ReligionResponseDto>::routes(
+    BackboneCrudHandler::<ReligionService, Religion, CreateReligionDto, UpdateReligionDto, ReligionResponseDto>::routes_guarded(
         service,
         "/religions",
+        religion_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for Religion.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_religion_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_religion_read_routes(service: Arc<ReligionService>) -> Router {
-    BackboneCrudHandler::<ReligionService, Religion, CreateReligionDto, UpdateReligionDto, ReligionResponseDto>::read_routes(
+    BackboneCrudHandler::<ReligionService, Religion, CreateReligionDto, UpdateReligionDto, ReligionResponseDto>::read_routes_guarded(
         service,
         "/religions",
+        religion_permissions(),
     )
 }
 
@@ -139,9 +148,10 @@ pub fn create_religion_read_routes(service: Arc<ReligionService>) -> Router {
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_religion_write_routes(service: Arc<ReligionService>) -> Router {
-    BackboneCrudHandler::<ReligionService, Religion, CreateReligionDto, UpdateReligionDto, ReligionResponseDto>::write_routes(
+    BackboneCrudHandler::<ReligionService, Religion, CreateReligionDto, UpdateReligionDto, ReligionResponseDto>::write_routes_guarded(
         service,
         "/religions",
+        religion_permissions(),
     )
 }
 

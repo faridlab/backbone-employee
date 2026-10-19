@@ -81,6 +81,13 @@ impl axum::response::IntoResponse for EmployeeFamilyError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `employee_family:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn employee_family_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("employee_family")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for EmployeeFamily.
 ///
 /// # Routes
@@ -110,21 +117,23 @@ impl axum::response::IntoResponse for EmployeeFamilyError {
 /// let router = create_employee_family_routes(service);
 /// ```
 pub fn create_employee_family_routes(service: Arc<EmployeeFamilyService>) -> Router {
-    BackboneCrudHandler::<EmployeeFamilyService, EmployeeFamily, CreateEmployeeFamilyDto, UpdateEmployeeFamilyDto, EmployeeFamilyResponseDto>::routes(
+    BackboneCrudHandler::<EmployeeFamilyService, EmployeeFamily, CreateEmployeeFamilyDto, UpdateEmployeeFamilyDto, EmployeeFamilyResponseDto>::routes_guarded(
         service,
         "/employee_families",
+        employee_family_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for EmployeeFamily.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_employee_family_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_employee_family_read_routes(service: Arc<EmployeeFamilyService>) -> Router {
-    BackboneCrudHandler::<EmployeeFamilyService, EmployeeFamily, CreateEmployeeFamilyDto, UpdateEmployeeFamilyDto, EmployeeFamilyResponseDto>::read_routes(
+    BackboneCrudHandler::<EmployeeFamilyService, EmployeeFamily, CreateEmployeeFamilyDto, UpdateEmployeeFamilyDto, EmployeeFamilyResponseDto>::read_routes_guarded(
         service,
         "/employee_families",
+        employee_family_permissions(),
     )
 }
 
@@ -140,9 +149,10 @@ pub fn create_employee_family_read_routes(service: Arc<EmployeeFamilyService>) -
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_employee_family_write_routes(service: Arc<EmployeeFamilyService>) -> Router {
-    BackboneCrudHandler::<EmployeeFamilyService, EmployeeFamily, CreateEmployeeFamilyDto, UpdateEmployeeFamilyDto, EmployeeFamilyResponseDto>::write_routes(
+    BackboneCrudHandler::<EmployeeFamilyService, EmployeeFamily, CreateEmployeeFamilyDto, UpdateEmployeeFamilyDto, EmployeeFamilyResponseDto>::write_routes_guarded(
         service,
         "/employee_families",
+        employee_family_permissions(),
     )
 }
 

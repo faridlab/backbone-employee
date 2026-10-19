@@ -95,16 +95,16 @@ pub struct PatchEmployeeEducationDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "institution_name")]
     pub institution_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub major: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub field: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub score: Option<Decimal>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "start_year")]
-    pub start_year: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "end_year")]
-    pub end_year: Option<i32>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub major: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub field: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub score: Option<Option<Decimal>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "start_year")]
+    pub start_year: Option<Option<i32>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "end_year")]
+    pub end_year: Option<Option<i32>>,
 }
 
 impl PatchEmployeeEducationDto {
@@ -283,12 +283,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeEducationDto> for EmployeeEduca
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeEducation here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

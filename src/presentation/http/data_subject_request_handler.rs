@@ -81,6 +81,13 @@ impl axum::response::IntoResponse for DataSubjectRequestError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `data_subject_request:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn data_subject_request_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("data_subject_request")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for DataSubjectRequest.
 ///
 /// # Routes
@@ -110,21 +117,23 @@ impl axum::response::IntoResponse for DataSubjectRequestError {
 /// let router = create_data_subject_request_routes(service);
 /// ```
 pub fn create_data_subject_request_routes(service: Arc<DataSubjectRequestService>) -> Router {
-    BackboneCrudHandler::<DataSubjectRequestService, DataSubjectRequest, CreateDataSubjectRequestDto, UpdateDataSubjectRequestDto, DataSubjectRequestResponseDto>::routes(
+    BackboneCrudHandler::<DataSubjectRequestService, DataSubjectRequest, CreateDataSubjectRequestDto, UpdateDataSubjectRequestDto, DataSubjectRequestResponseDto>::routes_guarded(
         service,
         "/data_subject_requests",
+        data_subject_request_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for DataSubjectRequest.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_data_subject_request_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_data_subject_request_read_routes(service: Arc<DataSubjectRequestService>) -> Router {
-    BackboneCrudHandler::<DataSubjectRequestService, DataSubjectRequest, CreateDataSubjectRequestDto, UpdateDataSubjectRequestDto, DataSubjectRequestResponseDto>::read_routes(
+    BackboneCrudHandler::<DataSubjectRequestService, DataSubjectRequest, CreateDataSubjectRequestDto, UpdateDataSubjectRequestDto, DataSubjectRequestResponseDto>::read_routes_guarded(
         service,
         "/data_subject_requests",
+        data_subject_request_permissions(),
     )
 }
 
@@ -140,9 +149,10 @@ pub fn create_data_subject_request_read_routes(service: Arc<DataSubjectRequestSe
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_data_subject_request_write_routes(service: Arc<DataSubjectRequestService>) -> Router {
-    BackboneCrudHandler::<DataSubjectRequestService, DataSubjectRequest, CreateDataSubjectRequestDto, UpdateDataSubjectRequestDto, DataSubjectRequestResponseDto>::write_routes(
+    BackboneCrudHandler::<DataSubjectRequestService, DataSubjectRequest, CreateDataSubjectRequestDto, UpdateDataSubjectRequestDto, DataSubjectRequestResponseDto>::write_routes_guarded(
         service,
         "/data_subject_requests",
+        data_subject_request_permissions(),
     )
 }
 

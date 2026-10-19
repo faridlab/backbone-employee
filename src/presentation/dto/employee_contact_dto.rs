@@ -80,10 +80,10 @@ pub struct PatchEmployeeContactDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub phone: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub email: Option<Option<String>>,
 }
 
 impl PatchEmployeeContactDto {
@@ -247,12 +247,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeContactDto> for EmployeeContact
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeContact here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

@@ -81,6 +81,13 @@ impl axum::response::IntoResponse for RecordChangeRequestError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `record_change_request:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn record_change_request_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("record_change_request")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for RecordChangeRequest.
 ///
 /// # Routes
@@ -110,21 +117,23 @@ impl axum::response::IntoResponse for RecordChangeRequestError {
 /// let router = create_record_change_request_routes(service);
 /// ```
 pub fn create_record_change_request_routes(service: Arc<RecordChangeRequestService>) -> Router {
-    BackboneCrudHandler::<RecordChangeRequestService, RecordChangeRequest, CreateRecordChangeRequestDto, UpdateRecordChangeRequestDto, RecordChangeRequestResponseDto>::routes(
+    BackboneCrudHandler::<RecordChangeRequestService, RecordChangeRequest, CreateRecordChangeRequestDto, UpdateRecordChangeRequestDto, RecordChangeRequestResponseDto>::routes_guarded(
         service,
         "/record_change_requests",
+        record_change_request_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for RecordChangeRequest.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_record_change_request_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_record_change_request_read_routes(service: Arc<RecordChangeRequestService>) -> Router {
-    BackboneCrudHandler::<RecordChangeRequestService, RecordChangeRequest, CreateRecordChangeRequestDto, UpdateRecordChangeRequestDto, RecordChangeRequestResponseDto>::read_routes(
+    BackboneCrudHandler::<RecordChangeRequestService, RecordChangeRequest, CreateRecordChangeRequestDto, UpdateRecordChangeRequestDto, RecordChangeRequestResponseDto>::read_routes_guarded(
         service,
         "/record_change_requests",
+        record_change_request_permissions(),
     )
 }
 
@@ -140,9 +149,10 @@ pub fn create_record_change_request_read_routes(service: Arc<RecordChangeRequest
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_record_change_request_write_routes(service: Arc<RecordChangeRequestService>) -> Router {
-    BackboneCrudHandler::<RecordChangeRequestService, RecordChangeRequest, CreateRecordChangeRequestDto, UpdateRecordChangeRequestDto, RecordChangeRequestResponseDto>::write_routes(
+    BackboneCrudHandler::<RecordChangeRequestService, RecordChangeRequest, CreateRecordChangeRequestDto, UpdateRecordChangeRequestDto, RecordChangeRequestResponseDto>::write_routes_guarded(
         service,
         "/record_change_requests",
+        record_change_request_permissions(),
     )
 }
 

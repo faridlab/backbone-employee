@@ -178,6 +178,12 @@ impl super::Entity for EmployeeFamily {
 }
 
 impl backbone_core::PersistentEntity for EmployeeFamily {
+    fn references() -> &'static [backbone_core::Reference] {
+        const REFERENCES: &[backbone_core::Reference] = &[
+            backbone_core::Reference::new("employee_id", "employee.employees", "id"),
+        ];
+        REFERENCES
+    }
     fn entity_id(&self) -> String {
         self.id.to_string()
     }

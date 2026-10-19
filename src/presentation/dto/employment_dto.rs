@@ -34,12 +34,12 @@ pub struct CreateEmploymentDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(alias = "employee_id")]
     pub employee_id: Uuid,
-    #[serde(alias = "employment_status")]
+    #[serde(default = "default_create_employment_employment_status", alias = "employment_status")]
     pub employment_status: EmploymentStatus,
-    #[serde(alias = "contracted_hours_per_week")]
+    #[serde(default = "default_create_employment_contracted_hours_per_week", alias = "contracted_hours_per_week")]
     pub contracted_hours_per_week: Decimal,
     #[cfg_attr(feature = "openapi", schema(example = true))]
-    #[serde(alias = "punch_required")]
+    #[serde(default = "default_create_employment_punch_required", alias = "punch_required")]
     pub punch_required: bool,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
     #[serde(alias = "join_date")]
@@ -54,7 +54,24 @@ pub struct CreateEmploymentDto {
     pub position_id: Option<Uuid>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "direct_manager_id")]
     pub direct_manager_id: Option<Uuid>,
+    #[serde(default = "default_create_employment_status")]
     pub status: EmploymentState,
+}
+
+fn default_create_employment_employment_status() -> EmploymentStatus {
+    EmploymentStatus::Permanent
+}
+
+fn default_create_employment_contracted_hours_per_week() -> Decimal {
+    Decimal::from(40_i64)
+}
+
+fn default_create_employment_punch_required() -> bool {
+    true
+}
+
+fn default_create_employment_status() -> EmploymentState {
+    EmploymentState::Active
 }
 
 // =============================================================================
@@ -120,16 +137,16 @@ pub struct PatchEmploymentDto {
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "join_date")]
     pub join_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "end_join_date")]
-    pub end_join_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "department_id")]
-    pub department_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "level_id")]
-    pub level_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "position_id")]
-    pub position_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "direct_manager_id")]
-    pub direct_manager_id: Option<Uuid>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "end_join_date")]
+    pub end_join_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "department_id")]
+    pub department_id: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "level_id")]
+    pub level_id: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "position_id")]
+    pub position_id: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "direct_manager_id")]
+    pub direct_manager_id: Option<Option<Uuid>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<EmploymentState>,
 }
@@ -331,12 +348,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmploymentDto> for Employment {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to Employment here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

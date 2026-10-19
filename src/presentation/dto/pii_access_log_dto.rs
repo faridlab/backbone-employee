@@ -39,8 +39,12 @@ pub struct CreatePiiAccessLogDto {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01T00:00:00Z"))]
-    #[serde(alias = "accessed_at")]
+    #[serde(default = "default_create_pii_access_log_accessed_at", alias = "accessed_at")]
     pub accessed_at: DateTime<Utc>,
+}
+
+fn default_create_pii_access_log_accessed_at() -> DateTime<Utc> {
+    Utc::now()
 }
 
 // =============================================================================
@@ -90,8 +94,8 @@ pub struct PatchPiiAccessLogDto {
     pub accessed_by: Option<Uuid>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "data_category")]
     pub data_category: Option<DataCategory>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub purpose: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub purpose: Option<Option<String>>,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01T00:00:00Z"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "accessed_at")]
     pub accessed_at: Option<DateTime<Utc>>,
@@ -260,12 +264,4 @@ impl backbone_core::ApplyUpdateDto<UpdatePiiAccessLogDto> for PiiAccessLog {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to PiiAccessLog here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

@@ -40,7 +40,7 @@ pub struct CreateEmployeeIdentityDto {
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "identity_expiry_date")]
     pub identity_expiry_date: Option<NaiveDate>,
     #[cfg_attr(feature = "openapi", schema(example = true))]
-    #[serde(alias = "is_permanent")]
+    #[serde(default, alias = "is_permanent")]
     pub is_permanent: bool,
 }
 
@@ -91,8 +91,8 @@ pub struct PatchEmployeeIdentityDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "identity_number")]
     pub identity_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "identity_expiry_date")]
-    pub identity_expiry_date: Option<NaiveDate>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "identity_expiry_date")]
+    pub identity_expiry_date: Option<Option<NaiveDate>>,
     #[cfg_attr(feature = "openapi", schema(example = true))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "is_permanent")]
     pub is_permanent: Option<bool>,
@@ -265,12 +265,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeIdentityDto> for EmployeeIdenti
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeIdentity here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

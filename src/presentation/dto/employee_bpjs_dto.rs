@@ -93,20 +93,20 @@ pub struct PatchEmployeeBpjsDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "bpjs_ketenagakerjaan_number")]
-    pub bpjs_ketenagakerjaan_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "npp_bpjs_ketenagakerjaan")]
-    pub npp_bpjs_ketenagakerjaan: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "bpjs_ketenagakerjaan_date")]
-    pub bpjs_ketenagakerjaan_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "bpjs_kesehatan_number")]
-    pub bpjs_kesehatan_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "bpjs_kesehatan_family")]
-    pub bpjs_kesehatan_family: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "bpjs_kesehatan_date")]
-    pub bpjs_kesehatan_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "jaminan_pensiun_date")]
-    pub jaminan_pensiun_date: Option<NaiveDate>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "bpjs_ketenagakerjaan_number")]
+    pub bpjs_ketenagakerjaan_number: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "npp_bpjs_ketenagakerjaan")]
+    pub npp_bpjs_ketenagakerjaan: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "bpjs_ketenagakerjaan_date")]
+    pub bpjs_ketenagakerjaan_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "bpjs_kesehatan_number")]
+    pub bpjs_kesehatan_number: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "bpjs_kesehatan_family")]
+    pub bpjs_kesehatan_family: Option<Option<i32>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "bpjs_kesehatan_date")]
+    pub bpjs_kesehatan_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "jaminan_pensiun_date")]
+    pub jaminan_pensiun_date: Option<Option<NaiveDate>>,
 }
 
 impl PatchEmployeeBpjsDto {
@@ -289,12 +289,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeBpjsDto> for EmployeeBpjs {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeBpjs here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

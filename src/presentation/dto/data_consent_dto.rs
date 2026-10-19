@@ -99,16 +99,16 @@ pub struct PatchDataConsentDto {
     pub data_category: Option<DataCategory>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "lawful_basis")]
     pub lawful_basis: Option<LawfulBasis>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "consent_given_at")]
-    pub consent_given_at: Option<DateTime<Utc>>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "consent_method")]
-    pub consent_method: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "privacy_notice_version")]
-    pub privacy_notice_version: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "retention_until")]
-    pub retention_until: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "withdrawn_at")]
-    pub withdrawn_at: Option<DateTime<Utc>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "consent_given_at")]
+    pub consent_given_at: Option<Option<DateTime<Utc>>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "consent_method")]
+    pub consent_method: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "privacy_notice_version")]
+    pub privacy_notice_version: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "retention_until")]
+    pub retention_until: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "withdrawn_at")]
+    pub withdrawn_at: Option<Option<DateTime<Utc>>>,
 }
 
 impl PatchDataConsentDto {
@@ -291,12 +291,4 @@ impl backbone_core::ApplyUpdateDto<UpdateDataConsentDto> for DataConsent {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to DataConsent here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

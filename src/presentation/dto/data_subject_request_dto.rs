@@ -35,9 +35,10 @@ pub struct CreateDataSubjectRequestDto {
     pub employee_id: Uuid,
     #[serde(alias = "request_type")]
     pub request_type: DataSubjectRight,
+    #[serde(default = "default_create_data_subject_request_status")]
     pub status: DsarStatus,
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01T00:00:00Z"))]
-    #[serde(alias = "requested_at")]
+    #[serde(default = "default_create_data_subject_request_requested_at", alias = "requested_at")]
     pub requested_at: DateTime<Utc>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "fulfilled_at")]
     pub fulfilled_at: Option<DateTime<Utc>>,
@@ -45,6 +46,14 @@ pub struct CreateDataSubjectRequestDto {
     pub response: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
+}
+
+fn default_create_data_subject_request_status() -> DsarStatus {
+    DsarStatus::Pending
+}
+
+fn default_create_data_subject_request_requested_at() -> DateTime<Utc> {
+    Utc::now()
 }
 
 // =============================================================================
@@ -98,12 +107,12 @@ pub struct PatchDataSubjectRequestDto {
     #[cfg_attr(feature = "openapi", schema(example = "2024-01-01T00:00:00Z"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "requested_at")]
     pub requested_at: Option<DateTime<Utc>>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "fulfilled_at")]
-    pub fulfilled_at: Option<DateTime<Utc>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub response: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub note: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "fulfilled_at")]
+    pub fulfilled_at: Option<Option<DateTime<Utc>>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub response: Option<Option<serde_json::Value>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub note: Option<Option<String>>,
 }
 
 impl PatchDataSubjectRequestDto {
@@ -282,12 +291,4 @@ impl backbone_core::ApplyUpdateDto<UpdateDataSubjectRequestDto> for DataSubjectR
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to DataSubjectRequest here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

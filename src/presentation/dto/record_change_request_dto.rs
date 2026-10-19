@@ -41,6 +41,7 @@ pub struct CreateRecordChangeRequestDto {
     pub proposed_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+    #[serde(default = "default_create_record_change_request_status")]
     pub status: RecordChangeStatus,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "approval_request_id")]
     pub approval_request_id: Option<Uuid>,
@@ -48,6 +49,10 @@ pub struct CreateRecordChangeRequestDto {
     pub decided_at: Option<DateTime<Utc>>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "applied_at")]
     pub applied_at: Option<DateTime<Utc>>,
+}
+
+fn default_create_record_change_request_status() -> RecordChangeStatus {
+    RecordChangeStatus::Pending
 }
 
 // =============================================================================
@@ -101,20 +106,20 @@ pub struct PatchRecordChangeRequestDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "field_path")]
     pub field_path: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "current_value")]
-    pub current_value: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "proposed_value")]
-    pub proposed_value: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "current_value")]
+    pub current_value: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "proposed_value")]
+    pub proposed_value: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub reason: Option<Option<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<RecordChangeStatus>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "approval_request_id")]
-    pub approval_request_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "decided_at")]
-    pub decided_at: Option<DateTime<Utc>>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "applied_at")]
-    pub applied_at: Option<DateTime<Utc>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "approval_request_id")]
+    pub approval_request_id: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "decided_at")]
+    pub decided_at: Option<Option<DateTime<Utc>>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "applied_at")]
+    pub applied_at: Option<Option<DateTime<Utc>>>,
 }
 
 impl PatchRecordChangeRequestDto {
@@ -303,12 +308,4 @@ impl backbone_core::ApplyUpdateDto<UpdateRecordChangeRequestDto> for RecordChang
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to RecordChangeRequest here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

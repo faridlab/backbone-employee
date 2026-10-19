@@ -111,22 +111,22 @@ pub struct PatchEmploymentHistoryDto {
     pub effective_date: Option<NaiveDate>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub action: Option<EmploymentAction>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "position_id_from")]
-    pub position_id_from: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "position_id_to")]
-    pub position_id_to: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "level_id_from")]
-    pub level_id_from: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "level_id_to")]
-    pub level_id_to: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "department_id_from")]
-    pub department_id_from: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "department_id_to")]
-    pub department_id_to: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "reference_id")]
-    pub reference_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub note: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "position_id_from")]
+    pub position_id_from: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "position_id_to")]
+    pub position_id_to: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "level_id_from")]
+    pub level_id_from: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "level_id_to")]
+    pub level_id_to: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "department_id_from")]
+    pub department_id_from: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "department_id_to")]
+    pub department_id_to: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "reference_id")]
+    pub reference_id: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub note: Option<Option<String>>,
 }
 
 impl PatchEmploymentHistoryDto {
@@ -325,12 +325,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmploymentHistoryDto> for EmploymentHis
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmploymentHistory here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

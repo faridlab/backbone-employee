@@ -86,12 +86,12 @@ pub struct PatchEmployeeWorkExperienceDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "company_name")]
     pub company_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "job_position")]
-    pub job_position: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "start_date")]
-    pub start_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "end_date")]
-    pub end_date: Option<NaiveDate>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "job_position")]
+    pub job_position: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "start_date")]
+    pub start_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "end_date")]
+    pub end_date: Option<Option<NaiveDate>>,
 }
 
 impl PatchEmployeeWorkExperienceDto {
@@ -260,12 +260,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeWorkExperienceDto> for Employee
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeWorkExperience here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

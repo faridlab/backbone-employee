@@ -207,11 +207,3 @@ impl backbone_core::ApplyUpdateDto<UpdateReligionDto> for Religion {
     }
 }
 
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to Religion here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
-

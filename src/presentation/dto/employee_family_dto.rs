@@ -81,8 +81,8 @@ pub struct PatchEmployeeFamilyDto {
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub relationship: Option<FamilyRelationship>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "birth_date")]
-    pub birth_date: Option<NaiveDate>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "birth_date")]
+    pub birth_date: Option<Option<NaiveDate>>,
 }
 
 impl PatchEmployeeFamilyDto {
@@ -246,12 +246,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeFamilyDto> for EmployeeFamily {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeFamily here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

@@ -40,11 +40,11 @@ pub struct CreateEmployeeTaxDto {
     pub npwp_number: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "ptkp_override")]
     pub ptkp_override: Option<PtkpTier>,
-    #[serde(alias = "tax_method")]
+    #[serde(default = "default_create_employee_tax_tax_method", alias = "tax_method")]
     pub tax_method: TaxMethod,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "ter_category")]
     pub ter_category: Option<TerCategory>,
-    #[serde(alias = "tax_salary")]
+    #[serde(default = "default_create_employee_tax_tax_salary", alias = "tax_salary")]
     pub tax_salary: TaxSalary,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "taxable_date")]
     pub taxable_date: Option<NaiveDate>,
@@ -52,6 +52,14 @@ pub struct CreateEmployeeTaxDto {
     pub beginning_netto: Option<Decimal>,
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "pph21_paid")]
     pub pph21_paid: Option<Decimal>,
+}
+
+fn default_create_employee_tax_tax_method() -> TaxMethod {
+    TaxMethod::Gross
+}
+
+fn default_create_employee_tax_tax_salary() -> TaxSalary {
+    TaxSalary::Taxable
 }
 
 // =============================================================================
@@ -102,22 +110,22 @@ pub struct PatchEmployeeTaxDto {
     #[cfg_attr(feature = "openapi", schema(example = "550e8400-e29b-41d4-a716-446655440000"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_id")]
     pub employee_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "npwp_number")]
-    pub npwp_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "ptkp_override")]
-    pub ptkp_override: Option<PtkpTier>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "npwp_number")]
+    pub npwp_number: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "ptkp_override")]
+    pub ptkp_override: Option<Option<PtkpTier>>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "tax_method")]
     pub tax_method: Option<TaxMethod>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "ter_category")]
-    pub ter_category: Option<TerCategory>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "ter_category")]
+    pub ter_category: Option<Option<TerCategory>>,
     #[serde(skip_serializing_if = "Option::is_none", alias = "tax_salary")]
     pub tax_salary: Option<TaxSalary>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "taxable_date")]
-    pub taxable_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "beginning_netto")]
-    pub beginning_netto: Option<Decimal>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "pph21_paid")]
-    pub pph21_paid: Option<Decimal>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "taxable_date")]
+    pub taxable_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "beginning_netto")]
+    pub beginning_netto: Option<Option<Decimal>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "pph21_paid")]
+    pub pph21_paid: Option<Option<Decimal>>,
 }
 
 impl PatchEmployeeTaxDto {
@@ -305,12 +313,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeTaxDto> for EmployeeTax {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeTax here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

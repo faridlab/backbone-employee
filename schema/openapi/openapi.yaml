@@ -6674,29 +6674,23 @@ components:
       type: object
       required:
         - name
-        - metadata
       properties:
         name:
           type: string
         code:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateBankRequest:
       type: object
       required:
         - name
-        - metadata
       properties:
         name:
           type: string
         code:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchBankRequest:
       type: object
@@ -6706,8 +6700,6 @@ components:
         code:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     BankList:
       type: object
@@ -6778,7 +6770,6 @@ components:
         - employee_id
         - data_category
         - lawful_basis
-        - metadata
       properties:
         employee_id:
           type: string
@@ -6805,8 +6796,6 @@ components:
           nullable: true
           type: string
           format: date-time
-        metadata:
-          type: object
 
     UpdateDataConsentRequest:
       type: object
@@ -6814,7 +6803,6 @@ components:
         - employee_id
         - data_category
         - lawful_basis
-        - metadata
       properties:
         employee_id:
           type: string
@@ -6841,8 +6829,6 @@ components:
           nullable: true
           type: string
           format: date-time
-        metadata:
-          type: object
 
     PatchDataConsentRequest:
       type: object
@@ -6872,8 +6858,6 @@ components:
           nullable: true
           type: string
           format: date-time
-        metadata:
-          type: object
 
     DataConsentList:
       type: object
@@ -6939,9 +6923,6 @@ components:
       required:
         - employee_id
         - request_type
-        - status
-        - requested_at
-        - metadata
       properties:
         employee_id:
           type: string
@@ -6963,8 +6944,6 @@ components:
         note:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateDataSubjectRequestRequest:
       type: object
@@ -6973,7 +6952,6 @@ components:
         - request_type
         - status
         - requested_at
-        - metadata
       properties:
         employee_id:
           type: string
@@ -6995,8 +6973,6 @@ components:
         note:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchDataSubjectRequestRequest:
       type: object
@@ -7021,8 +6997,6 @@ components:
         note:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     DataSubjectRequestList:
       type: object
@@ -7113,7 +7087,6 @@ components:
       required:
         - employee_number
         - first_name
-        - metadata
       properties:
         employee_number:
           type: string
@@ -7162,15 +7135,12 @@ components:
           nullable: true
           type: string
           format: uuid
-        metadata:
-          type: object
 
     UpdateEmployeeRequest:
       type: object
       required:
         - employee_number
         - first_name
-        - metadata
       properties:
         employee_number:
           type: string
@@ -7219,8 +7189,6 @@ components:
           nullable: true
           type: string
           format: uuid
-        metadata:
-          type: object
 
     PatchEmployeeRequest:
       type: object
@@ -7272,8 +7240,6 @@ components:
           nullable: true
           type: string
           format: uuid
-        metadata:
-          type: object
 
     EmployeeList:
       type: object
@@ -7330,7 +7296,6 @@ components:
         - employee_id
         - bank_id
         - account_number
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7343,8 +7308,6 @@ components:
         account_name:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateEmployeeBankAccountRequest:
       type: object
@@ -7352,7 +7315,6 @@ components:
         - employee_id
         - bank_id
         - account_number
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7365,8 +7327,6 @@ components:
         account_name:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchEmployeeBankAccountRequest:
       type: object
@@ -7382,8 +7342,6 @@ components:
         account_name:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     EmployeeBankAccountList:
       type: object
@@ -7453,7 +7411,6 @@ components:
       type: object
       required:
         - employee_id
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7483,14 +7440,11 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     UpdateEmployeeBpjsRequest:
       type: object
       required:
         - employee_id
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7520,8 +7474,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     PatchEmployeeBpjsRequest:
       type: object
@@ -7554,8 +7506,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     EmployeeBpjsList:
       type: object
@@ -7618,7 +7568,6 @@ components:
       required:
         - employee_id
         - name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7639,15 +7588,12 @@ components:
         description:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateEmployeeCertificationRequest:
       type: object
       required:
         - employee_id
         - name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7668,8 +7614,6 @@ components:
         description:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchEmployeeCertificationRequest:
       type: object
@@ -7693,8 +7637,6 @@ components:
         description:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     EmployeeCertificationList:
       type: object
@@ -7749,7 +7691,6 @@ components:
       required:
         - employee_id
         - name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7762,15 +7703,12 @@ components:
         email:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateEmployeeContactRequest:
       type: object
       required:
         - employee_id
         - name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7783,8 +7721,6 @@ components:
         email:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchEmployeeContactRequest:
       type: object
@@ -7800,8 +7736,6 @@ components:
         email:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     EmployeeContactList:
       type: object
@@ -7867,7 +7801,6 @@ components:
       required:
         - employee_id
         - institution_name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7891,15 +7824,12 @@ components:
           nullable: true
           type: integer
           format: int32
-        metadata:
-          type: object
 
     UpdateEmployeeEducationRequest:
       type: object
       required:
         - employee_id
         - institution_name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -7923,8 +7853,6 @@ components:
           nullable: true
           type: integer
           format: int32
-        metadata:
-          type: object
 
     PatchEmployeeEducationRequest:
       type: object
@@ -7951,8 +7879,6 @@ components:
           nullable: true
           type: integer
           format: int32
-        metadata:
-          type: object
 
     EmployeeEducationList:
       type: object
@@ -8009,7 +7935,6 @@ components:
         - employee_id
         - name
         - relationship
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8022,8 +7947,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     UpdateEmployeeFamilyRequest:
       type: object
@@ -8031,7 +7954,6 @@ components:
         - employee_id
         - name
         - relationship
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8044,8 +7966,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     PatchEmployeeFamilyRequest:
       type: object
@@ -8061,8 +7981,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     EmployeeFamilyList:
       type: object
@@ -8122,8 +8040,6 @@ components:
         - employee_id
         - identity_type
         - identity_number
-        - is_permanent
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8138,8 +8054,6 @@ components:
           format: date
         is_permanent:
           type: boolean
-        metadata:
-          type: object
 
     UpdateEmployeeIdentityRequest:
       type: object
@@ -8148,7 +8062,6 @@ components:
         - identity_type
         - identity_number
         - is_permanent
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8163,8 +8076,6 @@ components:
           format: date
         is_permanent:
           type: boolean
-        metadata:
-          type: object
 
     PatchEmployeeIdentityRequest:
       type: object
@@ -8182,8 +8093,6 @@ components:
           format: date
         is_permanent:
           type: boolean
-        metadata:
-          type: object
 
     EmployeeIdentityList:
       type: object
@@ -8253,9 +8162,6 @@ components:
       type: object
       required:
         - employee_id
-        - tax_method
-        - tax_salary
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8283,8 +8189,6 @@ components:
         pph21_paid:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateEmployeeTaxRequest:
       type: object
@@ -8292,7 +8196,6 @@ components:
         - employee_id
         - tax_method
         - tax_salary
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8320,8 +8223,6 @@ components:
         pph21_paid:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchEmployeeTaxRequest:
       type: object
@@ -8352,8 +8253,6 @@ components:
         pph21_paid:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     EmployeeTaxList:
       type: object
@@ -8413,7 +8312,6 @@ components:
       required:
         - employee_id
         - company_name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8431,15 +8329,12 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     UpdateEmployeeWorkExperienceRequest:
       type: object
       required:
         - employee_id
         - company_name
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8457,8 +8352,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     PatchEmployeeWorkExperienceRequest:
       type: object
@@ -8479,8 +8372,6 @@ components:
           nullable: true
           type: string
           format: date
-        metadata:
-          type: object
 
     EmployeeWorkExperienceList:
       type: object
@@ -8561,12 +8452,7 @@ components:
       type: object
       required:
         - employee_id
-        - employment_status
-        - contracted_hours_per_week
-        - punch_required
         - join_date
-        - status
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8602,8 +8488,6 @@ components:
           format: uuid
         status:
           type: string
-        metadata:
-          type: object
 
     UpdateEmploymentRequest:
       type: object
@@ -8614,7 +8498,6 @@ components:
         - punch_required
         - join_date
         - status
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8650,8 +8533,6 @@ components:
           format: uuid
         status:
           type: string
-        metadata:
-          type: object
 
     PatchEmploymentRequest:
       type: object
@@ -8690,8 +8571,6 @@ components:
           format: uuid
         status:
           type: string
-        metadata:
-          type: object
 
     EmploymentList:
       type: object
@@ -8776,7 +8655,6 @@ components:
         - employee_id
         - effective_date
         - action
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8817,8 +8695,6 @@ components:
         note:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     UpdateEmploymentHistoryRequest:
       type: object
@@ -8826,7 +8702,6 @@ components:
         - employee_id
         - effective_date
         - action
-        - metadata
       properties:
         employee_id:
           type: string
@@ -8867,8 +8742,6 @@ components:
         note:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     PatchEmploymentHistoryRequest:
       type: object
@@ -8912,8 +8785,6 @@ components:
         note:
           nullable: true
           type: string
-        metadata:
-          type: object
 
     EmploymentHistoryList:
       type: object
@@ -8971,7 +8842,6 @@ components:
         - employee_id
         - accessed_by
         - data_category
-        - accessed_at
       properties:
         employee_id:
           type: string
@@ -9100,8 +8970,6 @@ components:
       required:
         - employee_id
         - field_path
-        - status
-        - metadata
       properties:
         employee_id:
           type: string
@@ -9131,8 +8999,6 @@ components:
           nullable: true
           type: string
           format: date-time
-        metadata:
-          type: object
 
     UpdateRecordChangeRequestRequest:
       type: object
@@ -9140,7 +9006,6 @@ components:
         - employee_id
         - field_path
         - status
-        - metadata
       properties:
         employee_id:
           type: string
@@ -9170,8 +9035,6 @@ components:
           nullable: true
           type: string
           format: date-time
-        metadata:
-          type: object
 
     PatchRecordChangeRequestRequest:
       type: object
@@ -9204,8 +9067,6 @@ components:
           nullable: true
           type: string
           format: date-time
-        metadata:
-          type: object
 
     RecordChangeRequestList:
       type: object
@@ -9249,31 +9110,23 @@ components:
       type: object
       required:
         - name
-        - metadata
       properties:
         name:
           type: string
-        metadata:
-          type: object
 
     UpdateReligionRequest:
       type: object
       required:
         - name
-        - metadata
       properties:
         name:
           type: string
-        metadata:
-          type: object
 
     PatchReligionRequest:
       type: object
       properties:
         name:
           type: string
-        metadata:
-          type: object
 
     ReligionList:
       type: object

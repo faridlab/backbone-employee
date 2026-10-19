@@ -127,35 +127,35 @@ pub struct PatchEmployeeDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "employee_number")]
     pub employee_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "user_id")]
-    pub user_id: Option<Uuid>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "user_id")]
+    pub user_id: Option<Option<Uuid>>,
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "first_name")]
     pub first_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "last_name")]
-    pub last_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "candidate_id")]
-    pub candidate_id: Option<Uuid>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "base_salary")]
-    pub base_salary: Option<Decimal>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "mobile_phone")]
-    pub mobile_phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "birth_place")]
-    pub birth_place: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "birth_date")]
-    pub birth_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gender: Option<Gender>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "marital_status")]
-    pub marital_status: Option<MaritalStatus>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "blood_type")]
-    pub blood_type: Option<BloodType>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "religion_id")]
-    pub religion_id: Option<Uuid>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "last_name")]
+    pub last_name: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub email: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "candidate_id")]
+    pub candidate_id: Option<Option<Uuid>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "base_salary")]
+    pub base_salary: Option<Option<Decimal>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "mobile_phone")]
+    pub mobile_phone: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub phone: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "birth_place")]
+    pub birth_place: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "birth_date")]
+    pub birth_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub gender: Option<Option<Gender>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "marital_status")]
+    pub marital_status: Option<Option<MaritalStatus>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "blood_type")]
+    pub blood_type: Option<Option<BloodType>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "religion_id")]
+    pub religion_id: Option<Option<Uuid>>,
 }
 
 impl PatchEmployeeDto {
@@ -374,12 +374,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeDto> for Employee {
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to Employee here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

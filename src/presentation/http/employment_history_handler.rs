@@ -81,6 +81,13 @@ impl axum::response::IntoResponse for EmploymentHistoryError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `employment_history:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn employment_history_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("employment_history")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for EmploymentHistory.
 ///
 /// # Routes
@@ -110,21 +117,23 @@ impl axum::response::IntoResponse for EmploymentHistoryError {
 /// let router = create_employment_history_routes(service);
 /// ```
 pub fn create_employment_history_routes(service: Arc<EmploymentHistoryService>) -> Router {
-    BackboneCrudHandler::<EmploymentHistoryService, EmploymentHistory, CreateEmploymentHistoryDto, UpdateEmploymentHistoryDto, EmploymentHistoryResponseDto>::routes(
+    BackboneCrudHandler::<EmploymentHistoryService, EmploymentHistory, CreateEmploymentHistoryDto, UpdateEmploymentHistoryDto, EmploymentHistoryResponseDto>::routes_guarded(
         service,
         "/employment_histories",
+        employment_history_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for EmploymentHistory.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_employment_history_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_employment_history_read_routes(service: Arc<EmploymentHistoryService>) -> Router {
-    BackboneCrudHandler::<EmploymentHistoryService, EmploymentHistory, CreateEmploymentHistoryDto, UpdateEmploymentHistoryDto, EmploymentHistoryResponseDto>::read_routes(
+    BackboneCrudHandler::<EmploymentHistoryService, EmploymentHistory, CreateEmploymentHistoryDto, UpdateEmploymentHistoryDto, EmploymentHistoryResponseDto>::read_routes_guarded(
         service,
         "/employment_histories",
+        employment_history_permissions(),
     )
 }
 
@@ -140,9 +149,10 @@ pub fn create_employment_history_read_routes(service: Arc<EmploymentHistoryServi
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_employment_history_write_routes(service: Arc<EmploymentHistoryService>) -> Router {
-    BackboneCrudHandler::<EmploymentHistoryService, EmploymentHistory, CreateEmploymentHistoryDto, UpdateEmploymentHistoryDto, EmploymentHistoryResponseDto>::write_routes(
+    BackboneCrudHandler::<EmploymentHistoryService, EmploymentHistory, CreateEmploymentHistoryDto, UpdateEmploymentHistoryDto, EmploymentHistoryResponseDto>::write_routes_guarded(
         service,
         "/employment_histories",
+        employment_history_permissions(),
     )
 }
 

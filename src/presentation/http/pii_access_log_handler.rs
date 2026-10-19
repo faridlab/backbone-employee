@@ -81,6 +81,13 @@ impl axum::response::IntoResponse for PiiAccessLogError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `pii_access_log:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn pii_access_log_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("pii_access_log")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for PiiAccessLog.
 ///
 /// # Routes
@@ -110,21 +117,23 @@ impl axum::response::IntoResponse for PiiAccessLogError {
 /// let router = create_pii_access_log_routes(service);
 /// ```
 pub fn create_pii_access_log_routes(service: Arc<PiiAccessLogService>) -> Router {
-    BackboneCrudHandler::<PiiAccessLogService, PiiAccessLog, CreatePiiAccessLogDto, UpdatePiiAccessLogDto, PiiAccessLogResponseDto>::routes(
+    BackboneCrudHandler::<PiiAccessLogService, PiiAccessLog, CreatePiiAccessLogDto, UpdatePiiAccessLogDto, PiiAccessLogResponseDto>::routes_guarded(
         service,
         "/pii_access_logs",
+        pii_access_log_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for PiiAccessLog.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_pii_access_log_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_pii_access_log_read_routes(service: Arc<PiiAccessLogService>) -> Router {
-    BackboneCrudHandler::<PiiAccessLogService, PiiAccessLog, CreatePiiAccessLogDto, UpdatePiiAccessLogDto, PiiAccessLogResponseDto>::read_routes(
+    BackboneCrudHandler::<PiiAccessLogService, PiiAccessLog, CreatePiiAccessLogDto, UpdatePiiAccessLogDto, PiiAccessLogResponseDto>::read_routes_guarded(
         service,
         "/pii_access_logs",
+        pii_access_log_permissions(),
     )
 }
 
@@ -140,9 +149,10 @@ pub fn create_pii_access_log_read_routes(service: Arc<PiiAccessLogService>) -> R
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_pii_access_log_write_routes(service: Arc<PiiAccessLogService>) -> Router {
-    BackboneCrudHandler::<PiiAccessLogService, PiiAccessLog, CreatePiiAccessLogDto, UpdatePiiAccessLogDto, PiiAccessLogResponseDto>::write_routes(
+    BackboneCrudHandler::<PiiAccessLogService, PiiAccessLog, CreatePiiAccessLogDto, UpdatePiiAccessLogDto, PiiAccessLogResponseDto>::write_routes_guarded(
         service,
         "/pii_access_logs",
+        pii_access_log_permissions(),
     )
 }
 

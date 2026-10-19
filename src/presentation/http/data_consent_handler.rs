@@ -81,6 +81,13 @@ impl axum::response::IntoResponse for DataConsentError {
 // Route Configuration
 // =============================================================================
 
+/// The permissions this entity's generic routes require: `data_consent:<action>` for `read`, `create`,
+/// `update`, `delete`, `restore` and `purge`, with any rename the schema's `requires:` declares.
+pub fn data_consent_permissions() -> backbone_core::http::CrudPermissions {
+    backbone_core::http::CrudPermissions::new("data_consent")
+        .in_module("employee")
+}
+
 /// Create Axum router with all 16 Backbone endpoints for DataConsent.
 ///
 /// # Routes
@@ -110,21 +117,23 @@ impl axum::response::IntoResponse for DataConsentError {
 /// let router = create_data_consent_routes(service);
 /// ```
 pub fn create_data_consent_routes(service: Arc<DataConsentService>) -> Router {
-    BackboneCrudHandler::<DataConsentService, DataConsent, CreateDataConsentDto, UpdateDataConsentDto, DataConsentResponseDto>::routes(
+    BackboneCrudHandler::<DataConsentService, DataConsent, CreateDataConsentDto, UpdateDataConsentDto, DataConsentResponseDto>::routes_guarded(
         service,
         "/data_consents",
+        data_consent_permissions(),
     )
 }
 
 /// Create Axum router with only the read (GET) endpoints for DataConsent.
 ///
-/// Safe for public, unauthenticated exposure (e.g., reference data).
+/// Each route requires the entity's `read` permission, so it needs an authenticated caller.
 /// Mutations must be served separately via `create_data_consent_write_routes`,
 /// typically wrapped in an auth middleware layer.
 pub fn create_data_consent_read_routes(service: Arc<DataConsentService>) -> Router {
-    BackboneCrudHandler::<DataConsentService, DataConsent, CreateDataConsentDto, UpdateDataConsentDto, DataConsentResponseDto>::read_routes(
+    BackboneCrudHandler::<DataConsentService, DataConsent, CreateDataConsentDto, UpdateDataConsentDto, DataConsentResponseDto>::read_routes_guarded(
         service,
         "/data_consents",
+        data_consent_permissions(),
     )
 }
 
@@ -140,9 +149,10 @@ pub fn create_data_consent_read_routes(service: Arc<DataConsentService>) -> Rout
 /// service (e.g. a command router over its domain engine), serve THAT instead
 /// for any mutation that must respect domain rules.
 pub fn create_data_consent_write_routes(service: Arc<DataConsentService>) -> Router {
-    BackboneCrudHandler::<DataConsentService, DataConsent, CreateDataConsentDto, UpdateDataConsentDto, DataConsentResponseDto>::write_routes(
+    BackboneCrudHandler::<DataConsentService, DataConsent, CreateDataConsentDto, UpdateDataConsentDto, DataConsentResponseDto>::write_routes_guarded(
         service,
         "/data_consents",
+        data_consent_permissions(),
     )
 }
 

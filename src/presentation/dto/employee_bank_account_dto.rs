@@ -87,8 +87,8 @@ pub struct PatchEmployeeBankAccountDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none", alias = "account_number")]
     pub account_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "account_name")]
-    pub account_name: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "account_name")]
+    pub account_name: Option<Option<String>>,
 }
 
 impl PatchEmployeeBankAccountDto {
@@ -253,12 +253,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeBankAccountDto> for EmployeeBan
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeBankAccount here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 

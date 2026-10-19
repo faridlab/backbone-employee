@@ -88,14 +88,14 @@ pub struct PatchEmployeeCertificationDto {
     #[cfg_attr(feature = "openapi", schema(example = "example"))]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "issuing_organization")]
-    pub issuing_organization: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "start_date")]
-    pub start_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none", alias = "end_date")]
-    pub end_date: Option<NaiveDate>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "issuing_organization")]
+    pub issuing_organization: Option<Option<String>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "start_date")]
+    pub start_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option", alias = "end_date")]
+    pub end_date: Option<Option<NaiveDate>>,
+    #[serde(default, deserialize_with = "crate::presentation::dto::double_option")]
+    pub description: Option<Option<String>>,
 }
 
 impl PatchEmployeeCertificationDto {
@@ -269,12 +269,4 @@ impl backbone_core::ApplyUpdateDto<UpdateEmployeeCertificationDto> for EmployeeC
         Ok(self)
     }
 }
-
-// =============================================================================
-// Custom DTOs
-// =============================================================================
-
-// Add custom DTOs specific to EmployeeCertification here.
-// This section will be preserved during regeneration.
-// >>> END CUSTOM DTOs
 
