@@ -87,7 +87,7 @@ async fn epp1_view_column_set_is_redacted() {
 async fn epp2_directory_row_carries_active_placement() {
     let pool = pool().await;
     let unique = Uuid::new_v4();
-    let id = seed_employee(&pool, format!("EPP2-{unique}").as_str(), true).await;
+    let id = seed_employee(&pool, format!("EPP2-{}", unique.simple()).as_str(), true).await;
 
     let row = sqlx::query(
         r#"SELECT first_name, email, employment_status::text AS employment_status, join_date
@@ -111,7 +111,7 @@ async fn epp3_no_active_employment_and_soft_delete() {
     let pool = pool().await;
     let unique = Uuid::new_v4();
 
-    let bare = seed_employee(&pool, format!("EPP3A-{unique}").as_str(), false).await;
+    let bare = seed_employee(&pool, format!("EPP3A-{}", unique.simple()).as_str(), false).await;
     let row = sqlx::query(
         "SELECT employment_status, join_date FROM employee.employees_public WHERE id = $1",
     )
@@ -122,7 +122,7 @@ async fn epp3_no_active_employment_and_soft_delete() {
     assert!(row.get::<Option<String>, _>("employment_status").is_none());
     assert!(row.get::<Option<chrono::NaiveDate>, _>("join_date").is_none());
 
-    let gone = seed_employee(&pool, format!("EPP3B-{unique}").as_str(), true).await;
+    let gone = seed_employee(&pool, format!("EPP3B-{}", unique.simple()).as_str(), true).await;
     sqlx::query("UPDATE employee.employees SET metadata = jsonb_set(metadata, '{deleted_at}', to_jsonb(NOW())) WHERE id = $1")
         .bind(gone)
         .execute(&pool)
@@ -143,7 +143,7 @@ async fn epp3_no_active_employment_and_soft_delete() {
 async fn epp4_second_active_employment_rejected() {
     let pool = pool().await;
     let unique = Uuid::new_v4();
-    let id = seed_employee(&pool, format!("EPP4-{unique}").as_str(), true).await;
+    let id = seed_employee(&pool, format!("EPP4-{}", unique.simple()).as_str(), true).await;
 
     let dup = sqlx::query(
         r#"INSERT INTO employee.employments
@@ -215,8 +215,8 @@ async fn epp5_view_is_fail_closed_until_the_decorator_installs_a_policy() {
 
     let unique_a = Uuid::new_v4();
     let unique_b = Uuid::new_v4();
-    seed_employee(&owner, format!("EPP5A-{unique_a}").as_str(), true).await;
-    seed_employee(&owner, format!("EPP5B-{unique_b}").as_str(), true).await;
+    seed_employee(&owner, format!("EPP5A-{}", unique_a.simple()).as_str(), true).await;
+    seed_employee(&owner, format!("EPP5B-{}", unique_b.simple()).as_str(), true).await;
 
     // The app-role leg must hit the SAME server and database as the owner leg
     // (DATABASE_URL), not hardcoded values — derive host:port and the database name

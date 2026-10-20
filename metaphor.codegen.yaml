@@ -66,6 +66,8 @@ user_owned:
   - "tests/features/**"
   - "tests/common/**"
   - "tests/employees_public_test.rs"
+  - "tests/recruitment_hired_test.rs"
+  - "tests/employee_field_gate_test.rs"
   # - "tests/*_golden_cases.rs"
   # - "tests/integrity_probes.rs"
 

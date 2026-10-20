@@ -99,3 +99,5 @@ rand = "0.8"
 
 # Behavior tests (employees_public_test.rs) drive sqlx directly against a migrated test DB.
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono"] }
+# Gate probes drive the guarded routers in-process via `ServiceExt::oneshot`.
+tower = { version = "0.4", features = ["util"] }
