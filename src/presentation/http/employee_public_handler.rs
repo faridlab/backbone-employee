@@ -78,7 +78,9 @@ pub async fn get_public(
 pub fn create_employee_public_read_routes(pool: sqlx::PgPool) -> Router<()> {
     let state = EmployeePublicState::new(pool);
     Router::new()
+        // unguarded: the peer directory is every authenticated internal user's read (the hr.employee.public port); the host's auth layer via `readonly_routes_with_public` fences it and the view projects no PII.
         .route("/employees/public", get(list_public))
+        // unguarded: same peer-directory read, one row by id.
         .route("/employees/public/:id", get(get_public))
         .with_state(state)
 }

@@ -117,9 +117,13 @@ pub fn record_change_verb_routes(
     }
 
     Router::new()
+        // unguarded: the self-service verbs mount under the host's org-guarded, tenant-routed tree (OrgContext fences the org); the module adds no permission of its own by design — see the header note.
         .route("/record-change-requests/submit", post(submit))
+        // unguarded: same host-guarded tree; the approvals seam owns who may apply.
         .route("/record-change-requests/:request_id/apply", post(apply))
+        // unguarded: same host-guarded tree; the approvals seam owns who may refuse.
         .route("/record-change-requests/:request_id/refuse", post(refuse))
+        // unguarded: same host-guarded tree; a caller may cancel its own request.
         .route("/record-change-requests/:request_id/cancel", post(cancel))
         // Pool law (ADR-0029): bind the composer-installed request pool for
         // the whole handler call — the write services resolve their database
