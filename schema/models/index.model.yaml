@@ -92,3 +92,16 @@ imports:
   - data_consent.model.yaml
   - data_subject_request.model.yaml
   - pii_access_log.model.yaml
+
+# =============================================================================
+# AUTHORIZATION
+# =============================================================================
+# `permissions:` widens the vocabulary beyond what the generic routes imply:
+# `employee:read_confidential` names no route — it is the field-level gate the
+# confidential Employee fields (`base_salary`, `mobile_phone`, `birth_date`)
+# require (ADR-0033, second amendment). The route-implied permissions
+# (`employee:read`, `employment:create`, …) are vocabulary by themselves and
+# are not repeated here.
+authorization:
+  permissions:
+    employee: [read_confidential]

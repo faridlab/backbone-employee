@@ -58,6 +58,7 @@ pub struct Employee {
     pub first_name: String,
     pub last_name: Option<String>,
     pub email: Option<String>,
+    pub candidate_id: Option<Uuid>,
     pub base_salary: Option<Decimal>,
     pub mobile_phone: Option<String>,
     pub phone: Option<String>,
@@ -67,7 +68,6 @@ pub struct Employee {
     pub marital_status: Option<MaritalStatus>,
     pub blood_type: Option<BloodType>,
     pub religion_id: Option<Uuid>,
-    pub candidate_id: Option<Uuid>,
     #[serde(default)]
     #[sqlx(json)]
     pub metadata: AuditMetadata,
@@ -88,6 +88,7 @@ impl Employee {
             first_name,
             last_name: None,
             email: None,
+            candidate_id: None,
             base_salary: None,
             mobile_phone: None,
             phone: None,
@@ -97,7 +98,6 @@ impl Employee {
             marital_status: None,
             blood_type: None,
             religion_id: None,
-            candidate_id: None,
             metadata: AuditMetadata::default(),
         }
     }
@@ -175,6 +175,12 @@ impl Employee {
         self
     }
 
+    /// Set the candidate_id field (chainable)
+    pub fn with_candidate_id(mut self, value: Uuid) -> Self {
+        self.candidate_id = Some(value);
+        self
+    }
+
     /// Set the base_salary field (chainable)
     pub fn with_base_salary(mut self, value: Decimal) -> Self {
         self.base_salary = Some(value);
@@ -228,11 +234,6 @@ impl Employee {
         self.religion_id = Some(value);
         self
     }
-    /// Set the candidate_id field (chainable)
-    pub fn with_candidate_id(mut self, value: Uuid) -> Self {
-        self.candidate_id = Some(value);
-        self
-    }
 
     // ==========================================================
     // Partial Update
@@ -256,6 +257,9 @@ impl Employee {
                 }
                 "email" => {
                     if let Ok(v) = serde_json::from_value(value) { self.email = v; }
+                }
+                "candidate_id" => {
+                    if let Ok(v) = serde_json::from_value(value) { self.candidate_id = v; }
                 }
                 "base_salary" => {
                     if let Ok(v) = serde_json::from_value(value) { self.base_salary = v; }
@@ -284,16 +288,11 @@ impl Employee {
                 "religion_id" => {
                     if let Ok(v) = serde_json::from_value(value) { self.religion_id = v; }
                 }
-                "candidate_id" => {
-                    if let Ok(v) = serde_json::from_value(value) { self.candidate_id = v; }
-                }
                 _ => {} // ignore unknown fields
             }
         }
     }
 
-    // <<< CUSTOM METHODS START >>>
-    // <<< CUSTOM METHODS END >>>
 }
 
 impl super::Entity for Employee {
@@ -309,6 +308,12 @@ impl super::Entity for Employee {
 }
 
 impl backbone_core::PersistentEntity for Employee {
+    fn references() -> &'static [backbone_core::Reference] {
+        const REFERENCES: &[backbone_core::Reference] = &[
+            backbone_core::Reference::new("religion_id", "employee.religions", "id"),
+        ];
+        REFERENCES
+    }
     fn entity_id(&self) -> String {
         self.id.to_string()
     }
@@ -342,19 +347,22 @@ impl backbone_orm::EntityRepoMeta for Employee {
         let mut m = std::collections::HashMap::new();
         m.insert("id".to_string(), "uuid".to_string());
         m.insert("user_id".to_string(), "uuid".to_string());
-        m.insert("religion_id".to_string(), "uuid".to_string());
         m.insert("candidate_id".to_string(), "uuid".to_string());
+        m.insert("religion_id".to_string(), "uuid".to_string());
         m.insert("gender".to_string(), "gender".to_string());
         m.insert("marital_status".to_string(), "marital_status".to_string());
         m.insert("blood_type".to_string(), "blood_type".to_string());
+        m.insert("birth_date".to_string(), "date".to_string());
         m
     }
     fn search_fields() -> &'static [&'static str] {
-        // Full-name, surname and email search (#589): a person is looked up
-        // by any part of their name or their address, not just the given
-        // name. The entity file is declared user-owned so a regen keeps the
-        // wider field list until the generator derives it from the schema.
         &["employee_number", "first_name", "last_name", "email"]
+    }
+    fn field_permissions() -> &'static [(&'static str, &'static str)] {
+        &[("baseSalary", "employee:read_confidential"), ("mobilePhone", "employee:read_confidential"), ("birthDate", "employee:read_confidential")]
+    }
+    fn relations() -> &'static [(&'static str, &'static str, &'static str)] {
+        &[("religion", "religions", "religionId")]
     }
 }
 
@@ -369,6 +377,7 @@ pub struct EmployeeBuilder {
     first_name: Option<String>,
     last_name: Option<String>,
     email: Option<String>,
+    candidate_id: Option<Uuid>,
     base_salary: Option<Decimal>,
     mobile_phone: Option<String>,
     phone: Option<String>,
@@ -378,7 +387,6 @@ pub struct EmployeeBuilder {
     marital_status: Option<MaritalStatus>,
     blood_type: Option<BloodType>,
     religion_id: Option<Uuid>,
-    candidate_id: Option<Uuid>,
 }
 
 impl EmployeeBuilder {
@@ -409,6 +417,12 @@ impl EmployeeBuilder {
     /// Set the email field (optional)
     pub fn email(mut self, value: String) -> Self {
         self.email = Some(value);
+        self
+    }
+
+    /// Set the candidate_id field (optional)
+    pub fn candidate_id(mut self, value: Uuid) -> Self {
+        self.candidate_id = Some(value);
         self
     }
 
@@ -465,11 +479,6 @@ impl EmployeeBuilder {
         self.religion_id = Some(value);
         self
     }
-    /// Set the candidate_id field (optional)
-    pub fn candidate_id(mut self, value: Uuid) -> Self {
-        self.candidate_id = Some(value);
-        self
-    }
 
     /// Build the Employee entity
     ///
@@ -485,6 +494,7 @@ impl EmployeeBuilder {
             first_name,
             last_name: self.last_name,
             email: self.email,
+            candidate_id: self.candidate_id,
             base_salary: self.base_salary,
             mobile_phone: self.mobile_phone,
             phone: self.phone,
@@ -494,7 +504,6 @@ impl EmployeeBuilder {
             marital_status: self.marital_status,
             blood_type: self.blood_type,
             religion_id: self.religion_id,
-            candidate_id: self.candidate_id,
             metadata: AuditMetadata::default(),
         })
     }

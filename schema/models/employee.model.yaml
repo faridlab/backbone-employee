@@ -15,6 +15,10 @@ models:
     # Data-change audit capture (ADR-0025): per-row trigger -> auditlog.capture_data_change.
     audited: true
     description: "The canonical people master. Owns employee_id (logical FK every module references)."
+    # A person is looked up by any part of their name or their address (the people-search
+    # widening this declares): number, given name, surname and email. Declared as the whole
+    # set so the list documents itself; the confidential fields below never appear in it.
+    search: [employee_number, first_name, last_name, email]
 
     fields:
       id:
@@ -55,6 +59,7 @@ models:
       base_salary:
         type: decimal?
         attributes: ["@precision(18,2)"]
+        requires: "employee:read_confidential"
         description: >
           Starting salary captured at the employee master — the recruitment
           offer's negotiated gross, written when a hire lands. NULL means
@@ -65,6 +70,7 @@ models:
       mobile_phone:
         type: string?
         attributes: ["@length(max=40)"]
+        requires: "employee:read_confidential"
         description: "Mobile"
 
       phone:
@@ -79,6 +85,7 @@ models:
 
       birth_date:
         type: date?
+        requires: "employee:read_confidential"
         description: "Date of birth"
 
       gender:
